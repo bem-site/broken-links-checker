@@ -25,7 +25,6 @@ npm test
 
 Проверка синтаксиса кода с помощью: 
 [jshint](https://www.npmjs.com/package/jshint),
-[eslint](https://www.npmjs.com/package/eslint),
 [jscs](https://www.npmjs.com/package/jscs)
 
 ```
