@@ -1,0 +1,47 @@
+{
+  "name": "bem-site-crawler",
+  "version": "0.0.1",
+  "description": "Web crawler for bem-sites",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bem-site/bem-site-crawler.git"
+  },
+  "author": {
+    "name": "Andrey Kuznetsov",
+    "email": "andrey.kuznetsov48@yandex.ru",
+    "url": "http://github.com/tormozz48"
+  },
+  "maintainers": [
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ua> (http://github.com/tormozz48)"
+  ],
+  "contributors": [
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ua> (http://github.com/tormozz48)",
+    "Nikolay Ilchenko <tavria@yandex-team.ru> (http://github.com/tavriaforever)",
+    "Gela Konstantinova <gela-d@yandex-team.ru> (http://github.com/gela-d)"
+  ],
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "bem-site-logger": "^0.0.x",
+    "inherit": "^2.2.2",
+    "node-spider": "tormozz48/node-spider"
+  },
+  "devDependencies": {
+    "istanbul": "^0.3.x",
+    "jscs": "^1.11.x",
+    "jshint": "~2.8.x",
+    "mocha": "~2.2.x",
+    "mocha-lcov-reporter": "0.0.x",
+    "should": "~6.x"
+  },
+  "scripts": {
+    "jshint": "node_modules/.bin/jshint .",
+    "jscs": "node_modules/.bin/jscs -c .jscs.js .",
+    "codestyle": "npm run jshint && npm run jscs",
+    "pretest": "npm run codestyle",
+    "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
+  },
+  "readmeFilename": "README.md",
+  "license": "MPL-2.0"
+}
