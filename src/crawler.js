@@ -42,8 +42,8 @@ module.exports = inherit({
             .setOption(options, 'error', this.onError.bind(this))
             .setOption(options, 'done', this.onDone.bind(this))
             .setRule(options, 'protocols', this.__self.DEFAULT.protocols)
-            .setRule(options, 'checkOuterUrls', false)
-            .setRule(options, 'exclude', []);
+            .setRule(options, 'checkOuterUrls', this.__self.DEFAULT.checkOuterUrls)
+            .setRule(options, 'exclude', this.__self.DEFAULT.exclude);
 
         this._spider = new Spider(this._options);
     },
@@ -238,7 +238,9 @@ module.exports = inherit({
         concurrent: 5,
         logs: false,
         headers: { 'user-agent': 'node-spider' },
-        protocols: ['http:', 'https:']
+        protocols: ['http:', 'https:'],
+        checkOuterUrls: false,
+        exclude: []
     },
     CONSTANTS: {
         URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/
