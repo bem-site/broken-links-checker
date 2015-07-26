@@ -1,6 +1,5 @@
 var Url = require('url'),
     should = require('should'),
-    server = require('../mock/server'),
     Crawler = require('../../src/crawler');
 
 describe('crawler', function () {
@@ -167,8 +166,18 @@ describe('crawler', function () {
     });
 
     describe('crawl mock server', function () {
-        before(function () {
-            server.startServer();
+        var server, port;
+
+        before(function (done) {
+            try {
+                port = process.env.PORT || 3000,
+                server = require('../mock/server');
+                setTimeout(function () {
+                    done();
+                }, 1000);
+            } catch(error) {
+                done();
+            }
         });
 
         it('should crawl pages', function (done) {
@@ -179,7 +188,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://localhost:3000');
+            crawler.start('http://localhost:' + port);
         });
 
         it('should skip excluded page urls', function (done) {
@@ -191,7 +200,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://localhost:3000');
+            crawler.start('http://localhost:' + port);
         });
 
         it('should check outer urls', function (done) {
@@ -203,7 +212,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://localhost:3000');
+            crawler.start('http://localhost:' + port);
         });
     });
 });
