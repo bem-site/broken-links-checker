@@ -1,23 +1,34 @@
 /* jshint ignore:start */
 var cheerio = require('cheerio'),
-    url = require('url');
+    inherit = require('inherit'),
+    Url = require('url'),
 
-function Document(url, res) {
-    this.res = res;
-    this.url = url;
-};
+    Document = module.exports = inherit({
+        /**
+         * Constructor function
+         * @param {String} url - request url
+         * @param {HttpResponse} res - request object
+         * @private
+         */
+        __constructor: function (url, res) {
+            this.res = res;
+            this.url = url;
+        },
 
-Document.prototype = {
-    constructor: Document,
+        /**
+         * Parses response body by cheerio
+         * @returns {*|any|Object|undefined}
+         */
+        get $() {
+            return this.$ = cheerio.load(this.res.body);
+        },
 
-    get $() {
-        return this.$ = cheerio.load(this.res.body);
-    },
-
-    resolve: function (uri) {
-        return url.resolve(this.url, uri);
-    }
-};
-
-module.exports = Document;
+        /**
+         * Resolves parsed link against document url
+         * @param {String} link - document link
+         */
+        resolve: function (link) {
+            return Url.resolve(this.url, link);
+        }
+    });
 /* jshint ignore:end */

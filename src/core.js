@@ -1,74 +1,76 @@
 var request = require('request'),
+    inherit = require('inherit'),
     Document = require('./document');
 
-function Spider(opts) {
-    opts = this.opts = opts || {};
-    opts.concurrent = opts.concurrent || 1;
-    opts.headers = opts.headers || {};
+module.exports = inherit({
+    _concurrent: undefined,
+    _headers: undefined,
 
-    this.pending = [];
-    this.active = [];
+    _pending: undefined,
+    _active: undefined,
+    _processed: undefined,
 
-    this.crawled = {};
-}
+    __constructor: function (options) {
+        options = options || {};
 
-Spider.prototype = {
-    constructor: Spider,
+        this._concurrent = options.concurrent;
+        this._headers = options.headers;
+        this._done = options.done;
+        this._error = options.error;
+
+        this._pending = [];
+        this._active = [];
+        this._processed = {};
+    },
 
     full: function () {
-        return this.active.length >= this.opts.concurrent;
+        return this._active.length >= this._concurrent;
     },
 
     queue: function (url, done) {
-        if (this.crawled[url.replace(/\/$/, '')]) {
+        url = url.replace(/\/$/, '');
+
+        if (this._processed[url]) {
             return;
         }
 
-        this.crawled[url.replace(/\/$/, '')] = true;
+        this._processed[url] = true;
+
         if (this.full()) {
-            this.pending.push({ u:url, d:done });
+            this._pending.push({ u: url, d: done });
         } else {
             this.load(url, done);
         }
     },
 
-    load: function (url, done) {
-        this.active.push(url);
-
-        request({
-            url: url,
-            headers: this.opts.headers
-        }, function (err, res) {
-            if (err) {
-                if (!this.opts.error) {
-                    throw err;
-                }
-                return this.opts.error(url, err);
-            }
-
-            var doc = new Document(url, res);
-            done.call(this, doc);
-            this.finished(url);
-        }.bind(this));
-    },
-
     dequeue: function () {
-        var next = this.pending.shift();
+        var next = this._pending.shift();
         if (next) {
             this.load(next.u, next.d);
-        } else if (this.opts.done && this.active.length === 0) {
-            this.opts.done.call(this);
+        } else if (this._done && !this._active.length) {
+            this._done.call(this);
         }
     },
 
     finished: function (url) {
-        var i = this.active.indexOf(url);
-        this.active.splice(i, 1);
+        var i = this._active.indexOf(url);
+        this._active.splice(i, 1);
 
         if (!this.full()) {
             this.dequeue();
         }
-    }
-};
+    },
 
-module.exports = Spider;
+    load: function (url, done) {
+        this._active.push(url);
+
+        request({ url: url, headers: this._headers }, function (err, res) {
+            if (err) {
+                return this._error(url, err);
+            }
+
+            done.call(this, new Document(url, res));
+            this.finished(url);
+        }.bind(this));
+    }
+});
