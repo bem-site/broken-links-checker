@@ -40,11 +40,15 @@ module.exports = inherit({
             .setOption(options, 'concurrent', this.__self.DEFAULT.concurrent)
             .setOption(options, 'logs', this.__self.DEFAULT.logs)
             .setOption(options, 'headers', this.__self.DEFAULT.headers)
+            .setOption(options, 'onDone', this.onDone.bind(this))
             .setOption(options, 'error', this.onError.bind(this))
-            .setOption(options, 'done', this.onDone.bind(this))
             .setRule(options, 'protocols', this.__self.DEFAULT.protocols)
             .setRule(options, 'checkOuterUrls', this.__self.DEFAULT.checkOuterUrls)
             .setRule(options, 'exclude', this.__self.DEFAULT.exclude);
+
+        this._options.done = function () {
+            this.getOption('onDone').call(this, this._brokenUrls.getAll());
+        }.bind(this);
 
         this._spider = new Spider(this._options);
     },
@@ -217,9 +221,11 @@ module.exports = inherit({
      * onDone callback function
      * @protected
      */
-    onDone: function () {
-        this._logger.info('FINISH to crawl pages');
-        this._logger.warn(this._brokenUrls.getAll());
+    onDone: function (brokenUrls) {
+        this._logger
+            .info('FINISH to crawl pages')
+            .warn(this._brokenUrls.getAll());
+        return brokenUrls;
     },
 
     /**

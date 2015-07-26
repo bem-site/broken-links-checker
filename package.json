@@ -28,11 +28,13 @@
     "node-spider": "tormozz48/node-spider"
   },
   "devDependencies": {
+    "connect": "^3.4.0",
     "istanbul": "^0.3.x",
     "jscs": "^1.11.x",
     "jshint": "~2.8.x",
     "mocha": "~2.2.x",
     "mocha-lcov-reporter": "0.0.x",
+    "serve-static": "^1.10.0",
     "should": "~6.x"
   },
   "scripts": {

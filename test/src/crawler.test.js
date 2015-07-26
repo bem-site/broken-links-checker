@@ -1,4 +1,6 @@
-var should = require('should'),
+var Url = require('url'),
+    should = require('should'),
+    server = require('../mock/server'),
     Crawler = require('../../src/crawler');
 
 describe('crawler', function () {
@@ -9,7 +11,7 @@ describe('crawler', function () {
             should.deepEqual(crawler.getOption('headers'), Crawler.DEFAULT.headers);
 
             should.deepEqual(crawler.getOption('error'), crawler.onError.bind(crawler));
-            should.deepEqual(crawler.getOption('done'), crawler.onDone.bind(crawler));
+            should.deepEqual(crawler.getOption('onDone'), crawler.onDone.bind(crawler));
 
             should.deepEqual(crawler.getRule('protocols'), Crawler.DEFAULT.protocols);
             should.deepEqual(crawler.getRule('exclude'), Crawler.DEFAULT.exclude);
@@ -122,7 +124,25 @@ describe('crawler', function () {
         });
 
         describe('skipOuterUrls', function () {
+            var crawler;
 
+            it('should return false if checkOuterUrls option is set to true', function () {
+                crawler = new Crawler({ checkOuterUrls: true });
+                crawler._url = Url.parse('http://my.custom.host:80/url1');
+                crawler.getSkipRules().skipOuterUrls('http://outer.host:80/url1').should.equal(false);
+            });
+
+            it('should return true if host of given url is different then host of initial url', function () {
+                crawler = new Crawler({ checkOuterUrls: false });
+                crawler._url = Url.parse('http://my.custom.host:80/url1');
+                crawler.getSkipRules().skipOuterUrls('http://outer.host:80/url1').should.equal(true);
+            });
+
+            it('should return false if host of given url is the same as host of initial url', function () {
+                crawler = new Crawler({ checkOuterUrls: false });
+                crawler._url = Url.parse('http://my.custom.host:80/url1');
+                crawler.getSkipRules().skipOuterUrls('http://my.custom.host:80/url2').should.equal(false);
+            });
         });
 
         describe('skipExcludedUrls', function () {
@@ -132,5 +152,58 @@ describe('crawler', function () {
 
     describe('isNeedToSkipUrl', function () {
 
+    });
+
+    describe('start', function () {
+        it('should throw error if url param was not set', function () {
+            var crawler = new Crawler();
+            (function () { return crawler.start(); }).should.throw('Url was not set');
+        });
+
+        it('should throw error if url param has invalid format', function () {
+            var crawler = new Crawler();
+            (function () { return crawler.start('bla-bla'); }).should.throw('Urls is not valid');
+        });
+    });
+
+    describe('crawl mock server', function () {
+        before(function () {
+            server.startServer();
+        });
+
+        it('should crawl pages', function (done) {
+            var crawler = new Crawler({
+                onDone: function (brokenUrls) {
+                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(1);
+                    done();
+                }
+            });
+
+            crawler.start('http://127.0.0.1:3000');
+        });
+
+        it('should skip excluded page urls', function (done) {
+            var crawler = new Crawler({
+                exclude: [/\/not-found/],
+                onDone: function (brokenUrls) {
+                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(0);
+                    done();
+                }
+            });
+
+            crawler.start('http://127.0.0.1:3000');
+        });
+
+        it('should check outer urls', function (done) {
+            var crawler = new Crawler({
+                checkOuterUrls: true,
+                onDone: function (brokenUrls) {
+                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(1);
+                    done();
+                }
+            });
+
+            crawler.start('http://127.0.0.1:3000');
+        });
     });
 });
