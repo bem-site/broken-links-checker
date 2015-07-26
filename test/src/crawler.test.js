@@ -103,4 +103,34 @@ describe('crawler', function () {
         crawler.setRule({ foo: 'bar' }, 'foo', 'bar-default');
         crawler.getRule('foo').should.equal('bar');
     });
+
+    describe('getSkipRules', function () {
+        describe('skipNonAcceptableProtocols', function () {
+            var crawler;
+
+            beforeEach(function () {
+                crawler = new Crawler({ protocols: ['http:'] });
+            });
+
+            it('should return true if protocol of given url does not exist in list of acceptable protocols', function () {
+                crawler.getSkipRules().skipNonAcceptableProtocols('https://url1').should.equal(true);
+            });
+
+            it('should return false if protocol of given url exists in list of acceptable protocols', function () {
+                crawler.getSkipRules().skipNonAcceptableProtocols('http://url1').should.equal(false);
+            });
+        });
+
+        describe('skipOuterUrls', function () {
+
+        });
+
+        describe('skipExcludedUrls', function () {
+
+        });
+    });
+
+    describe('isNeedToSkipUrl', function () {
+
+    });
 });

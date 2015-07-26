@@ -14,18 +14,19 @@ module.exports = inherit({
     _rules: undefined,
 
     _brokenUrls: undefined,
+    _skipRules: undefined,
 
     /**
      * Constructor
-     * @param {Object}    options                — configuration object
-     * @param {Number}    options.concurrent     — number of concurrent requests
-     * @param {Boolean}   options.logs           — set `true` for enable advanced logging
-     * @param {Object}    options.headers        — set custom request headers for crawler requests
-     * @param {Function}  options.error          - set custom error handler function
-     * @param {Function}  options.done           - set custom done handler function
-     * @param {String[]}  options.protocols      — set array of accepted request protocols
-     * @param {Boolean}   options.checkOuterUrls — set `true` for check outer links
-     * @param {RegExp[]}  options.exclude        - array of regular expressions. Urls that matches
+     * @param {Object}    [options]                — configuration object
+     * @param {Number}    [options.concurrent]     — number of concurrent requests
+     * @param {Boolean}   [options.logs]           — set `true` for enable advanced logging
+     * @param {Object}    [options.headers]        — set custom request headers for crawler requests
+     * @param {Function}  [options.error]          - set custom error handler function
+     * @param {Function}  [options.done]           - set custom done handler function
+     * @param {String[]}  [options.protocols]      — set array of accepted request protocols
+     * @param {Boolean}   [options.checkOuterUrls] — set `true` for check outer links
+     * @param {RegExp[]}  [options.exclude]        - array of regular expressions. Urls that matches
      * for this regular expressions would be excluded from verification
      * @private
      */
@@ -100,36 +101,52 @@ module.exports = inherit({
     },
 
     /**
-     * Check if protocol of given url satisfies protocols criteria
-     * @param {String} url - request url
-     * @returns {boolean} — result flag
-     * @private
+     * Returns predefined skip rules for prevent deeper crawling for given url
+     * @returns {{skipNonAcceptableProtocols: Function, skipOuterUrls: Function, skipExcludedUrls: Function}}
      */
-    _skipNonAcceptableProtocols: function (url) {
-        return this.getRule('protocols').indexOf(Url.parse(url).protocol) < 0;
-    },
+    getSkipRules: function () {
+        if (this._skipRules) {
+            return this._skipRules;
+        }
 
-    /**
-     * Checks if given url has the different hostname then initial
-     * (If 'checkOuterUrls' rule is set to true)
-     * @param {String} url — request url
-     * @returns {boolean} — result flag
-     * @private
-     */
-    _skipOuterUrls: function (url) {
-        return !this.getRule('checkOuterUrls') && url.indexOf(this._url.hostname) < 0;
-    },
+        this._skipRules = (function (_this) {
+            return {
+                /**
+                 * Check if protocol of given url satisfies protocols criteria
+                 * @param {String} url - request url
+                 * @returns {boolean} — result flag
+                 * @private
+                 */
+                skipNonAcceptableProtocols: function (url) {
+                    return _this.getRule('protocols').indexOf(Url.parse(url).protocol) < 0;
+                },
 
-    /**
-     * Checks if given url has host different then host of initial url
-     * @param {String} url — request url
-     * @returns {boolean} — result flag
-     * @private
-     */
-    _skipExcludedUrls: function (url) {
-        return this.getRule('exclude').some(function (pattern) {
-            return !!url.match(pattern);
-        });
+                /**
+                 * Checks if given url has the different hostname then initial
+                 * (If 'checkOuterUrls' rule is set to true)
+                 * @param {String} url — request url
+                 * @returns {boolean} — result flag
+                 * @private
+                 */
+                skipOuterUrls: function (url) {
+                    return !_this.getRule('checkOuterUrls') && url.indexOf(_this._url.hostname) < 0;
+                },
+
+                /**
+                 * Checks if given url has host different then host of initial url
+                 * @param {String} url — request url
+                 * @returns {boolean} — result flag
+                 * @private
+                 */
+                skipExcludedUrls: function (url) {
+                    return _this.getRule('exclude').some(function (pattern) {
+                        return !!url.match(pattern);
+                    });
+                }
+            };
+        })(this);
+
+        return this.getSkipRules();
     },
 
     /**
@@ -138,9 +155,10 @@ module.exports = inherit({
      * @returns {boolean} — result flag
      */
     isNeedToSkipUrl: function (url) {
-        return this._skipNonAcceptableProtocols(url) ||
-                this._skipOuterUrls(url) ||
-                this._skipExcludedUrls(url);
+        return Object.keys(this.getSkipRules()).reduce(function (prev, fName) {
+            prev = prev || this.getSkipRules()[fName](url);
+            return prev;
+        }.bind(this), false);
     },
 
     /**
@@ -226,10 +244,20 @@ module.exports = inherit({
         this._spider.queue(url, this.onHandleRequest.bind(this));
     }
 }, {
+    /**
+     * Checks if given object is instance of Object
+     * @param {Object|*} obj
+     * @returns {boolean} true if obj is instance of Object class
+     */
     isObject: function (obj) {
         return !!obj && typeof obj === 'object';
     },
 
+    /**
+     * Checks if given object is instance of Function
+     * @param {Object|*} obj
+     * @returns {boolean} true if obj is Function
+     */
     isFunction: function (obj) {
         return !!(obj && obj.constructor && obj.call && obj.apply);
     },

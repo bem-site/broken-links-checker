@@ -4,8 +4,8 @@ Simple page crawler for bem-site-projects
 [![NPM version](http://img.shields.io/npm/v/bem-site-crawler.svg?style=flat)](http://www.npmjs.org/package/bem-site-crawler)
 [![Coveralls branch](https://img.shields.io/coveralls/bem-site/bem-site-crawler/master.svg)](https://coveralls.io/r/bem-site/bem-site-crawler?branch=master)
 [![Travis](https://img.shields.io/travis/bem-site/bem-site-crawler.svg)](https://travis-ci.org/bem-site/bem-site-crawler)
+[![Code Climate](https://codeclimate.com/github/bem-site/bem-site-crawler/badges/gpa.svg)](https://codeclimate.com/github/bem-site/bem-site-crawler)
 [![David](https://img.shields.io/david/bem-site/bem-site-crawler.svg)](https://david-dm.org/bem-site/bem-site-crawler)
-[![David](https://img.shields.io/david/dev/bem-site/bem-site-crawler.svg)](https://david-dm.org/bem-site/bem-site-crawler#info=devDependencies)
 
 ![GitHub Logo](./logo.jpg)
 
