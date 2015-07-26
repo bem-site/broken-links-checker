@@ -179,7 +179,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://127.0.0.1:3000');
+            crawler.start('http://localhost:3000');
         });
 
         it('should skip excluded page urls', function (done) {
@@ -191,7 +191,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://127.0.0.1:3000');
+            crawler.start('http://localhost:3000');
         });
 
         it('should check outer urls', function (done) {
@@ -203,7 +203,7 @@ describe('crawler', function () {
                 }
             });
 
-            crawler.start('http://127.0.0.1:3000');
+            crawler.start('http://localhost:3000');
         });
     });
 });
