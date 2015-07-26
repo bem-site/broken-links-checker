@@ -1,7 +1,7 @@
 var Url = require('url'),
     inherit = require('inherit'),
-    Spider = require('node-spider'),
     Logger = require('bem-site-logger'),
+    Spider = require('./core'),
     BrokenLinks = require('./broken');
 
 module.exports = inherit({

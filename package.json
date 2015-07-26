@@ -25,7 +25,8 @@
   "dependencies": {
     "bem-site-logger": "^0.0.x",
     "inherit": "^2.2.2",
-    "node-spider": "tormozz48/node-spider"
+    "cheerio": "^0.13.x",
+    "request": "^2.60.x"
   },
   "devDependencies": {
     "connect": "^3.4.0",
@@ -42,7 +43,7 @@
     "jscs": "node_modules/.bin/jscs -c .jscs.js .",
     "codestyle": "npm run jshint && npm run jscs",
     "pretest": "npm run codestyle",
-    "test": "./node_modules/.bin/istanbul cover _mocha"
+    "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
   },
   "readmeFilename": "README.md",
   "license": "MPL-2.0"
