@@ -42,7 +42,7 @@
     "jscs": "node_modules/.bin/jscs -c .jscs.js .",
     "codestyle": "npm run jshint && npm run jscs",
     "pretest": "npm run codestyle",
-    "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
+    "test": "./node_modules/.bin/istanbul cover _mocha"
   },
   "readmeFilename": "README.md",
   "license": "MPL-2.0"
