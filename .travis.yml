@@ -12,11 +12,6 @@ matrix:
     - node_js: "0.10"
     - node_js: "0.12"
 
-before_script:
-  - "export DISPLAY=:99.0"
-  - "node ./test/mock/server.js"
-  - sleep 3 # give Web server some time to bind to sockets, etc
-
 after_script: "npm install coveralls && cat ./coverage/lcov.info | coveralls && rm -rf ./coverage"
 notifications:
   email:
