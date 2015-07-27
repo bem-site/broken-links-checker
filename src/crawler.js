@@ -1,29 +1,34 @@
 var Url = require('url'),
+    curl = require('curlrequest'),
+    request = require('request'),
+    parser = require('http-string-parser'),
     inherit = require('inherit'),
     Logger = require('bem-site-logger'),
-    Spider = require('./core'),
+    Document = require('./document'),
     BrokenLinks = require('./broken');
 
 module.exports = inherit({
-    _url: undefined,
+    _url: undefined,  // initial url
 
-    _logger: undefined,
-    _spider: undefined,
-    _options: undefined,
+    _logger: undefined, // logger instance
+    _options: undefined, // application options
 
-    _rules: undefined,
+    _rules: undefined, // rules (settings) for parsing
 
-    _brokenUrls: undefined,
-    _skipRules: undefined,
+    _brokenUrls: undefined, // broken links(urls) model instance
+    _skipRules: undefined, // cached skip rules model
+
+    _pending: undefined, // array of items which should be checking for availability but later
+    _active: undefined, // array of items which are checking now
+    _processed: undefined, // hash of already processed urls for preventing infinite loops
 
     /**
      * Constructor
      * @param {Object}    [options]                — configuration object
      * @param {Number}    [options.concurrent]     — number of concurrent requests
-     * @param {Boolean}   [options.logs]           — set `true` for enable advanced logging
      * @param {Object}    [options.headers]        — set custom request headers for crawler requests
-     * @param {Function}  [options.error]          - set custom error handler function
-     * @param {Function}  [options.done]           - set custom done handler function
+     * @param {Function}  [options.onError]        - set custom error handler function
+     * @param {Function}  [options.onDone]         - set custom done handler function
      * @param {String[]}  [options.protocols]      — set array of accepted request protocols
      * @param {Boolean}   [options.checkOuterUrls] — set `true` for check outer links
      * @param {RegExp[]}  [options.exclude]        - array of regular expressions. Urls that matches
@@ -38,19 +43,24 @@ module.exports = inherit({
 
         this
             .setOption(options, 'concurrent', this.__self.DEFAULT.concurrent)
-            .setOption(options, 'logs', this.__self.DEFAULT.logs)
             .setOption(options, 'headers', this.__self.DEFAULT.headers)
             .setOption(options, 'onDone', this.onDone.bind(this))
-            .setOption(options, 'error', this.onError.bind(this))
+            .setOption(options, 'onError', this.onError.bind(this))
             .setRule(options, 'protocols', this.__self.DEFAULT.protocols)
             .setRule(options, 'checkOuterUrls', this.__self.DEFAULT.checkOuterUrls)
             .setRule(options, 'exclude', this.__self.DEFAULT.exclude);
 
-        this._options.done = function () {
-            this.getOption('onDone').call(this, this._brokenUrls.getAll());
+        this._options.error = function (url, error) {
+            this.getOption('onError').call(this, url, error);
         }.bind(this);
 
-        this._spider = new Spider(this._options);
+        this._options.done = function () {
+            this.getOption('onDone').call(this, this._brokenUrls);
+        }.bind(this);
+
+        this._pending = [];
+        this._active = [];
+        this._processed = {};
     },
 
     /**
@@ -174,17 +184,19 @@ module.exports = inherit({
     onHandleRequest: function (document) {
         var _this = this,
             documentUrl = document.url,
-            statusCode = document.res.statusCode;
+            statusCode = +document.res.statusCode;
 
-        if (statusCode !== 200) {
+        if (statusCode >= 400) {
             this._logger.error('Broken [%s] url: => %s', statusCode, documentUrl);
             this._brokenUrls.add(documentUrl, statusCode);
+            this._onFinishLoad(documentUrl);
             return;
         }
 
         this._logger.verbose('Receive [%s] for url: => %s', statusCode, documentUrl);
 
         if (documentUrl.indexOf(this._url.hostname) < 0) {
+            this._onFinishLoad(documentUrl);
             return;
         }
 
@@ -203,8 +215,9 @@ module.exports = inherit({
                 return;
             }
 
-            _this._spider.queue(url, _this.onHandleRequest.bind(_this));
+            _this._addToQueue(url, _this.onHandleRequest.bind(_this));
         });
+        this._onFinishLoad(documentUrl);
     },
 
     /**
@@ -224,7 +237,7 @@ module.exports = inherit({
     onDone: function (brokenUrls) {
         this._logger
             .info('FINISH to crawl pages')
-            .warn(this._brokenUrls.getAll());
+            .warn(brokenUrls.getAll());
         return brokenUrls;
     },
 
@@ -247,7 +260,107 @@ module.exports = inherit({
         this._logger
             .info('START to crawl pages')
             .info('It can be take a long time. Please wait ...');
-        this._spider.queue(url, this.onHandleRequest.bind(this));
+        this._addToQueue(url, this.onHandleRequest.bind(this));
+    },
+
+    /**
+     * Checks if loading queue is full
+     * @returns {boolean}
+     * @private
+     */
+    _isQueueFull: function () {
+        return this._active.length >= this.getOption('concurrent');
+    },
+
+    /**
+     * Adds item to check queue
+     * @param {String} url - request url
+     * @param {Function} done callback function
+     * @private
+     */
+    _addToQueue: function (url, done) {
+        url = url.replace(/\/$/, '');
+
+        if (this._processed[url]) {
+            return;
+        }
+
+        this._processed[url] = true;
+
+        if (this._isQueueFull()) {
+            this._pending.push({ u: url, d: done });
+        } else {
+            this.load(url, done);
+        }
+    },
+
+    _onFinishLoad: function (url) {
+        var i = this._active.indexOf(url);
+        this._active.splice(i, 1);
+
+        if (!this._isQueueFull()) {
+            var next = this._pending.shift();
+            if (next) {
+                this.load(next.u, next.d);
+            } else if (!this._active.length) {
+                this.getOption('done').call(this);
+            }
+        }
+    },
+
+    /**
+     * Loads data from given url with help of request module
+     * @param {String} url - request url
+     * @param {Function} done - function for parsing and processing response body
+     */
+
+    load1: function (url, done) {
+        this._active.push(url);
+
+        /**
+         * Callback function for process results of request
+         * @param {Error} error - error object
+         * @param {HttpResponse} res - response object
+         * @returns {*}
+         */
+        function callback (error, res) {
+            if (error) {
+                return this.getOption('error')(url, error);
+            }
+
+            done.call(this, new Document(url, res));
+            this._onFinishLoad(url);
+        }
+
+        request({ url: url, headers: this.getOption('headers') }, callback.bind(this));
+    },
+
+    load: function (url, done) {
+        this._active.push(url);
+        curl.request({
+            url: url,
+            headers: this.getOption('headers'),
+            retries: 1, // TODO need to customize
+            timeout: 5000, // TODO need to customize
+            scope: this,
+            include: true,
+            redirects: 10
+        }, function (error, data) {
+            if (error) {
+                return this.getOption('error')(url, error);
+            }
+
+            var res = parser.parseResponse(data);
+            if (+res.statusCode === 301 || +res.statusCode === 302) {
+                if (res.headers['Location'] && this.__self.isString(res.headers['Location'])) {
+                    return this.load(Url.resolve(this._url.href, res.headers[ 'Location' ]), done);
+                } else {
+                    return;
+                }
+            }
+
+            done.call(this, new Document(url, res));
+        });
     }
 }, {
     /**
@@ -266,6 +379,15 @@ module.exports = inherit({
      */
     isFunction: function (obj) {
         return !!(obj && obj.constructor && obj.call && obj.apply);
+    },
+
+    /**
+     * Checks if given object is instance of String
+     * @param {Object|*} obj
+     * @returns {boolean} true if obj is String
+     */
+    isString: function (obj) {
+        return typeof obj === 'string' || obj instanceof String
     },
 
     DEFAULT: {

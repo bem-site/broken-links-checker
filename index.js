@@ -2,12 +2,13 @@ var Crawler = require('./src/crawler'),
     crawler;
 
 crawler = new Crawler({
-    concurrent: 5,
-    logger: { level: 'verbose' },
+    concurrent: 20,
+    logger: { level: 'debug' },
     exclude: [
         /\/__example\//i,
         /\/forum\//i
-    ]
+    ],
+    checkOuterUrls: true
 });
 
-crawler.start('http://127.0.0.1:3000');
+crawler.start('https://ru.bem.info');

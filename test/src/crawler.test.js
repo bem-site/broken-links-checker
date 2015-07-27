@@ -6,10 +6,9 @@ describe('crawler', function () {
     describe('constructor', function () {
         function assertDefault(crawler) {
             crawler.getOption('concurrent').should.equal(Crawler.DEFAULT.concurrent);
-            crawler.getOption('logs').should.equal(Crawler.DEFAULT.logs);
             should.deepEqual(crawler.getOption('headers'), Crawler.DEFAULT.headers);
 
-            should.deepEqual(crawler.getOption('error'), crawler.onError.bind(crawler));
+            should.deepEqual(crawler.getOption('onError'), crawler.onError.bind(crawler));
             should.deepEqual(crawler.getOption('onDone'), crawler.onDone.bind(crawler));
 
             should.deepEqual(crawler.getRule('protocols'), Crawler.DEFAULT.protocols);
@@ -28,11 +27,6 @@ describe('crawler', function () {
         it('should override default concurrent option', function () {
             var crawler = new Crawler({ concurrent: 3 });
             crawler.getOption('concurrent').should.equal(3);
-        });
-
-        it('should override default logs option', function () {
-            var crawler = new Crawler({ logs: true });
-            crawler.getOption('logs').should.equal(true);
         });
 
         it('should override default headers option', function () {
@@ -156,7 +150,7 @@ describe('crawler', function () {
     describe('start', function () {
         it('should throw error if url param was not set', function () {
             var crawler = new Crawler();
-            (function () { return crawler.start(); }).should.throw('Url was not set');
+            (function () { return crawler.start(null); }).should.throw('Url was not set');
         });
 
         it('should throw error if url param has invalid format', function () {
@@ -183,7 +177,7 @@ describe('crawler', function () {
         it('should crawl pages', function (done) {
             var crawler = new Crawler({
                 onDone: function (brokenUrls) {
-                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(1);
+                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(1);
                     done();
                 }
             });
@@ -195,7 +189,7 @@ describe('crawler', function () {
             var crawler = new Crawler({
                 exclude: [/\/not-found/],
                 onDone: function (brokenUrls) {
-                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(0);
+                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(0);
                     done();
                 }
             });
@@ -207,7 +201,7 @@ describe('crawler', function () {
             var crawler = new Crawler({
                 checkOuterUrls: true,
                 onDone: function (brokenUrls) {
-                    brokenUrls.should.be.instanceOf(Array).and.be.have.length(1);
+                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(1);
                     done();
                 }
             });
