@@ -340,8 +340,8 @@ module.exports = inherit({
         curl.request({
             url: url,
             headers: this.getOption('headers'),
-            retries: 1, // TODO need to customize
-            timeout: 5000, // TODO need to customize
+            retries: 1,
+            timeout: 5000,
             scope: this,
             include: true,
             redirects: 10
