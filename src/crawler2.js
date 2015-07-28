@@ -5,7 +5,7 @@ var Url = require('url'),
     BrokenLinks = require('./broken');
 
 module.exports = inherit({
-    _url: undefined,  // initial url
+    _initialUrl: undefined,  // initial url
 
     _logger: undefined, // logger instance
     _options: undefined, // application options
@@ -24,12 +24,14 @@ module.exports = inherit({
         this._logger = Logger.setOptions(loggerOptions).createLogger(module);
 
         this
-            .setOption(options, 'acceptedSchemes', ['http', 'https'])
-            .setOption(options, 'excludedSchemes', ['data','geo','javascript','mailto','sms','tel'])
-            .setOption(options, 'excludeExternalLinks', true)
-            .setOption(options, 'excludeInternalLinks', false)
-            .setOption(options, 'filterLevel', 1)
-            .setOption(options, 'maxSocketsPerHost', 100);
+            .setOption(options, 'acceptedSchemes', this.__self.DEFAULT.acceptedSchemes)
+            .setOption(options, 'excludedSchemes', this.__self.DEFAULT.excludedSchemes)
+            .setOption(options, 'excludeExternalLinks', this.__self.DEFAULT.excludeExtrnalLinks)
+            .setOption(options, 'excludeInternalLinks', this.__self.DEFAULT.excludeInternalLinks)
+            .setOption(options, 'filterLevel', this.__self.DEFAULT.filterLevel)
+            .setOption(options, 'maxSocketsPerHost', this.__self.DEFAULT.maxSocketsPerHost);
+
+        this.setRule(options, 'excludeLinkPatterns', []);
 
         this._checker = new BrokenLinkChecker['HtmlUrlChecker'](this._options, {
             link: this.onLink.bind(this),
@@ -50,6 +52,10 @@ module.exports = inherit({
     setOption: function (options, name, defaultValue) {
         this._options = this._options || {};
         this._options[name] = options[name] || defaultValue;
+        if (options[name] === false) {
+            this._options[name] = options[name];
+        }
+
         if (!this.__self.isFunction(this._options[name])) {
             this._logger.debug('Set option [%s] => %s', name,
                 this.__self.isObject(this._options[name]) ? JSON.stringify(this._options[name]) : this._options[name]);
@@ -66,11 +72,36 @@ module.exports = inherit({
         return this._options[name];
     },
 
-    onLink: function (result, advanced) {
+    /**
+     * Sets value to rules model for given rule field name
+     * @param {Object} rules        — rules object
+     * @param {String} name         - name of rule field
+     * @param {*}      defaultValue - rule default value
+     * @returns {exports}
+     */
+    setRule: function (rules, name, defaultValue) {
+        this._rules = this._rules || {};
+        this._rules[name] = rules[name] || defaultValue;
+        if (!this.__self.isFunction(this._rules[name])) {
+            this._logger.debug('Set rule [%s] => %s', name, this._rules[name]);
+        }
+        return this;
+    },
+
+    /**
+     * Returns rule value by given rule name
+     * @param {String} name — rule name
+     * @returns {*}
+     */
+    getRule: function (name) {
+        return this._rules[name];
+    },
+
+    onLink: function (result) {
         if (result.error) {
             var originalUrl = result.url['original'],
                 statusCode = result.http.statusCode;
-            this._logger.error('Broken: [%s] url: => %s', statusCode, originalUrl)
+            this._logger.error('Broken: [%s] url: => %s', statusCode, originalUrl);
             this._brokenUrls.add(originalUrl, statusCode);
         }
 
@@ -84,11 +115,11 @@ module.exports = inherit({
         this._checker['enqueue'](resolvedUrl);
     },
 
-    onItem: function(error, htmlUrl, advanced){
+    onItem: function (error, htmlUrl) {
         if (error) {
             this._logger.error('Error: %s for url: => %s', error, htmlUrl);
         }
-        this._logger.debug('processItem: => %s', htmlUrl);
+        this._logger.debug('Complete for: => %s', htmlUrl);
     },
 
     onDone: function () {
@@ -110,7 +141,7 @@ module.exports = inherit({
 
         this._brokenUrls = BrokenLinks.create();
 
-        this._url = Url.parse(url);
+        this._initialUrl = Url.parse(url);
         this._logger
             .info('START to crawl pages')
             .info('It can be take a long time. Please wait ...');
@@ -142,7 +173,15 @@ module.exports = inherit({
      * @returns {boolean} true if obj is String
      */
     isString: function (obj) {
-        return typeof obj === 'string' || obj instanceof String
+        return typeof obj === 'string' || obj instanceof String;
+    },
+    DEFAULT: {
+        acceptedSchemes: ['http', 'https'],
+        excludedSchemes: ['data', 'geo', 'javascript', 'mailto', 'sms', 'tel'],
+        excludeExtrnalLinks: true,
+        excludeInternalLinks: false,
+        filterLevel: 1,
+        maxSocketsPerHost: 10
     },
     CONSTANTS: {
         URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/

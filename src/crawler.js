@@ -387,7 +387,7 @@ module.exports = inherit({
      * @returns {boolean} true if obj is String
      */
     isString: function (obj) {
-        return typeof obj === 'string' || obj instanceof String
+        return typeof obj === 'string' || obj instanceof String;
     },
 
     DEFAULT: {

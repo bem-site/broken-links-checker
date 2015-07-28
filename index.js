@@ -16,12 +16,9 @@ crawler = new Crawler({
 });
 
 crawler2 = new Crawler2({
-    logger: { level: 'verbose' }
+    logger: { level: 'debug' }
 });
 
 crawler2.start('https://ru.bem.info');
 
-//crawler.start('https://ru.bem.info');
-
-
-
+// crawler.start('https://ru.bem.info');
