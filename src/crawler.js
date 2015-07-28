@@ -1,8 +1,11 @@
-var Url = require('url'),
-    curl = require('curlrequest'),
-    request = require('request'),
-    parser = require('http-string-parser'),
+var os = require('os'),
+    fs = require('fs'),
+    Url = require('url'),
+    path = require('path'),
+    fsExtra = require('fs-extra'),
     inherit = require('inherit'),
+    curl = require('curlrequest'),
+    parser = require('http-string-parser'),
     Logger = require('bem-site-logger'),
     Document = require('./document'),
     BrokenLinks = require('./broken');
@@ -21,6 +24,8 @@ module.exports = inherit({
     _pending: undefined, // array of items which should be checking for availability but later
     _active: undefined, // array of items which are checking now
     _processed: undefined, // hash of already processed urls for preventing infinite loops
+
+    _reportFile: undefined,
 
     /**
      * Constructor
@@ -183,22 +188,7 @@ module.exports = inherit({
      */
     onHandleRequest: function (document) {
         var _this = this,
-            documentUrl = document.url,
-            statusCode = +document.res.statusCode;
-
-        if (statusCode >= 400) {
-            this._logger.error('Broken [%s] url: => %s', statusCode, documentUrl);
-            this._brokenUrls.add(documentUrl, statusCode);
-            this._onFinishLoad(documentUrl);
-            return;
-        }
-
-        this._logger.verbose('Receive [%s] for url: => %s', statusCode, documentUrl);
-
-        if (documentUrl.indexOf(this._url.hostname) < 0) {
-            this._onFinishLoad(documentUrl);
-            return;
-        }
+            documentUrl = document.url;
 
         document.$('a').each(function () {
             var href = this.attr('href'),
@@ -254,6 +244,11 @@ module.exports = inherit({
             throw new Error('Urls is not valid');
         }
 
+        var reportDir = path.join(process.cwd(), './.crawler-report');
+        this._reportFile = path.join(reportDir, (+(new Date())).toString() + '.txt');
+        fsExtra.ensureDirSync(reportDir);
+        fsExtra.ensureFileSync(this._reportFile);
+
         this._brokenUrls = BrokenLinks.create();
 
         this._url = Url.parse(url);
@@ -308,33 +303,6 @@ module.exports = inherit({
         }
     },
 
-    /**
-     * Loads data from given url with help of request module
-     * @param {String} url - request url
-     * @param {Function} done - function for parsing and processing response body
-     */
-
-    load1: function (url, done) {
-        this._active.push(url);
-
-        /**
-         * Callback function for process results of request
-         * @param {Error} error - error object
-         * @param {HttpResponse} res - response object
-         * @returns {*}
-         */
-        function callback (error, res) {
-            if (error) {
-                return this.getOption('error')(url, error);
-            }
-
-            done.call(this, new Document(url, res));
-            this._onFinishLoad(url);
-        }
-
-        request({ url: url, headers: this.getOption('headers') }, callback.bind(this));
-    },
-
     load: function (url, done) {
         this._active.push(url);
         curl.request({
@@ -346,19 +314,30 @@ module.exports = inherit({
             include: true,
             redirects: 10
         }, function (error, data) {
-            if (error) {
-                return this.getOption('error')(url, error);
+            var res = parser.parseResponse(data),
+                statusCode = +res.statusCode;
+
+            if (error || !data || statusCode >= 400) {
+                this._logger.error('Broken [%s] url: => %s', statusCode, url);
+                fs.appendFile(this._reportFile, url + ' ' + statusCode + os.EOL, 'utf8');
             }
 
-            var res = parser.parseResponse(data);
+            if (url.indexOf(this._url.hostname) < 0) {
+                this._logger.verbose('[%s] [%s] External url: => %s',
+                    this._pending.length, this._active.length, url);
+                return this._onFinishLoad(url);
+            }
+
             if (+res.statusCode === 301 || +res.statusCode === 302) {
                 if (res.headers['Location'] && this.__self.isString(res.headers['Location'])) {
-                    return this.load(Url.resolve(this._url.href, res.headers[ 'Location' ]), done);
+                    return this.load(Url.resolve(this._url.href, res.headers['Location']), done);
                 } else {
-                    return;
+                    return this._onFinishLoad(url);
                 }
             }
 
+            this._logger.verbose('[%s] [%s] Receive [%s] for url: => %s',
+                this._pending.length, this._active.length, statusCode, url);
             done.call(this, new Document(url, res));
         });
     }

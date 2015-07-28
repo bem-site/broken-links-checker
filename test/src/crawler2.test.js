@@ -7,7 +7,7 @@ describe('crawler', function () {
         function assertDefault(crawler) {
             should.deepEqual(crawler.getOption('acceptedSchemes'), Crawler.DEFAULT.acceptedSchemes);
             should.deepEqual(crawler.getOption('excludedSchemes'), Crawler.DEFAULT.excludedSchemes);
-            crawler.getOption('excludeExternalLinks').should.equal(Crawler.DEFAULT.excludeExtrnalLinks);
+            crawler.getOption('excludeExternalLinks').should.equal(Crawler.DEFAULT.excludeExternalLinks);
             crawler.getOption('excludeInternalLinks').should.equal(Crawler.DEFAULT.excludeInternalLinks);
             crawler.getOption('filterLevel').should.equal(Crawler.DEFAULT.filterLevel);
             crawler.getOption('maxSocketsPerHost').should.equal(Crawler.DEFAULT.maxSocketsPerHost);
@@ -118,7 +118,6 @@ describe('crawler', function () {
         });
     });
 
-    /*
     describe('crawl mock server', function () {
         var server, port;
 
@@ -147,7 +146,7 @@ describe('crawler', function () {
 
         it('should skip excluded page urls', function (done) {
             var crawler = new Crawler({
-                exclude: [/\/not-found/],
+                excludeLinkPatterns: [/\/not-found/],
                 onDone: function (brokenUrls) {
                     brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(0);
                     done();
@@ -159,7 +158,7 @@ describe('crawler', function () {
 
         it('should check outer urls', function (done) {
             var crawler = new Crawler({
-                checkOuterUrls: true,
+                checkExternalLinks: true,
                 onDone: function (brokenUrls) {
                     brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(1);
                     done();
@@ -169,6 +168,5 @@ describe('crawler', function () {
             crawler.start('http://localhost:' + port);
         });
     });
-    */
 });
 

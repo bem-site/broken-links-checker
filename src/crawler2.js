@@ -15,7 +15,8 @@ module.exports = inherit({
     _brokenUrls: undefined, // broken links(urls) model instance
     _processed: undefined, // hash of already processed urls for preventing infinite loops
 
-    _checker: undefined,
+    _htmlUrlChecker: undefined,
+    _urlChecker: undefined,
 
     __constructor: function (options) {
         options = options || {};
@@ -26,17 +27,22 @@ module.exports = inherit({
         this
             .setOption(options, 'acceptedSchemes', this.__self.DEFAULT.acceptedSchemes)
             .setOption(options, 'excludedSchemes', this.__self.DEFAULT.excludedSchemes)
-            .setOption(options, 'excludeExternalLinks', this.__self.DEFAULT.excludeExtrnalLinks)
+            .setOption(options, 'excludeExternalLinks', this.__self.DEFAULT.excludeExternalLinks)
             .setOption(options, 'excludeInternalLinks', this.__self.DEFAULT.excludeInternalLinks)
             .setOption(options, 'filterLevel', this.__self.DEFAULT.filterLevel)
-            .setOption(options, 'maxSocketsPerHost', this.__self.DEFAULT.maxSocketsPerHost);
+            .setOption(options, 'maxSocketsPerHost', this.__self.DEFAULT.maxSocketsPerHost)
+            .setOption(options, 'onDone', this.onDone.bind(this));
 
         this.setRule(options, 'excludeLinkPatterns', []);
 
-        this._checker = new BrokenLinkChecker['HtmlUrlChecker'](this._options, {
-            link: this.onLink.bind(this),
-            item: this.onItem.bind(this),
-            end: this.onDone.bind(this)
+        this._htmlUrlChecker = new BrokenLinkChecker['HtmlUrlChecker'](this._options, {
+            link: this.onHtmlUrlLinkEvent.bind(this),
+            item: this.onHtmlUrlItemEvent.bind(this),
+            end: this._onDone.bind(this)
+        });
+
+        this._urlChecker = new BrokenLinkChecker['UrlChecker'](this._options, {
+            link: this.onUrlLinkEvent.bind(this)
         });
 
         this._processed = {};
@@ -97,33 +103,73 @@ module.exports = inherit({
         return this._rules[name];
     },
 
-    onLink: function (result) {
-        if (result.error) {
+    onHtmlUrlLinkEvent: function (result) {
+        if (result.broken) {
             var originalUrl = result.url['original'],
                 statusCode = result.http.statusCode;
             this._logger.error('Broken: [%s] url: => %s', statusCode, originalUrl);
             this._brokenUrls.add(originalUrl, statusCode);
-        }
-
-        var resolvedUrl = result.url['resolved'].replace(/\/$/, '');
-        if (this._processed[resolvedUrl]) {
             return;
         }
 
+        var resolvedUrl = result.url['resolved'].split('#')[0];
+        resolvedUrl = resolvedUrl.replace(/\/$/, '');
+
+        /* skip excluded patterns*/
+        if(this.getRule('excludeLinkPatterns').some(function (pattern) {
+            return !!resolvedUrl.match(pattern);
+        })) {
+            return;
+        }
+
+        /* cache resolved link start */
+        if (this._processed[resolvedUrl]) {
+            return;
+        }
         this._logger.verbose('processLink: => %s', resolvedUrl);
         this._processed[resolvedUrl] = true;
-        this._checker['enqueue'](resolvedUrl);
-    },
+        /* cache resolved link end */
 
-    onItem: function (error, htmlUrl) {
-        if (error) {
-            this._logger.error('Error: %s for url: => %s', error, htmlUrl);
+        if (Url.parse(resolvedUrl).hostname.indexOf(this._initialUrl.hostname) < 0) {
+            this._logger.verbose('external => ' + resolvedUrl);
+            this._urlChecker['enqueue'](resolvedUrl)
+        } else {
+            this._htmlUrlChecker['enqueue'](resolvedUrl);
         }
-        this._logger.debug('Complete for: => %s', htmlUrl);
     },
 
-    onDone: function () {
-        this._logger.info('DONE');
+    onHtmlUrlItemEvent: function (error, htmlUrl) {
+        if (error) {
+            this._logger.error('Broken: [%s] for url: => %s', error.code, htmlUrl);
+            this._brokenUrls.add(htmlUrl, error.code);
+            return;
+        }
+        /*
+        this._logger.debug('Items in queue: [%s] Active items: [%s] Active links: [%s]',
+            this._htmlUrlChecker.length(),
+            this._htmlUrlChecker.numActiveItems(),
+            this._htmlUrlChecker.numActiveLinks());
+        */
+        this._logger.debug('[%s] Complete for: => %s', this._htmlUrlChecker.length(), htmlUrl);
+    },
+
+    onUrlLinkEvent: function (result) {
+        if (result.broken) {
+            var originalUrl = result.url['original'],
+                statusCode = result.http.statusCode;
+            this._logger.error('Broken External: [%s] url: => %s', statusCode, originalUrl);
+            this._brokenUrls.add(originalUrl, statusCode);
+        }
+    },
+
+    _onDone: function () {
+        this.getOption('onDone').call(this, this._brokenUrls);
+    },
+
+    onDone: function (brokenLinks) {
+        this._logger
+            .info('DONE')
+            .warn(brokenLinks.getAll());
     },
 
     /**
@@ -146,7 +192,7 @@ module.exports = inherit({
             .info('START to crawl pages')
             .info('It can be take a long time. Please wait ...');
 
-        this._checker['enqueue'](url);
+        this._htmlUrlChecker['enqueue'](url);
     }
 }, {
     /**
@@ -178,7 +224,7 @@ module.exports = inherit({
     DEFAULT: {
         acceptedSchemes: ['http', 'https'],
         excludedSchemes: ['data', 'geo', 'javascript', 'mailto', 'sms', 'tel'],
-        excludeExtrnalLinks: true,
+        excludeExternalLinks: true,
         excludeInternalLinks: false,
         filterLevel: 1,
         maxSocketsPerHost: 10
