@@ -116,7 +116,7 @@ module.exports = inherit({
         resolvedUrl = resolvedUrl.replace(/\/$/, '');
 
         /* skip excluded patterns*/
-        if(this.getRule('excludeLinkPatterns').some(function (pattern) {
+        if (this.getRule('excludeLinkPatterns').some(function (pattern) {
             return !!resolvedUrl.match(pattern);
         })) {
             return;
@@ -132,7 +132,7 @@ module.exports = inherit({
 
         if (Url.parse(resolvedUrl).hostname.indexOf(this._initialUrl.hostname) < 0) {
             this._logger.verbose('external => ' + resolvedUrl);
-            this._urlChecker['enqueue'](resolvedUrl)
+            this._urlChecker['enqueue'](resolvedUrl);
         } else {
             this._htmlUrlChecker['enqueue'](resolvedUrl);
         }

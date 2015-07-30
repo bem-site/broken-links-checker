@@ -1,67 +1,56 @@
-var os = require('os'),
-    fs = require('fs'),
-    Url = require('url'),
-    path = require('path'),
-    fsExtra = require('fs-extra'),
+var Url = require('url'),
+
     inherit = require('inherit'),
     curl = require('curlrequest'),
     parser = require('http-string-parser'),
-    Logger = require('bem-site-logger'),
+
+    Base = require('./base'),
+    Util = require('./util'),
+    FileSystem = require('./filesystem'),
+    BasedOptions = require('./based-option'),
+    BasedRules = require('./based-rule'),
+    SkipRules = require('./skip-rules'),
     Document = require('./document'),
     BrokenLinks = require('./broken');
 
-module.exports = inherit({
+module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions, Util], {
     _url: undefined,  // initial url
-
-    _logger: undefined, // logger instance
-    _options: undefined, // application options
-
-    _rules: undefined, // rules (settings) for parsing
-
-    _brokenUrls: undefined, // broken links(urls) model instance
-    _skipRules: undefined, // cached skip rules model
 
     _pending: undefined, // array of items which should be checking for availability but later
     _active: undefined, // array of items which are checking now
     _processed: undefined, // hash of already processed urls for preventing infinite loops
 
-    _reportFile: undefined,
-
     /**
      * Constructor
-     * @param {Object}    [options]                — configuration object
-     * @param {Number}    [options.concurrent]     — number of concurrent requests
-     * @param {Object}    [options.headers]        — set custom request headers for crawler requests
-     * @param {Function}  [options.onError]        - set custom error handler function
-     * @param {Function}  [options.onDone]         - set custom done handler function
-     * @param {String[]}  [options.protocols]      — set array of accepted request protocols
-     * @param {Boolean}   [options.checkOuterUrls] — set `true` for check outer links
-     * @param {RegExp[]}  [options.exclude]        - array of regular expressions. Urls that matches
+     * @param {Object}    [options]                            — configuration object
+     * @param {Number}    [options.concurrent]                 — number of concurrent requests
+     * @param {Object}    [options.requestHeaders]             — set custom request headers for crawler requests
+     * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first
+     * @param {Number}    [options.requestMaxRedirectsAmount]  - max number of allowed redirects per request
+     * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)
+     * @param {Function}  [options.onError]                    - set custom error handler function
+     * @param {Function}  [options.onDone]                     - set custom done handler function
+     * @param {String[]}  [options.acceptedSchemes]            — set array of accepted request acceptedSchemes
+     * @param {Boolean}   [options.checkExternalUrls]          — set `true` for check outer links
+     * @param {RegExp[]}  [options.excludeLinkPatterns         - array of regular expressions. Urls that matches
      * for this regular expressions would be excluded from verification
      * @private
      */
     __constructor: function (options) {
-        options = options || {};
-
-        var loggerOptions = options['logger'] || { level: 'debug' };
-        this._logger = Logger.setOptions(loggerOptions).createLogger(module);
+        this.__base(options, module);
 
         this
             .setOption(options, 'concurrent', this.__self.DEFAULT.concurrent)
-            .setOption(options, 'headers', this.__self.DEFAULT.headers)
+            .setOption(options, 'requestHeaders', this.__self.DEFAULT.requestHeaders)
+            .setOption(options, 'requestRetriesAmount', this.__self.DEFAULT.requestRetriesAmount)
+            .setOption(options, 'requestMaxRedirectsAmount', this.__self.DEFAULT.requestMaxRedirectsAmount)
+            .setOption(options, 'requestTimeout', this.__self.DEFAULT.requestTimeout)
+
             .setOption(options, 'onDone', this.onDone.bind(this))
-            .setOption(options, 'onError', this.onError.bind(this))
-            .setRule(options, 'protocols', this.__self.DEFAULT.protocols)
-            .setRule(options, 'checkOuterUrls', this.__self.DEFAULT.checkOuterUrls)
-            .setRule(options, 'exclude', this.__self.DEFAULT.exclude);
 
-        this._options.error = function (url, error) {
-            this.getOption('onError').call(this, url, error);
-        }.bind(this);
-
-        this._options.done = function () {
-            this.getOption('onDone').call(this, this._brokenUrls);
-        }.bind(this);
+            .setRule(options, 'acceptedSchemes', this.__self.DEFAULT.acceptedSchemes)
+            .setRule(options, 'checkExternalUrls', this.__self.DEFAULT.checkExternalUrls)
+            .setRule(options, 'excludeLinkPatterns', this.__self.DEFAULT.excludeLinkPatterns);
 
         this._pending = [];
         this._active = [];
@@ -69,124 +58,12 @@ module.exports = inherit({
     },
 
     /**
-     * Sets value to options model for given option field name
-     * @param {Object} options      — configuration object
-     * @param {String} name         - name of option field
-     * @param {*}      defaultValue - option default value
-     * @returns {exports}
-     */
-    setOption: function (options, name, defaultValue) {
-        this._options = this._options || {};
-        this._options[name] = options[name] || defaultValue;
-        if (!this.__self.isFunction(this._options[name])) {
-            this._logger.debug('Set option [%s] => %s', name,
-                this.__self.isObject(this._options[name]) ? JSON.stringify(this._options[name]) : this._options[name]);
-        }
-        return this;
-    },
-
-    /**
-     * Returns option value by given option name
-     * @param {String} name — option name
-     * @returns {*}
-     */
-    getOption: function (name) {
-        return this._options[name];
-    },
-
-    /**
-     * Sets value to rules model for given rule field name
-     * @param {Object} rules        — rules object
-     * @param {String} name         - name of rule field
-     * @param {*}      defaultValue - rule default value
-     * @returns {exports}
-     */
-    setRule: function (rules, name, defaultValue) {
-        this._rules = this._rules || {};
-        this._rules[name] = rules[name] || defaultValue;
-        if (!this.__self.isFunction(this._rules[name])) {
-            this._logger.debug('Set rule [%s] => %s', name, this._rules[name]);
-        }
-        return this;
-    },
-
-    /**
-     * Returns rule value by given rule name
-     * @param {String} name — rule name
-     * @returns {*}
-     */
-    getRule: function (name) {
-        return this._rules[name];
-    },
-
-    /**
-     * Returns predefined skip rules for prevent deeper crawling for given url
-     * @returns {{skipNonAcceptableProtocols: Function, skipOuterUrls: Function, skipExcludedUrls: Function}}
-     */
-    getSkipRules: function () {
-        if (this._skipRules) {
-            return this._skipRules;
-        }
-
-        this._skipRules = (function (_this) {
-            return {
-                /**
-                 * Check if protocol of given url satisfies protocols criteria
-                 * @param {String} url - request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipNonAcceptableProtocols: function (url) {
-                    return _this.getRule('protocols').indexOf(Url.parse(url).protocol) < 0;
-                },
-
-                /**
-                 * Checks if given url has the different hostname then initial
-                 * (If 'checkOuterUrls' rule is set to true)
-                 * @param {String} url — request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipOuterUrls: function (url) {
-                    return !_this.getRule('checkOuterUrls') && url.indexOf(_this._url.hostname) < 0;
-                },
-
-                /**
-                 * Checks if given url has host different then host of initial url
-                 * @param {String} url — request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipExcludedUrls: function (url) {
-                    return _this.getRule('exclude').some(function (pattern) {
-                        return !!url.match(pattern);
-                    });
-                }
-            };
-        })(this);
-
-        return this.getSkipRules();
-    },
-
-    /**
-     * Returns true if anyone of skip conditions returns true
-     * @param {String} url - request url
-     * @returns {boolean} — result flag
-     */
-    isNeedToSkipUrl: function (url) {
-        return Object.keys(this.getSkipRules()).reduce(function (prev, fName) {
-            prev = prev || this.getSkipRules()[fName](url);
-            return prev;
-        }.bind(this), false);
-    },
-
-    /**
-     * Handle request callback
+     * Processes loaded document
      * @param {Document}                   document - document model
      * @param {String}                     document.url - request url
      * @param {HttpResponse|HttpsResponse} document.res - response object
      */
-    onHandleRequest: function (document) {
+    processLoadedDocument: function (document) {
         var _this = this,
             documentUrl = document.url;
 
@@ -205,30 +82,21 @@ module.exports = inherit({
                 return;
             }
 
-            _this._addToQueue(url, _this.onHandleRequest.bind(_this));
+            _this._addToQueue(url, documentUrl);
         });
         this._onFinishLoad(documentUrl);
-    },
-
-    /**
-     * General request error handler function
-     * @param {String} url   — broken url
-     * @param {Error}  error — error instance
-     * @protected
-     */
-    onError: function (url, error) {
-        this._logger.error('Error occur for url: => %s. Error: => %s', url, error);
     },
 
     /**
      * onDone callback function
      * @protected
      */
-    onDone: function (brokenUrls) {
-        this._logger
-            .info('FINISH to crawl pages')
-            .warn(brokenUrls.getAll());
-        return brokenUrls;
+    onDone: function () {
+        this._logger.info('FINISH to crawl pages');
+        return this.readReportFile().reduce(function (prev, item) {
+            item = item.split(' ');
+            return prev.add(item[0], item[1]);
+        }, BrokenLinks.create());
     },
 
     /**
@@ -244,23 +112,65 @@ module.exports = inherit({
             throw new Error('Urls is not valid');
         }
 
-        var reportDir = path.join(process.cwd(), './.crawler-report');
-        this._reportFile = path.join(reportDir, (+(new Date())).toString() + '.txt');
-        fsExtra.ensureDirSync(reportDir);
-        fsExtra.ensureFileSync(this._reportFile);
-
-        this._brokenUrls = BrokenLinks.create();
-
         this._url = Url.parse(url);
+        this.initSkipRules(this._url);
+        this.createReportFile();
+
         this._logger
             .info('START to crawl pages')
             .info('It can be take a long time. Please wait ...');
-        this._addToQueue(url, this.onHandleRequest.bind(this));
+        this._addToQueue(url, url);
+    },
+
+    /**
+     * Makes request to given url
+     * @param {String} url - link url (url that should be requested)
+     * @param {String} baseUrl - url of page where link was discovered
+     * @param {Function} callback - callback function
+     */
+    load: function (url, baseUrl, callback) {
+        this._active.push(url);
+        curl.request({
+            url: url,
+            headers: this.getOption('requestHeaders'),
+            retries: this.getOption('requestRetriesAmount'),
+            timeout: this.getOption('requestTimeout'),
+            redirects: this.getOption('requestMaxRedirectsAmount'),
+            scope: this,
+            include: true
+        }, function (error, data) {
+            var res = parser.parseResponse(data),
+                statusCode = +res.statusCode;
+
+            if (error || !data || statusCode >= 400) {
+                this._logger.error('Broken [%s] url: => %s on page: => %s', statusCode, url, baseUrl);
+                this.appendToReportFile([url, baseUrl, statusCode ].join(' '));
+            }
+
+            if (url.indexOf(this._url.hostname) < 0) {
+                this._logger.verbose('[%s] [%s] External url: => %s',
+                    this._pending.length, this._active.length, url);
+                return this._onFinishLoad(url);
+            }
+
+            if (statusCode === 301 || statusCode === 302) {
+                var redirect = res.headers['Location'];
+                if (redirect && this.__self.isString(redirect)) {
+                    return this.load(Url.resolve(this._url.href, redirect), baseUrl, callback);
+                } else {
+                    return this._onFinishLoad(url);
+                }
+            }
+
+            this._logger.verbose('[%s] [%s] Receive [%s] for url: => %s',
+                this._pending.length, this._active.length, statusCode, url);
+            callback.call(this, new Document(url, res));
+        });
     },
 
     /**
      * Checks if loading queue is full
-     * @returns {boolean}
+     * @returns {Boolean}
      * @private
      */
     _isQueueFull: function () {
@@ -269,11 +179,11 @@ module.exports = inherit({
 
     /**
      * Adds item to check queue
-     * @param {String} url - request url
-     * @param {Function} done callback function
+     * @param {String} url - link url
+     * @param {String} baseUrl - url of page where link was discovered
      * @private
      */
-    _addToQueue: function (url, done) {
+    _addToQueue: function (url, baseUrl) {
         url = url.replace(/\/$/, '');
 
         if (this._processed[url]) {
@@ -283,9 +193,9 @@ module.exports = inherit({
         this._processed[url] = true;
 
         if (this._isQueueFull()) {
-            this._pending.push({ u: url, d: done });
+            this._pending.push({ url: url, baseUrl: baseUrl });
         } else {
-            this.load(url, done);
+            this.load(url, baseUrl, this.processLoadedDocument.bind(this));
         }
     },
 
@@ -296,86 +206,22 @@ module.exports = inherit({
         if (!this._isQueueFull()) {
             var next = this._pending.shift();
             if (next) {
-                this.load(next.u, next.d);
+                this.load(next.url, next.baseUrl, this.processLoadedDocument.bind(this));
             } else if (!this._active.length) {
-                this.getOption('done').call(this);
+                this.getOption('onDone').call(this);
             }
         }
-    },
-
-    load: function (url, done) {
-        this._active.push(url);
-        curl.request({
-            url: url,
-            headers: this.getOption('headers'),
-            retries: 1,
-            timeout: 5000,
-            scope: this,
-            include: true,
-            redirects: 10
-        }, function (error, data) {
-            var res = parser.parseResponse(data),
-                statusCode = +res.statusCode;
-
-            if (error || !data || statusCode >= 400) {
-                this._logger.error('Broken [%s] url: => %s', statusCode, url);
-                fs.appendFile(this._reportFile, url + ' ' + statusCode + os.EOL, 'utf8');
-            }
-
-            if (url.indexOf(this._url.hostname) < 0) {
-                this._logger.verbose('[%s] [%s] External url: => %s',
-                    this._pending.length, this._active.length, url);
-                return this._onFinishLoad(url);
-            }
-
-            if (+res.statusCode === 301 || +res.statusCode === 302) {
-                if (res.headers['Location'] && this.__self.isString(res.headers['Location'])) {
-                    return this.load(Url.resolve(this._url.href, res.headers['Location']), done);
-                } else {
-                    return this._onFinishLoad(url);
-                }
-            }
-
-            this._logger.verbose('[%s] [%s] Receive [%s] for url: => %s',
-                this._pending.length, this._active.length, statusCode, url);
-            done.call(this, new Document(url, res));
-        });
     }
 }, {
-    /**
-     * Checks if given object is instance of Object
-     * @param {Object|*} obj
-     * @returns {boolean} true if obj is instance of Object class
-     */
-    isObject: function (obj) {
-        return !!obj && typeof obj === 'object';
-    },
-
-    /**
-     * Checks if given object is instance of Function
-     * @param {Object|*} obj
-     * @returns {boolean} true if obj is Function
-     */
-    isFunction: function (obj) {
-        return !!(obj && obj.constructor && obj.call && obj.apply);
-    },
-
-    /**
-     * Checks if given object is instance of String
-     * @param {Object|*} obj
-     * @returns {boolean} true if obj is String
-     */
-    isString: function (obj) {
-        return typeof obj === 'string' || obj instanceof String;
-    },
-
     DEFAULT: {
         concurrent: 5,
-        logs: false,
-        headers: { 'user-agent': 'node-spider' },
-        protocols: ['http:', 'https:'],
-        checkOuterUrls: false,
-        exclude: []
+        requestHeaders: { 'user-agent': 'node-spider' },
+        requestRetriesAmount: 1,
+        requestTimeout: 5000,
+        requestMaxRedirectsAmount: 10,
+        acceptedSchemes: ['http:', 'https:'],
+        checkExternalUrls: false,
+        excludeLinkPatterns: []
     },
     CONSTANTS: {
         URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/
