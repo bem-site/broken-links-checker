@@ -4,7 +4,7 @@ var inherit = require('inherit'),
 module.exports = inherit({
     _logger: undefined, // logger instance
 
-    __constructor: function(options, module) {
+    __constructor: function (options, module) {
         options = options || {};
 
         var loggerOptions = options['logger'] || { level: 'debug' };

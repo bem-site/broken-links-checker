@@ -32,7 +32,7 @@ var os = require('os'),
 
      /**
       * Appends data row to report file
-      * @param row
+      * @param {String} row - string row which should be appended
       */
      appendToReportFile: function (row) {
          fs.appendFile(this._reportFile, row + os.EOL, 'utf8');

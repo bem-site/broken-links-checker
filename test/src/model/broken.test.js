@@ -1,5 +1,5 @@
 var should = require('should'),
-    BrokenLinks = require('../../src/broken');
+    BrokenLinks = require('../../../src/model/broken');
 
 describe('broken', function () {
     var brokenLinks;
@@ -16,31 +16,35 @@ describe('broken', function () {
 
     describe('add', function () {
         it ('should return instance of BrokenLinks class', function () {
-            brokenLinks.add('http://my.host/url1', 404).should.be.instanceOf(BrokenLinks);
+            brokenLinks.add('http://my.host/url1', 'http://my.host', 404).should.be.instanceOf(BrokenLinks);
         });
 
         it ('should add broken links model item to list of broken links', function () {
             brokenLinks.getAll().should.have.length(0);
-            brokenLinks.add('http://my.host/url1', 404);
+            brokenLinks.add('http://my.host/url1','http://my.host', 404);
             brokenLinks.getAll().should.have.length(1);
-            should.deepEqual(brokenLinks.getAll()[0],  { url: 'http://my.host/url1', code: 404 });
+            should.deepEqual(brokenLinks.getAll()[0],  {
+                url: 'http://my.host/url1',
+                baseUrl: 'http://my.host',
+                code: 404
+            });
         });
     });
 
     describe('getAll', function () {
         it ('should return all broke link items from model', function () {
             brokenLinks.getAll().should.have.length(0);
-            brokenLinks.add('http://my.host/url1', 404);
-            brokenLinks.add('http://my.host/url2', 500);
+            brokenLinks.add('http://my.host/url1', 'http://my.host', 404);
+            brokenLinks.add('http://my.host/url2', 'http://my.host', 500);
             brokenLinks.getAll().should.have.length(2);
         });
     });
 
     describe('getByCode', function () {
         beforeEach(function () {
-            brokenLinks.add('http://my.host/url1', 404);
-            brokenLinks.add('http://my.host/url2', 500);
-            brokenLinks.add('http://my.host/url3', 404);
+            brokenLinks.add('http://my.host/url1', 'http://my.host', 404);
+            brokenLinks.add('http://my.host/url2', 'http://my.host', 500);
+            brokenLinks.add('http://my.host/url3', 'http://my.host', 404);
         });
 
         it ('should return valid set of broken link items by given status code', function () {
@@ -48,12 +52,12 @@ describe('broken', function () {
             brokenLinks.getByCode(500).should.be.instanceOf(Array).and.have.length(1);
 
             should.deepEqual(brokenLinks.getByCode(404), [
-                { url: 'http://my.host/url1', code: 404 },
-                { url: 'http://my.host/url3', code: 404 }
+                { url: 'http://my.host/url1', baseUrl: 'http://my.host', code: 404 },
+                { url: 'http://my.host/url3', baseUrl: 'http://my.host', code: 404 }
             ]);
 
             should.deepEqual(brokenLinks.getByCode(500), [
-                { url: 'http://my.host/url2', code: 500 }
+                { url: 'http://my.host/url2', baseUrl: 'http://my.host', code: 500 }
             ]);
         });
 
@@ -73,8 +77,8 @@ describe('broken', function () {
         })
 
         it ('should clear broken link items model', function () {
-            brokenLinks.add('http://my.host/url1', 404);
-            brokenLinks.add('http://my.host/url2', 500);
+            brokenLinks.add('http://my.host/url1', 'http://my.host', 404);
+            brokenLinks.add('http://my.host/url2', 'http://my.host', 500);
 
             brokenLinks.getAll().should.be.instanceOf(Array).and.have.length(2);
             brokenLinks.clear();

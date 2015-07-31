@@ -4,7 +4,8 @@ module.exports = {
         'node_modules',
         '.*',
         'test',
-        'jsdoc'
+        'jsdoc',
+        'drafts'
     ],
     requireSpaceAfterKeywords: ['if', 'else', 'for', 'while', 'do', 'switch', 'return', 'try', 'catch'],
     requireSpaceBeforeBlockStatements: true,

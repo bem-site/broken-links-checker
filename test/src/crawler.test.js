@@ -68,54 +68,6 @@ describe('crawler', function () {
         });
     });
 
-    describe('setOption', function () {
-        var crawler;
-
-        beforeEach(function () {
-            crawler = new Crawler();
-        });
-
-        it('should set option value for given option name', function () {
-            crawler.setOption({ foo: 'bar' }, 'foo', 'bar-default');
-            crawler._options.foo.should.equal('bar');
-        });
-
-        it('should set default value if option was not set', function () {
-            crawler.setOption({}, 'foo', 'bar-default');
-            crawler._options.foo.should.equal('bar-default');
-        });
-    });
-
-    it('should get valid option value', function () {
-        var crawler = new Crawler();
-        crawler.setOption({ foo: 'bar' }, 'foo', 'bar-default');
-        crawler.getOption('foo').should.equal('bar');
-    });
-
-    describe('setRule', function () {
-        var crawler;
-
-        beforeEach(function () {
-            crawler = new Crawler();
-        });
-
-        it('should set rule value for given option name', function () {
-            crawler.setRule({ foo: 'bar' }, 'foo', 'bar-default');
-            crawler._rules.foo.should.equal('bar');
-        });
-
-        it('should set default value if option was not set', function () {
-            crawler.setRule({}, 'foo', 'bar-default');
-            crawler._rules.foo.should.equal('bar-default');
-        });
-    });
-
-    it('should get valid rule value', function () {
-        var crawler = new Crawler();
-        crawler.setRule({ foo: 'bar' }, 'foo', 'bar-default');
-        crawler.getRule('foo').should.equal('bar');
-    });
-
     describe('getSkipRules', function () {
         describe('skipNonAcceptableProtocols', function () {
             var crawler;
@@ -124,35 +76,13 @@ describe('crawler', function () {
                 crawler = new Crawler({ acceptedSchemes: ['http:'] });
             });
 
-            it('should return true if protocol of given url does not exist in list of acceptable acceptedSchemes', function () {
-                crawler.getSkipRules().skipNonAcceptableProtocols('https://url1').should.equal(true);
-            });
 
-            it('should return false if protocol of given url exists in list of acceptable acceptedSchemes', function () {
-                crawler.getSkipRules().skipNonAcceptableProtocols('http://url1').should.equal(false);
-            });
         });
 
         describe('skipOuterUrls', function () {
             var crawler;
 
-            it('should return false if checkExternalUrls option is set to true', function () {
-                crawler = new Crawler({ checkExternalUrls: true });
-                crawler._url = Url.parse('http://my.custom.host:80/url1');
-                crawler.getSkipRules().skipOuterUrls('http://outer.host:80/url1').should.equal(false);
-            });
 
-            it('should return true if host of given url is different then host of initial url', function () {
-                crawler = new Crawler({ checkExternalUrls: false });
-                crawler._url = Url.parse('http://my.custom.host:80/url1');
-                crawler.getSkipRules().skipOuterUrls('http://outer.host:80/url1').should.equal(true);
-            });
-
-            it('should return false if host of given url is the same as host of initial url', function () {
-                crawler = new Crawler({ checkExternalUrls: false });
-                crawler._url = Url.parse('http://my.custom.host:80/url1');
-                crawler.getSkipRules().skipOuterUrls('http://my.custom.host:80/url2').should.equal(false);
-            });
         });
 
         describe('skipExcludedUrls', function () {

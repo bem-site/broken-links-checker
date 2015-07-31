@@ -29,11 +29,10 @@ module.exports = inherit(BasedRule, {
                  * Checks if given url has the different hostname then initial
                  * (If 'checkExternalUrls' rule is set to true)
                  * @param {String} url — request url
-                 * @param {String} initial - initial url
                  * @returns {boolean} — result flag
                  * @private
                  */
-                skipOuterUrls: function (url, initial) {
+                skipExternalUrls: function (url) {
                     return !_this.getRule('checkExternalUrls') && url.indexOf(_this._initial['hostname']) < 0;
                 },
 

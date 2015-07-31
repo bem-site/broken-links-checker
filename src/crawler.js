@@ -10,8 +10,8 @@ var Url = require('url'),
     BasedOptions = require('./based-option'),
     BasedRules = require('./based-rule'),
     SkipRules = require('./skip-rules'),
-    Document = require('./document'),
-    BrokenLinks = require('./broken');
+    Document = require('./model/document'),
+    BrokenLinks = require('./model/broken');
 
 module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions, Util], {
     _url: undefined,  // initial url
@@ -144,7 +144,7 @@ module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions,
 
             if (error || !data || statusCode >= 400) {
                 this._logger.error('Broken [%s] url: => %s on page: => %s', statusCode, url, baseUrl);
-                this.appendToReportFile([url, baseUrl, statusCode ].join(' '));
+                this.appendToReportFile([url, baseUrl, statusCode].join(' '));
             }
 
             if (url.indexOf(this._url.hostname) < 0) {
