@@ -68,32 +68,6 @@ describe('crawler', function () {
         });
     });
 
-    describe('getSkipRules', function () {
-        describe('skipNonAcceptableProtocols', function () {
-            var crawler;
-
-            beforeEach(function () {
-                crawler = new Crawler({ acceptedSchemes: ['http:'] });
-            });
-
-
-        });
-
-        describe('skipOuterUrls', function () {
-            var crawler;
-
-
-        });
-
-        describe('skipExcludedUrls', function () {
-
-        });
-    });
-
-    describe('isNeedToSkipUrl', function () {
-
-    });
-
     describe('start', function () {
         it('should throw error if url param was not set', function () {
             var crawler = new Crawler();

@@ -57,9 +57,8 @@ module.exports = inherit(BasedRule, {
      * @returns {boolean} — result flag
      */
     isNeedToSkipUrl: function (url) {
-        return Object.keys(this._skipRules).reduce(function (prev, fName) {
-            prev = prev || this._skipRules[fName](url);
-            return prev;
-        }.bind(this), false);
+        return Object.keys(this._skipRules).some(function (fName) {
+            return this._skipRules[fName](url);
+        }.bind(this));
     }
 });
