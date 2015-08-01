@@ -16,7 +16,7 @@ module.exports = inherit([Base, Util], {
         this._options = this._options || {};
         this._options[name] = options[name] || defaultValue;
         if (!this.__self.isFunction(this._options[name])) {
-            this._logger.debug('Set option [%s] => %s', name,
+            this._logger.info('Set option [%s] => %s', name,
                 this.__self.isObject(this._options[name]) ?
                     JSON.stringify(this._options[name]) : this._options[name]);
         }

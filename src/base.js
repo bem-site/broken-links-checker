@@ -8,6 +8,7 @@ module.exports = inherit({
         options = options || {};
 
         var loggerOptions = options['logger'] || { level: 'debug' };
+        loggerOptions.useDate = false;
         this._logger = Logger.setOptions(loggerOptions).createLogger(module);
     }
 });

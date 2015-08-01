@@ -16,7 +16,7 @@ module.exports = inherit([Base, Util], {
         this._rules = this._rules || {};
         this._rules[name] = rules[name] || defaultValue;
         if (!this.__self.isFunction(this._rules[name])) {
-            this._logger.debug('Set rule [%s] => %s', name, this._rules[name]);
+            this._logger.info('Set rule [%s] => %s', name, this._rules[name]);
         }
         return this;
     },
