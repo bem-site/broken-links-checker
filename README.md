@@ -7,7 +7,7 @@ Broken links checker for website pages
 [![Code Climate](https://codeclimate.com/github/bem-site/broken-links-checker/badges/gpa.svg)](https://codeclimate.com/github/bem-site/broken-links-checker)
 [![David](https://img.shields.io/david/bem-site/broken-links-checker.svg)](https://david-dm.org/bem-site/broken-links-checker)
 
-![GitHub Logo](./logo.jpg)
+![GitHub Logo](./logo.gif)
 
 ## Работа с инструментом  с помощью JavaScript API
 
