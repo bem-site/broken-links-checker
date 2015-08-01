@@ -33,7 +33,7 @@ describe('document', function () {
     });
 
     it('should have url getter', function () {
-        document._url.should.equal('http://my.host/url1');
+        document.url.should.equal('http://my.host/url1');
     });
 
     it('should have $ getter', function () {

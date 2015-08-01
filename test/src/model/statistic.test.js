@@ -45,11 +45,22 @@ describe('statistic', function () {
         statistic.getExternalCount().should.equal(1);
     });
 
+    it ('should return valid count of all processed urls', function () {
+        statistic.increaseExternalCount();
+        statistic.increaseExternalCount();
+        statistic.increaseInternalCount();
+        statistic.getAllCount().should.equal(3);
+    });
+
     it('should return broken links model', function () {
         statistic.getBroken().should.be.instanceOf(Broken);
     });
 
     it('should return valid result of getBrokenCount method', function () {
         statistic.getBrokenCount().should.equal(0);
+    });
+
+    it('should return instance of Statistic class by create static method', function () {
+        Statistic.create().should.be.instanceOf(Statistic);
     });
 });
