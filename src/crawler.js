@@ -247,7 +247,7 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
     }
 }, {
     DEFAULT: {
-        concurrent: 5,
+        concurrent: 100,
         requestHeaders: { 'user-agent': 'node-spider' },
         requestRetriesAmount: 1,
         requestTimeout: 5000,
