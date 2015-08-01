@@ -42,6 +42,8 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
     __constructor: function (options) {
         this.__base(options, module);
 
+        options = options || {};
+
         this
             .setOption(options, 'concurrent', this.__self.DEFAULT.concurrent)
             .setOption(options, 'requestHeaders', this.__self.DEFAULT.requestHeaders)
@@ -102,7 +104,7 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
             .info('-- External links: [%s]', statistic.getExternalCount())
             .info('-- Broken links: [%s]', statistic.getBrokenCount())
             .info('-- Total links: [%s]', statistic.getAllCount())
-            .info('-- Broken links percentage: [%s] %', (statistic.getBrokenCount() * 100)/statistic.getAllCount());
+            .info('-- Broken links percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
     },
 
     /**

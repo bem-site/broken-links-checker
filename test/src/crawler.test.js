@@ -80,6 +80,7 @@ describe('crawler', function () {
         });
     });
 
+    /*
     describe('crawl mock server', function () {
         var server, port;
 
@@ -130,4 +131,5 @@ describe('crawler', function () {
             crawler.start('http://localhost:' + port);
         });
     });
+    */
 });

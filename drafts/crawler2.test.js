@@ -1,6 +1,6 @@
 var Url = require('url'),
     should = require('should'),
-    Crawler = require('../../src/crawler2');
+    Crawler = require('../src/crawler');
 
 describe('crawler', function () {
     describe('constructor', function () {
