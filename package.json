@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "bem-site-logger": "^0.0.x",
-    "cheerio": "^0.13.x",
+    "cheerio": "^0.19.x",
     "easy-table": "^1.0.0",
     "got": "^4.1.1",
     "inherit": "^2.2.2"
