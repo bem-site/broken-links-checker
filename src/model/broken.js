@@ -13,12 +13,12 @@ var inherit = require('inherit'),
         /**
          * Add url with given response status code to model of broken links
          * @param {String} url - link url
-         * @param {String} baseUrl - page url where links was discovered
+         * @param {Obect} advanced - advanced data hash
          * @param {Number} code - response status code
          * @returns {exports}
          */
-        add: function (url, baseUrl, code) {
-            this._urls.push({ url: url, baseUrl: baseUrl, code: code });
+        add: function (url, advanced, code) {
+            this._urls.push({ url: url, advanced: advanced, code: code });
             return this;
         },
 

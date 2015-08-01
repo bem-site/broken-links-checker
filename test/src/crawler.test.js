@@ -8,9 +8,8 @@ describe('crawler', function () {
             crawler.getOption('concurrent').should.equal(Crawler.DEFAULT.concurrent);
             should.deepEqual(crawler.getOption('requestHeaders'), Crawler.DEFAULT.requestHeaders);
             should.deepEqual(crawler.getOption('requestRetriesAmount'), Crawler.DEFAULT.requestRetriesAmount);
-            should.deepEqual(crawler.getOption('requestMaxRedirectsAmount'), Crawler.DEFAULT.requestMaxRedirectsAmount);
             should.deepEqual(crawler.getOption('requestTimeout'), Crawler.DEFAULT.requestTimeout);
-            
+
             should.deepEqual(crawler.getOption('onDone'), crawler.onDone.bind(crawler));
 
             should.deepEqual(crawler.getRule('acceptedSchemes'), Crawler.DEFAULT.acceptedSchemes);
@@ -39,11 +38,6 @@ describe('crawler', function () {
         it('should override default requestRetriesAmount option', function () {
             var crawler = new Crawler({ requestRetriesAmount: 3 });
             crawler.getOption('requestRetriesAmount').should.equal(3);
-        });
-
-        it('should override default requestMaxRedirectsAmount option', function () {
-            var crawler = new Crawler({ requestMaxRedirectsAmount: 5 });
-            crawler.getOption('requestMaxRedirectsAmount').should.equal(5);
         });
 
         it('should override default requestTimeout option', function () {
