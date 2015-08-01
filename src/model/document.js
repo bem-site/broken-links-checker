@@ -16,7 +16,7 @@ module.exports = inherit({
     __constructor: function (url, res) {
         this._res = res;
         this._url = url;
-        this._$ = cheerio.load(res['body']);
+        this._$ = cheerio.load(res);
     },
 
     /**

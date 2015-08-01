@@ -1,24 +1,27 @@
 var Url = require('url'),
 
     inherit = require('inherit'),
-    curl = require('curlrequest'),
-    parser = require('http-string-parser'),
+    got = require('got'),
 
     Base = require('./base'),
     Util = require('./util'),
-    FileSystem = require('./filesystem'),
     BasedOptions = require('./based-option'),
     BasedRules = require('./based-rule'),
     SkipRules = require('./skip-rules'),
     Document = require('./model/document'),
-    BrokenLinks = require('./model/broken');
+    Statistic = require('./model/statistic');
 
-module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions, Util], {
+require('http').globalAgent.maxSockets = Infinity;
+require('https').globalAgent.maxSockets = Infinity;
+
+module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
     _url: undefined,  // initial url
 
     _pending: undefined, // array of items which should be checking for availability but later
     _active: undefined, // array of items which are checking now
     _processed: undefined, // hash of already processed urls for preventing infinite loops
+
+    _statistic: undefined,
 
     /**
      * Constructor
@@ -89,14 +92,17 @@ module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions,
 
     /**
      * onDone callback function
+     * @param {Statistic} statistic model instance
      * @protected
      */
-    onDone: function () {
-        this._logger.info('FINISH to crawl pages');
-        return this.readReportFile().reduce(function (prev, item) {
-            item = item.split(' ');
-            return prev.add(item[0], item[1]);
-        }, BrokenLinks.create());
+    onDone: function (statistic) {
+        this._logger
+            .info('FINISH to crawl pages')
+            .info('-- Internal links: [%s]', statistic.getInternalCount())
+            .info('-- External links: [%s]', statistic.getExternalCount())
+            .info('-- Broken links: [%s]', statistic.getBrokenCount())
+            .info('-- Total links: [%s]', statistic.getAllCount())
+            .info('-- Broken links percentage: [%s] %', (statistic.getBrokenCount() * 100)/statistic.getAllCount());
     },
 
     /**
@@ -114,7 +120,7 @@ module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions,
 
         this._url = Url.parse(url);
         this.initSkipRules(this._url);
-        this.createReportFile();
+        this._statistic = Statistic.create();
 
         this._logger
             .info('START to crawl pages')
@@ -130,42 +136,32 @@ module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions,
      */
     load: function (url, baseUrl, callback) {
         this._active.push(url);
-        curl.request({
-            url: url,
-            headers: this.getOption('requestHeaders'),
-            retries: this.getOption('requestRetriesAmount'),
-            timeout: this.getOption('requestTimeout'),
-            redirects: this.getOption('requestMaxRedirectsAmount'),
-            scope: this,
-            include: true
-        }, function (error, data) {
-            var res = parser.parseResponse(data),
-                statusCode = +res.statusCode;
 
-            if (error || !data || statusCode >= 400) {
-                this._logger.error('Broken [%s] url: => %s on page: => %s', statusCode, url, baseUrl);
-                this.appendToReportFile([url, baseUrl, statusCode].join(' '));
-            }
+        var requestOptions = {
+                encoding: 'utf-8',
+                headers: this.getOption('headers'),
+                timeout: this.getOption('requestTimeout')
+            },
+            isInternal = url.indexOf(this._url.hostname) > -1,
+            method = isInternal ? 'get' : 'head';
 
-            if (url.indexOf(this._url.hostname) < 0) {
-                this._logger.verbose('[%s] [%s] External url: => %s',
-                    this._pending.length, this._active.length, url);
-                return this._onFinishLoad(url);
-            }
-
-            if (statusCode === 301 || statusCode === 302) {
-                var redirect = res.headers['Location'];
-                if (redirect && this.__self.isString(redirect)) {
-                    return this.load(Url.resolve(this._url.href, redirect), baseUrl, callback);
-                } else {
-                    return this._onFinishLoad(url);
-                }
+        got[method](url, requestOptions, function (error, data, res) {
+            if (error) {
+                this._statistic.getBroken().add(url, baseUrl, error.statusCode);
+                this._logger.error('Broken [%s] url: => %s on page: => %s', error.statusCode, url, baseUrl);
             }
 
             this._logger.verbose('[%s] [%s] Receive [%s] for url: => %s',
-                this._pending.length, this._active.length, statusCode, url);
-            callback.call(this, new Document(url, res));
-        });
+                this._pending.length, this._active.length, res.statusCode, url);
+
+            isInternal ?
+                this._statistic.increaseInternalCount() :
+                this._statistic.increaseExternalCount();
+
+            isInternal ?
+                callback.call(this, new Document(url, data)) :
+                this._onFinishLoad(url);
+        }.bind(this));
     },
 
     /**
@@ -208,9 +204,13 @@ module.exports = inherit([Base, FileSystem, SkipRules, BasedRules, BasedOptions,
             if (next) {
                 this.load(next.url, next.baseUrl, this.processLoadedDocument.bind(this));
             } else if (!this._active.length) {
-                this.getOption('onDone').call(this);
+                this._done.call(this);
             }
         }
+    },
+
+    _done: function () {
+        this.getOption('onDone')(this._statistic);
     }
 }, {
     DEFAULT: {
