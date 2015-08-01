@@ -69,10 +69,11 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
      */
     processLoadedDocument: function (document) {
         var _this = this,
-            documentUrl = document.url;
+            documentUrl = document.url,
+            $ = document.$;
 
-        document.$('a').each(function () {
-            var href = this.attr('href'),
+        $('a').each(function () {
+            var href = $(this).attr('href'),
                 url;
 
             if (!href) {
@@ -164,7 +165,7 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
             if (error) {
                 if (!error.statusCode && attempt < this.getOption('requestRetriesAmount')) {
                     attempt++;
-                    this.logger.warn('[%s] attempt to request url: %s', attempt, url);
+                    this._logger.warn('[%s] attempt to request url: %s', attempt, url);
                     return this.load(url, advanced, attempt, callback);
                 } else {
                     this._statistic.getBroken().add(url, advanced, error.statusCode);
@@ -174,7 +175,7 @@ module.exports = inherit([Base, SkipRules, BasedRules, BasedOptions, Util], {
             }
 
             this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
-                this._pending.length, this._active.length, res.statusCode, url);
+                this._pending.length, this._active.length, res ? res.statusCode : -1, url);
 
             isInternal ?
                 this._statistic.increaseInternalCount() :

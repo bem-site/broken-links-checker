@@ -74,7 +74,6 @@ describe('crawler', function () {
         });
     });
 
-    /*
     describe('crawl mock server', function () {
         var server, port;
 
@@ -92,8 +91,8 @@ describe('crawler', function () {
 
         it('should crawl pages', function (done) {
             var crawler = new Crawler({
-                onDone: function (brokenUrls) {
-                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(1);
+                onDone: function (statistic) {
+                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.be.have.length(1);
                     done();
                 }
             });
@@ -104,8 +103,8 @@ describe('crawler', function () {
         it('should skip excluded page urls', function (done) {
             var crawler = new Crawler({
                 excludeLinkPatterns: [/\/not-found/],
-                onDone: function (brokenUrls) {
-                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(0);
+                onDone: function (statistic) {
+                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.be.have.length(0);
                     done();
                 }
             });
@@ -113,17 +112,18 @@ describe('crawler', function () {
             crawler.start('http://localhost:' + port);
         });
 
+        /*
         it('should check outer urls', function (done) {
             var crawler = new Crawler({
                 checkExternalUrls: true,
-                onDone: function (brokenUrls) {
-                    brokenUrls.getAll().should.be.instanceOf(Array).and.be.have.length(1);
+                onDone: function (statistic) {
+                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.be.have.length(1);
                     done();
                 }
             });
 
             crawler.start('http://localhost:' + port);
         });
+        */
     });
-    */
 });
