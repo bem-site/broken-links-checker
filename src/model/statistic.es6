@@ -1,75 +1,94 @@
-var inherit = require('inherit'),
-    Broken = require('./broken'),
-    Statistic;
+import Broken  from './broken';
 
-module.exports = Statistic = inherit({
-    _broken: undefined,
+/**
+ * @exports
+ * @class Statistic
+ * @desc Model for collection analyze results
+ */
+export default class Statistic {
 
-    _countInternal: undefined,
-    _countExternal: undefined,
-
-    __constructor: function () {
+    /**
+     * Constructor function
+     * @constructor
+     */
+    constructor() {
         this._broken = Broken.create();
 
         this._countExternal = 0;
         this._countInternal = 0;
-    },
+    }
+
+    /**
+     * Static constructor for Statistic class
+     * @return {Statistic}
+     * @static
+     */
+    static create() {
+        return new Statistic();
+    }
 
     /**
      * Increase count of processed internal website links
+     * @returns {Statistic}
+     * @public
      */
-    increaseInternalCount: function () {
+    increaseInternalCount() {
         this._countInternal++;
-    },
+        return this;
+    }
 
     /**
      * Increase count of processed external website links
+     * @returns {Statistic}
+     * @public
      */
-    increaseExternalCount: function () {
+    increaseExternalCount() {
         this._countExternal++;
-    },
+        return this;
+    }
 
     /**
      * Returns amount of processed internal website links
      * @returns {Number}
+     * @public
      */
-    getInternalCount: function () {
+    getInternalCount() {
         return this._countInternal;
-    },
+    }
 
     /**
      * Returns amount of processed external website links
      * @returns {Number}
+     * @public
      */
-    getExternalCount: function () {
+    getExternalCount() {
         return this._countExternal;
-    },
+    }
 
     /**
      * Returns total amount of processed links (internal and external)
      * @returns {Number}
+     * @public
      */
-    getAllCount: function () {
+    getAllCount() {
         return this.getExternalCount() + this.getInternalCount();
-    },
+    }
 
     /**
      * Returns model of broken links
      * @returns {Broken}
+     * @public
      */
-    getBroken: function () {
+    getBroken() {
         return this._broken;
-    },
+    }
 
     /**
      * Returns amount of founded broken links
      * @returns {Number}
+     * @public
      */
-    getBrokenCount: function () {
+    getBrokenCount() {
         return this.getBroken().getAll().length;
     }
-}, {
-    create: function () {
-        return new Statistic();
-    }
-});
+}

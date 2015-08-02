@@ -22,5 +22,5 @@
     "expr"          : true,
     "sub"           : true,
     "node"          : true,
-    "esnext"        : false
+    "esnext"        : true
 }

@@ -1,14 +1,26 @@
-var inherit = require('inherit'),
-    Logger = require('bem-site-logger');
+import Logger  from 'bem-site-logger';
 
-module.exports = inherit({
-    _logger: undefined, // logger instance
-
-    __constructor: function (options, module) {
+/**
+ * @exports
+ * @class Base
+ * @desc Base class for application modules
+ */
+export default class Base {
+    /**
+     * Constructor function
+     * @param  {Object} options object
+     * @param  {Module} module - nodejs module instance
+     * @return {Base}
+     */
+    constructor (options, module) {
         options = options || {};
+        var logOpts = options['logger'] || { level: 'debug' };
+        logOpts.useDate = false;
 
-        var loggerOptions = options['logger'] || { level: 'debug' };
-        loggerOptions.useDate = false;
-        this._logger = Logger.setOptions(loggerOptions).createLogger(module);
+        /**
+         * Instance of class logger
+         * @param {Object} loggerOptions - log settings
+         */
+        this._logger = Logger.setOptions(logOpts).createLogger(module);
     }
-});
+}

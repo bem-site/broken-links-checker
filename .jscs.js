@@ -5,7 +5,7 @@ module.exports = {
         '.*',
         'test',
         'jsdoc',
-        'drafts'
+        'lib'
     ],
     requireSpaceAfterKeywords: ['if', 'else', 'for', 'while', 'do', 'switch', 'return', 'try', 'catch'],
     requireSpaceBeforeBlockStatements: true,

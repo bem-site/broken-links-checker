@@ -1,32 +1,36 @@
-var inherit = require('inherit'),
-    Base = require('./base'),
-    Util = require('./util');
+import Base  from './base';
+import Util  from './util';
 
-module.exports = inherit([Base, Util], {
-    _rules: undefined, // rules (settings) for parsing
-
+/**
+ * @exports
+ * @class BasedOption
+ * @desc Implements rules set and get logic
+ */
+export default class BasedRule extends Base {
     /**
      * Sets value to rules model for given rule field name
      * @param {Object} rules        — rules object
      * @param {String} name         - name of rule field
      * @param {*}      defaultValue - rule default value
-     * @returns {exports}
+     * @returns {BasedRule}
+     * @public
      */
-    setRule: function (rules, name, defaultValue) {
+    setRule(rules, name, defaultValue) {
         this._rules = this._rules || {};
         this._rules[name] = rules[name] || defaultValue;
-        if (!this.__self.isFunction(this._rules[name])) {
+        if (!Util.isFunction(this._rules[name])) {
             this._logger.info('Set rule [%s] => %s', name, this._rules[name]);
         }
         return this;
-    },
+    }
 
     /**
      * Returns rule value by given rule name
      * @param {String} name — rule name
      * @returns {*}
+     * @public
      */
-    getRule: function (name) {
+    getRule(name) {
         return this._rules[name];
     }
-});
+}

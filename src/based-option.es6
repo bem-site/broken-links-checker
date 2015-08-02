@@ -1,34 +1,37 @@
-var inherit = require('inherit'),
-    Util = require('./util'),
-    Base = require('./base');
+import Base from './base';
+import Util from './util';
 
-module.exports = inherit([Base, Util], {
-    _options: undefined, // application options
-
+/**
+ * @exports
+ * @class BasedOption
+ * @desc Implements options set and get logic
+ */
+export default class BasedOption extends Base {
     /**
      * Sets value to options model for given option field name
      * @param {Object} options      — configuration object
      * @param {String} name         - name of option field
      * @param {*}      defaultValue - option default value
-     * @returns {exports}
+     * @returns {BasedOption}
+     * @public
      */
-    setOption: function (options, name, defaultValue) {
+    setOption (options, name, defaultValue) {
         this._options = this._options || {};
         this._options[name] = options[name] || defaultValue;
-        if (!this.__self.isFunction(this._options[name])) {
+        if (!Util.isFunction(this._options[name])) {
             this._logger.info('Set option [%s] => %s', name,
-                this.__self.isObject(this._options[name]) ?
-                    JSON.stringify(this._options[name]) : this._options[name]);
+                Util.isObject(this._options[name]) ? JSON.stringify(this._options[name]) : this._options[name]);
         }
         return this;
-    },
+    }
 
     /**
      * Returns option value by given option name
      * @param {String} name — option name
      * @returns {*}
+     * @public
      */
-    getOption: function (name) {
+    getOption (name) {
         return this._options[name];
     }
-});
+}

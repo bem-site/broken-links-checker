@@ -1,64 +1,58 @@
-var Url = require('url'),
-    inherit = require('inherit'),
-    BasedRule = require('./based-rule');
+import Url  from 'url';
+import BasedRule  from './based-rule';
 
-module.exports = inherit(BasedRule, {
-    _initial: undefined,
-    _skipRules: undefined, // cached skip rules model
-
+export default class SkipRules extends BasedRule {
     /**
      * Initialize predefined skip rules for prevent deeper crawling for given url
      * @param {String} initial - initial url
      * @returns {{skipNonAcceptableProtocols: Function, skipOuterUrls: Function, skipExcludedUrls: Function}}
      */
-    initSkipRules: function (initial) {
+    initSkipRules(initial) {
         this._initial = initial;
-        this._skipRules = (function (_this) {
-            return {
-                /**
-                 * Check if protocol of given url satisfies acceptedSchemes criteria
-                 * @param {String} url - request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipNonAcceptableProtocols: function (url) {
-                    return _this.getRule('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;
-                },
+        this._skipRules = {
+            /**
+             * Check if protocol of given url satisfies acceptedSchemes criteria
+             * @param {String} url - request url
+             * @returns {boolean} — result flag
+             * @private
+             */
+            skipNonAcceptableProtocols: url => {
+                return this.getRule('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;
+            },
 
-                /**
-                 * Checks if given url has the different hostname then initial
-                 * (If 'checkExternalUrls' rule is set to true)
-                 * @param {String} url — request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipExternalUrls: function (url) {
-                    return !_this.getRule('checkExternalUrls') && url.indexOf(_this._initial['hostname']) < 0;
-                },
+            /**
+             * Checks if given url has the different hostname then initial
+             * (If 'checkExternalUrls' rule is set to true)
+             * @param {String} url — request url
+             * @returns {boolean} — result flag
+             * @private
+             */
+            skipExternalUrls: url => {
+                return !this.getRule('checkExternalUrls') && url.indexOf(this._initial['hostname']) < 0;
+            },
 
-                /**
-                 * Checks if given url has host different then host of initial url
-                 * @param {String} url — request url
-                 * @returns {boolean} — result flag
-                 * @private
-                 */
-                skipExcludedUrls: function (url) {
-                    return _this.getRule('excludeLinkPatterns').some(function (pattern) {
-                        return !!url.match(pattern);
-                    });
-                }
-            };
-        })(this);
-    },
+            /**
+             * Checks if given url has host different then host of initial url
+             * @param {String} url — request url
+             * @returns {boolean} — result flag
+             * @private
+             */
+            skipExcludedUrls: url => {
+                return this.getRule('excludeLinkPatterns').some(pattern => {
+                    return !!url.match(pattern);
+                });
+            }
+        };
+    }
 
     /**
      * Returns true if anyone of skip conditions returns true
      * @param {String} url - request url
      * @returns {boolean} — result flag
      */
-    isNeedToSkipUrl: function (url) {
-        return Object.keys(this._skipRules).some(function (fName) {
+    isNeedToSkipUrl(url) {
+        return Object.keys(this._skipRules).some(fName => {
             return this._skipRules[fName](url);
-        }.bind(this));
+        });
     }
-});
+}
