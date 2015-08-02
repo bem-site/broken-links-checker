@@ -1,8 +1,8 @@
-var BasedOption = require('../../src/based-option');
+var BasedOption = require('../../lib/based-option');
 
 describe('based-option', function () {
     var basedOption;
-    
+
     beforeEach(function () {
         basedOption = new BasedOption();
     });

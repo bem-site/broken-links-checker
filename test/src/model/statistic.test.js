@@ -1,6 +1,6 @@
 var should = require('should'),
-    Broken = require('../../../src/model/broken'),
-    Statistic = require('../../../src/model/statistic');
+    Broken = require('../../../lib/model/broken'),
+    Statistic = require('../../../lib/model/statistic');
 
 describe('statistic', function () {
     var statistic;

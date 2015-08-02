@@ -1,5 +1,5 @@
 var should = require('should'),
-    BrokenLinks = require('../../../src/model/broken');
+    BrokenLinks = require('../../../lib/model/broken');
 
 describe('broken', function () {
     var brokenLinks;

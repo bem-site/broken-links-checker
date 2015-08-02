@@ -23,6 +23,7 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
+    "babel-runtime": "^5.8.20",
     "bem-site-logger": "^0.0.x",
     "cheerio": "^0.19.x",
     "easy-table": "^1.0.0",
@@ -30,7 +31,9 @@
     "inherit": "^2.2.2"
   },
   "devDependencies": {
+    "babel": "^5.8.20",
     "connect": "^3.4.0",
+    "esdoc": "^0.1.4",
     "istanbul": "^0.3.x",
     "jscs": "^1.11.x",
     "jshint": "~2.8.x",
@@ -40,10 +43,13 @@
     "should": "~6.x"
   },
   "scripts": {
-    "jshint": "node_modules/.bin/jshint .",
+    "jshint": "node_modules/.bin/jshint --extra-ext .es6 .",
     "jscs": "node_modules/.bin/jscs -c .jscs.js .",
     "codestyle": "npm run jshint && npm run jscs",
-    "pretest": "npm run codestyle",
+    "jsdoc": "esdoc -c esdoc.json",
+    "compile": "babel src --optional runtime --out-dir lib",
+    "pretest": "npm run codestyle && npm run compile",
+    "prepublish": "npm run compile",
     "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
   },
   "readmeFilename": "README.md",

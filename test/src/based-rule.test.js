@@ -1,4 +1,4 @@
-var BasedRule = require('../../src/based-rule');
+var BasedRule = require('../../lib/based-rule');
 
 describe('based-rule', function () {
     var basedRule;

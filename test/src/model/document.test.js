@@ -1,6 +1,6 @@
 var fs = require('fs'),
     should = require('should'),
-    Document = require('../../../src/model/document');
+    Document = require('../../../lib/model/document');
 
 describe('document', function () {
     var document,

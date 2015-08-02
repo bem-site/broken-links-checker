@@ -1,6 +1,6 @@
 var Url = require('url'),
     should = require('should'),
-    SkipRules = require('../../src/skip-rules');
+    SkipRules = require('../../lib/skip-rules');
 
 describe('skip-rules', function () {
     var skipRules;

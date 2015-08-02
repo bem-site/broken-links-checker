@@ -1,0 +1,11 @@
+{
+  "source": "./src",
+  "destination": "./jsdoc",
+  "access": ["public", "protected", "private"],
+  "index": "./README.md",
+  "package": "./package.json",
+  "test": {
+    "type": "mocha",
+    "source": "./test"
+  }
+}
