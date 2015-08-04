@@ -42,6 +42,7 @@
     "jshint": "~2.8.x",
     "mocha": "~2.2.x",
     "mocha-lcov-reporter": "0.0.x",
+    "mock-fs": "^3.0.0",
     "serve-static": "^1.10.0",
     "should": "~6.x"
   },
