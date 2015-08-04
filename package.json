@@ -1,10 +1,10 @@
 {
-  "name": "bem-site-crawler",
+  "name": "bs-broken-links-checker",
   "version": "0.0.1",
-  "description": "Web crawler for bem-sites",
+  "description": "Broken links checker tool fow web sites",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bem-site/bem-site-crawler.git"
+    "url": "git://github.com/bem-site/broken-links-checker.git"
   },
   "author": {
     "name": "Andrey Kuznetsov",

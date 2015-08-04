@@ -2,7 +2,7 @@
 
 import commandConfig from './cmd-config';
 // import commandRun from './cmd-run';
-// import commandVersion from './cmd-version';
+import commandVersion from './cmd-version';
 
 function command() {
     return require('coa').Cmd()
@@ -11,7 +11,7 @@ function command() {
         .helpful()
         .cmd().name('config').apply(commandConfig).end()
         // .cmd().name('run').apply(commandRun).end()
-        // .cmd().name('version').apply(commandVersion).end()
+        .cmd().name('version').apply(commandVersion).end()
         .completable();
 }
 

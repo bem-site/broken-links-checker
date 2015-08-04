@@ -4,9 +4,9 @@ import Logger from 'bem-site-logger';
 import Checker  from '../checker';
 import Util  from '../util';
 
-const logger = Logger.setOptions({ level: 'info' }).createLogger(module);
+const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);
 
-module.exports = function () {
+export default function () {
     return this
         .title('Config initialization command')
         .helpful()
@@ -16,7 +16,7 @@ module.exports = function () {
             .short('n').long('name')
             .req()
             .end()
-        .act(function (opts) {
+        .act(opts => {
             var fileName = opts.name.replace(/\//g, '') + '.json';
             try {
                 fs.mkdirSync(Util.getConfigurationDirectory());
@@ -46,5 +46,6 @@ module.exports = function () {
                 logger.error('Error occur while saving configuration file: %s', fileName);
                 logger.error(error.message);
             }
+            return void 0;
         });
 };
