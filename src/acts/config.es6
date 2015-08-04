@@ -6,12 +6,19 @@ import Util  from '../util';
 
 const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);
 
+/**
+ * Creates configuration directory inside process.cwd() folder
+ */
 export function createConfigsDir() {
     try {
         fs.mkdirSync(Util.getConfigurationDirectory());
     } catch (error) {}
 }
 
+/**
+ * Creates stub configuration file with default params
+ * @return {Object} - stub config object
+ */
 export function createConfigStub() {
     return [
         'concurrent',
@@ -30,6 +37,11 @@ export function createConfigStub() {
     });
 }
 
+/**
+ * Generates stub configuration file inside configuration folder
+ * @param  {String} fileName - name of file
+ * @return {Boolean} returns true if success, false otherwise
+ */
 export function createConfigFile(fileName) {
     fileName = fileName.replace(/\//g, '') + '.json';
 
