@@ -1,4 +1,4 @@
-import Logger  from 'bem-site-logger';
+import Logger  from 'bem-site-logger'
 
 /**
  * @exports

@@ -1,3 +1,5 @@
+import path  from 'path';
+
 /**
  * @exports
  * @class Util
@@ -32,5 +34,9 @@ export default class Util {
      */
     static isString(obj) {
         return typeof obj === 'string' || obj instanceof String;
+    }
+
+    static getConfigurationDirectory() {
+        return path.join(process.cwd(), './configs');
     }
 }

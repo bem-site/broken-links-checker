@@ -22,14 +22,16 @@
   "engines": {
     "node": ">= 0.10.0"
   },
+  "bin": {
+    "blc": "./bin/blc"
+  },
   "dependencies": {
     "babel-runtime": "^5.8.20",
     "bem-site-logger": "^0.0.x",
     "cheerio": "^0.19.x",
+    "coa": "^1.0.1",
     "easy-table": "^1.0.0",
-    "es6-mixins": "^1.0.2",
-    "got": "^4.1.1",
-    "inherit": "^2.2.2"
+    "got": "^4.1.1"
   },
   "devDependencies": {
     "babel": "^5.8.20",

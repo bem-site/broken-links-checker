@@ -1,13 +1,12 @@
-import Url from 'url';
-import Table from 'easy-table';
-import got from 'got';
-
-import Base from './base';
+import Table  from 'easy-table';
+import got  from 'got';
+import Url  from 'url';
+import Base  from './base';
+import BasedOptions  from './based-option';
+import BasedRules  from './based-rule';
+import Document  from './model/document';
+import Statistic  from './model/statistic';
 // import Util from './util';
-import BasedOptions from './based-option';
-import BasedRules from './based-rule';
-import Document from './model/document';
-import Statistic from './model/statistic';
 
 require('http').globalAgent.maxSockets = Infinity;
 require('https').globalAgent.maxSockets = Infinity;
@@ -73,7 +72,7 @@ export default class Checker extends Base {
         return {
             concurrent: 100,
             requestHeaders: { 'user-agent': 'node-spider' },
-            requestRetriesAmount: 1,
+            requestRetriesAmount: 5,
             requestTimeout: 5000,
             acceptedSchemes: ['http:', 'https:'],
             checkExternalUrls: false,
