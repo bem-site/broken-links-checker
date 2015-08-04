@@ -1,1 +1,1 @@
-exports.BrokenLinksChecker = exports.Crawler = require('./src/crawler');
+exports.BrokenLinksChecker = require('./lib/checker');

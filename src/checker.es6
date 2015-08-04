@@ -214,7 +214,9 @@ export default class Checker extends Base {
      * @param {Function} callback - callback function
      */
     load(url, advanced, attempt, callback) {
-        this._active.push(url);
+        if (attempt === 0) {
+            this._active.push(url);
+        }
 
         var requestOptions = {
                 encoding: 'utf-8',
@@ -226,15 +228,15 @@ export default class Checker extends Base {
 
         got[method](url, requestOptions, (error, data, res) => {
             if (error) {
-                if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
+                 if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
                     attempt++;
                     this._logger.warn('[%s] attempt to request url: %s', attempt, url);
                     return this.load(url, advanced, attempt, callback);
-                } else {
+                 } else {
                     this._statistic.getBroken().add(url, advanced, error.statusCode);
                     this._logger.error('Broken [%s] link: => %s on page: => %s',
                         error.statusCode, advanced.href, advanced.page);
-                }
+                 }
             }
 
             this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',

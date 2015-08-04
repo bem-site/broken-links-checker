@@ -31,7 +31,11 @@ export default class Document {
          * @param  {String} res.toString('utf-8') response html data string
          * @return {Function} cherio tree function
          */
-        this._$ = cheerio.load(res.toString('utf-8'));
+        try {
+            this._$ = cheerio.load(res.toString('utf-8'));
+        } catch (error) {
+            this._$ = cheerio.load('');
+        }
     }
 
     /**
