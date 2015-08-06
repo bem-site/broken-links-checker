@@ -2,7 +2,6 @@ import path from 'path';
 import Logger from 'bem-site-logger';
 import Table  from 'easy-table';
 import Checker  from '../checker';
-import Util  from '../util';
 
 const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);
 
