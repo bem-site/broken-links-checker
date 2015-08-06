@@ -9,6 +9,7 @@ import Statistic  from './model/statistic';
 
 require('http').globalAgent.maxSockets = Infinity;
 require('https').globalAgent.maxSockets = Infinity;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 export default class Checker extends Base {
     /**
@@ -199,7 +200,7 @@ export default class Checker extends Base {
         this._statistic = Statistic.create();
 
         this._logger
-            .info('START to crawl pages')
+            .info('Start to analyze pages for: => %s', url)
             .info('It can be take a long time. Please wait ...');
         this._addToQueue(url, { page: url });
     }
