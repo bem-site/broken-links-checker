@@ -5,7 +5,7 @@ import BasedOptions  from './based-option';
 import BasedRules  from './based-rule';
 import Document  from './model/document';
 import Statistic  from './model/statistic';
-import RequestQueue from './request-queue';
+// import Util from './util';
 
 require('http').globalAgent.maxSockets = Infinity;
 require('https').globalAgent.maxSockets = Infinity;
@@ -173,9 +173,9 @@ export default class Checker extends Base {
                 return;
             }
 
-            _this._requestQueue.add(url, { page: documentUrl, href: href });
+            _this._addToQueue(url, { page: documentUrl, href: href });
         });
-        this._requestQueue.remove(documentUrl);
+        this._onFinishLoad(documentUrl);
     }
 
     /**
@@ -192,16 +192,16 @@ export default class Checker extends Base {
         }
 
         this.initSkipRules(url);
+
+        this._pending = [];
+        this._active = [];
+        this._processed = new Map();
         this._statistic = Statistic.create();
-        this._requestQueue = new RequestQueue(this.options.getOption('concurrent'), this.load.bind(this),
-            () => {
-                this.options.getOption('onDone').call(null, this._statistic);
-            }.bind(this));
 
         this._logger
             .info('START to crawl pages')
             .info('It can be take a long time. Please wait ...');
-        this._requestQueue.add(url, { page: url });
+        this._addToQueue(url, { page: url });
     }
 
     /**
@@ -209,8 +209,13 @@ export default class Checker extends Base {
      * @param {String} url - link url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
+     * @param {Function} callback - callback function
      */
-    load(url, advanced, attempt = 0) {
+    load(url, advanced, attempt, callback) {
+        if (attempt === 0) {
+            this._active.push(url);
+        }
+
         var requestOptions = {
                 encoding: 'utf-8',
                 headers: this.options.getOption('headers'),
@@ -224,7 +229,7 @@ export default class Checker extends Base {
                  if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
                     attempt++;
                     this._logger.warn('[%s] attempt to request url: %s', attempt, url);
-                    return this.load(url, advanced, attempt);
+                    return this.load(url, advanced, attempt, callback);
                  } else {
                     this._statistic.getBroken().add(url, advanced, error.statusCode);
                     this._logger.error('Broken [%s] link: => %s on page: => %s',
@@ -232,16 +237,19 @@ export default class Checker extends Base {
                  }
             }
 
-            this._logger.debug('[%s] [%s] Receive [%s] for url: => %s', this._requestQueue.getPendingCount(),
-                this._requestQueue.getActiveCount(), res ? res.statusCode : -1, url);
+            this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
+                this._pending.length, this._active.length, res ? res.statusCode : -1, url);
 
             isInternal ?
                 this._statistic.increaseInternalCount() :
                 this._statistic.increaseExternalCount();
 
-            isInternal ? this.processLoadedDocument(new Document(url, data)) : this._requestQueue.remove(url);
+            isInternal ?
+                callback.call(this, new Document(url, data)) :
+                this._onFinishLoad(url);
         });
     }
+
     /**
      * onDone callback function
      * @param {Statistic} statistic model instance
@@ -249,5 +257,63 @@ export default class Checker extends Base {
      */
     onDone(statistic) {
         return statistic;
+    }
+
+    /* ----- private methods ----- */
+    /**
+     * Checks if loading queue is full
+     * @returns {Boolean}
+     * @private
+     */
+    _isQueueFull() {
+        return this._active.length >= this.options.getOption('concurrent');
+    }
+
+    /**
+     * Adds item to check queue
+     * @param {String} url - link url
+     * @param {Object} advanced - object with advanced data
+     * @private
+     */
+    _addToQueue(url, advanced) {
+        url = url.replace(/\/$/, '');
+
+        if (this._processed.has(url)) {
+            return;
+        }
+
+        this._processed.set(url, true);
+
+        this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
+            this.load(url, advanced, 0, this.processLoadedDocument.bind(this));
+    }
+
+    /**
+     * Function which called after request to given url will be finished
+     * @param  {String} url which was requested
+     * @return {*}
+     * @private
+     */
+    _onFinishLoad(url) {
+        var i = this._active.indexOf(url);
+        this._active.splice(i, 1);
+
+        if (!this._isQueueFull()) {
+            var next = this._pending.shift();
+            if (next) {
+                this.load(next.url, next.advanced, 0, this.processLoadedDocument.bind(this));
+            } else if (!this._active.length) {
+                this._done.call(this);
+            }
+        }
+    }
+
+    /**
+     * Done callback function. Calls configured onDone callback with statistic argument
+     * @return {*}
+     * @private
+     */
+    _done() {
+        return this.options.getOption('onDone')(this._statistic);
     }
 }

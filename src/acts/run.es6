@@ -1,5 +1,4 @@
-import fs  from 'fs';
-import path  from 'path';
+import path from 'path';
 import Logger from 'bem-site-logger';
 import Table  from 'easy-table';
 import Checker  from '../checker';
@@ -8,19 +7,14 @@ import Util  from '../util';
 const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);
 
 export function run (options) {
-    var configFileName = path.join(Util.getConfigurationDirectory(), options.config),
+    var configFileName = options.config,
         config;
 
     try {
-        config = fs.readFileSync(configFileName, { encoding: 'utf-8' });
+        config = require(path.join(process.cwd(), configFileName));
     } catch (error) {
+        console.log(error);
         throw new Error('Configuration file not found');
-    }
-
-    try {
-        config = JSON.parse(config);
-    } catch (error) {
-        throw new Error('Configuration file has syntax errors');
     }
 
     config.onDone = (statistic) => {
@@ -45,6 +39,5 @@ export function run (options) {
     };
 
     // TODO allow to override params from configuration file here
-    //
     (new Checker(config)).start(config.url);
 }

@@ -1,4 +1,4 @@
-import act from '../acts/config';
+import * as action from '../acts/config';
 
 export default function () {
     return this
@@ -11,6 +11,6 @@ export default function () {
             .req()
             .end()
         .act((opts) => {
-            act.createConfigFile(opts.name);
+            action.createConfigFile(opts.name);
         });
 }

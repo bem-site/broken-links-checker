@@ -43,12 +43,12 @@ export function createConfigStub() {
  * @return {Boolean} returns true if success, false otherwise
  */
 export function createConfigFile(fileName) {
-    fileName = fileName.replace(/\//g, '') + '.json';
+    fileName = fileName.replace(/\//g, '') + '.js';
 
     createConfigsDir();
     try {
         fs.writeFileSync(path.join(Util.getConfigurationDirectory(), fileName),
-            JSON.stringify(createConfigStub(), null, 4), 'utf-8');
+            'module.exports = ' + JSON.stringify(createConfigStub(), null, 4), 'utf-8');
         logger.info('Configuration file: => %s has been generated successfully', fileName);
         return true;
     } catch (error) {

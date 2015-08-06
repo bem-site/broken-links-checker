@@ -1,4 +1,4 @@
-import act from '../acts/run';
+import * as action from '../acts/run';
 
 export default function () {
     return this
@@ -10,5 +10,7 @@ export default function () {
             .short('c').long('config')
             .req()
             .end()
-        .act(act.run);
+        .act((options) => {
+            action.run(options);
+        });
 }
