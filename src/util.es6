@@ -36,10 +36,18 @@ export default class Util {
         return typeof obj === 'string' || obj instanceof String;
     }
 
+    /**
+     * Returns resolved path to configuration folder
+     * @return {String} path to configuration folder
+     */
     static getConfigurationDirectory() {
         return path.join(process.cwd(), './configs');
     }
 
+    /**
+     * Returns resolved path to reports folder
+     * @return {String} path to reports folder 
+     */
     static getReportsDirectory() {
         return path.join(process.cwd(), './reports');
     }
