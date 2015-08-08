@@ -39,4 +39,8 @@ export default class Util {
     static getConfigurationDirectory() {
         return path.join(process.cwd(), './configs');
     }
+
+    static getReportsDirectory() {
+        return path.join(process.cwd(), './reports');
+    }
 }
