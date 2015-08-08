@@ -1,4 +1,5 @@
-var fs = require('fs'),
+var path = require('path'),
+    fs = require('fs'),
     should = require('should'),
     mockFs = require('mock-fs'),
     config = require('../../../lib/acts/config');
@@ -38,8 +39,8 @@ describe('acts/config', function () {
 
     it('should create configuration file', function () {
         config.createConfigFile('test').should.equal(true);
-        fs.existsSync('./configs/test.json').should.equal(true);
-        fs.readFileSync('./configs/test.json', 'utf-8').should.equal(JSON.stringify(configMock, null, 4));
+        fs.existsSync('./configs/test.js').should.equal(true);
+        should.deepEqual(require(path.resolve('./configs/test.js')), configMock);
     });
 
     afterEach(function () {
