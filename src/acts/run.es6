@@ -30,6 +30,12 @@ export function run (options) {
         return (new ReporterJson(options)).createReport(reportDirName, statistic);
     };
 
+    ['concurrent', 'requestRetriesAmount', 'requestTimeout', 'checkExternalUrls', 'mode'].forEach(item => {
+        if (options[item]) {
+            config[item] = options[item];
+        }
+    });
+
     // TODO allow to override params from configuration file here
-    (new Checker(config)).start(config.url);
+    (new Checker(config)).start(options.url || config.url);
 }
