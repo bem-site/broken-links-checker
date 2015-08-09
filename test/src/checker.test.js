@@ -15,9 +15,9 @@ describe('checker', function () {
 
             should.deepEqual(options.getOption('onDone'), checker.onDone.bind(checker));
 
-            should.deepEqual(rules.getRule('acceptedSchemes'), Checker.DEFAULT.acceptedSchemes);
-            should.deepEqual(rules.getRule('excludeLinkPatterns'), Checker.DEFAULT.excludeLinkPatterns);
-            rules.getRule('checkExternalUrls').should.equal(Checker.DEFAULT.checkExternalUrls);
+            should.deepEqual(options.getOption('acceptedSchemes'), Checker.DEFAULT.acceptedSchemes);
+            should.deepEqual(options.getOption('excludeLinkPatterns'), Checker.DEFAULT.excludeLinkPatterns);
+            options.getOption('checkExternalUrls').should.equal(Checker.DEFAULT.checkExternalUrls);
         }
 
         it('should be initialized with default params if options were not set', function () {
@@ -50,18 +50,18 @@ describe('checker', function () {
 
         it('should override default acceptedSchemes rule', function () {
             var checker = new Checker({ acceptedSchemes: ['mail:'] });
-            should.deepEqual(checker.rules.getRule('acceptedSchemes'), ['mail:']);
+            should.deepEqual(checker.options.getOption('acceptedSchemes'), ['mail:']);
         });
 
         it('should override default checkExternalUrls option', function () {
             var checker = new Checker({ checkExternalUrls: true });
-            checker.rules.getRule('checkExternalUrls').should.equal(true);
+            checker.options.getOption('checkExternalUrls').should.equal(true);
         });
 
         it('should override default excludeLinkPatterns rule', function () {
             var reg = [/\/foo1\/bar1\//, /\/foo2\/bar2\//],
                 checker = new Checker({ excludeLinkPatterns: reg });
-            should.deepEqual(checker.rules.getRule('excludeLinkPatterns'), reg);
+            should.deepEqual(checker.options.getOption('excludeLinkPatterns'), reg);
         });
     });
 
@@ -106,42 +106,42 @@ describe('checker', function () {
         });
 
         it ('should return true if scheme of given url does not exist in list of acceptable acceptedSchemes', function () {
-            checker.rules.setRule({}, 'acceptedSchemes', ['http:', 'https:']);
+            checker.options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);
             checker._skipRules.skipNonAcceptableProtocols('mailto://my.host/url1').should.equal(true);
         });
 
         it ('should return false if scheme of given url exists in list of acceptable acceptedSchemes', function () {
-            checker.rules.setRule({}, 'acceptedSchemes', ['http:', 'https:']);
+            checker.options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);
             checker._skipRules.skipNonAcceptableProtocols('http://my.host/url1').should.equal(false);
         });
 
         it ('should return false if checkExternalUrls option is set to true', function () {
-            checker.rules.setRule({}, 'checkExternalUrls', true);
+            checker.options.setOption({}, 'checkExternalUrls', true);
             checker._skipRules.skipExternalUrls('http://outer.host:80/url1').should.equal(false);
         });
 
         it ('should return true if host of given url is different then host of initial url', function () {
-            checker.rules.setRule({}, 'checkExternalUrls', false);
+            checker.options.setOption({}, 'checkExternalUrls', false);
             checker._skipRules.skipExternalUrls('http://outer.host:80/url1').should.equal(true);
         });
 
         it ('should return false if host of given url is the same as host of initial url', function () {
-            checker.rules.setRule({}, 'checkExternalUrls', false);
+            checker.options.setOption({}, 'checkExternalUrls', false);
             checker._skipRules.skipExternalUrls('http://my.host/url2').should.equal(false);
         });
 
         it ('should return false in case of empty "excludeLinkPatterns" array', function () {
-            checker.rules.setRule({}, 'excludeLinkPatterns', []);
+            checker.options.setOption({}, 'excludeLinkPatterns', []);
             checker._skipRules.skipExcludedUrls('http://my.host/url1').should.be.equal(false);
         });
 
         it ('should return false if any of excluded patterns does not match given url', function () {
-            checker.rules.setRule({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
+            checker.options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
             checker._skipRules.skipExcludedUrls('http://my.host/url1').should.be.equal(false);
         });
 
         it ('should return true if any excluded patterns matches on given url', function () {
-            checker.rules.setRule({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
+            checker.options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
             checker._skipRules.skipExcludedUrls('http://my.host/foo1').should.be.equal(true);
         });
     });
@@ -158,9 +158,9 @@ describe('checker', function () {
         beforeEach(function () {
             checker = new Checker();
             checker.initSkipRules(Url.parse('http://my.host'));
-            checker.rules.setRule({}, 'acceptedSchemes', ['http:', 'https:']);
-            checker.rules.setRule({}, 'checkExternalUrls', false);
-            checker.rules.setRule({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
+            checker.options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);
+            checker.options.setOption({}, 'checkExternalUrls', false);
+            checker.options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
         });
 
         [

@@ -2,7 +2,6 @@ import got  from 'got';
 import Url  from 'url';
 import Base  from './base';
 import BasedOptions  from './based-option';
-import BasedRules  from './based-rule';
 import Document  from './model/document';
 import Statistic  from './model/statistic';
 // import Util from './util';
@@ -32,19 +31,17 @@ export default class Checker extends Base {
         this._logger.info('Initialize crawler instance');
 
         this._options = new BasedOptions();
-        this._rules = new BasedRules();
 
         this.options
             .setOption(options, 'concurrent', this.constructor.DEFAULT.concurrent)
             .setOption(options, 'requestHeaders', this.constructor.DEFAULT.requestHeaders)
             .setOption(options, 'requestRetriesAmount', this.constructor.DEFAULT.requestRetriesAmount)
             .setOption(options, 'requestTimeout', this.constructor.DEFAULT.requestTimeout)
-            .setOption(options, 'onDone', this.onDone.bind(this));
-
-        this.rules
-            .setRule(options, 'acceptedSchemes', this.constructor.DEFAULT.acceptedSchemes)
-            .setRule(options, 'checkExternalUrls', this.constructor.DEFAULT.checkExternalUrls)
-            .setRule(options, 'excludeLinkPatterns', this.constructor.DEFAULT.excludeLinkPatterns);
+            .setOption(options, 'mode', this.constructor.DEFAULT.mode)
+            .setOption(options, 'onDone', this.onDone.bind(this))
+            .setOption(options, 'acceptedSchemes', this.constructor.DEFAULT.acceptedSchemes)
+            .setOption(options, 'checkExternalUrls', this.constructor.DEFAULT.checkExternalUrls)
+            .setOption(options, 'excludeLinkPatterns', this.constructor.DEFAULT.excludeLinkPatterns);
     }
 
     /**
@@ -56,15 +53,7 @@ export default class Checker extends Base {
     }
 
     /**
-     * Getter function for rules
-     * @returns {BasedRules}
-     */
-    get rules() {
-        return this._rules;
-    }
-
-    /**
-     * Returns application default options and rules
+     * Returns application default options
      * @returns {Object}
      * @constructor
      */
@@ -74,6 +63,7 @@ export default class Checker extends Base {
             requestHeaders: { 'user-agent': 'node-spider' },
             requestRetriesAmount: 5,
             requestTimeout: 5000,
+            mode: 'website',
             acceptedSchemes: ['http:', 'https:'],
             checkExternalUrls: false,
             excludeLinkPatterns: []
@@ -87,7 +77,12 @@ export default class Checker extends Base {
      */
     static get CONSTANTS() {
         return {
-            URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/
+            URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/,
+            MODE: {
+                WEBSITE: 'website',
+                SECTION: 'section',
+                PAGE: 'page'
+            }
         };
     }
 
@@ -106,7 +101,7 @@ export default class Checker extends Base {
              * @private
              */
             skipNonAcceptableProtocols: url => {
-                return this.rules.getRule('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;
+                return this.options.getOption('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;
             },
 
             /**
@@ -117,7 +112,7 @@ export default class Checker extends Base {
              * @private
              */
             skipExternalUrls: url => {
-                return !this.rules.getRule('checkExternalUrls') && url.indexOf(this._url['hostname']) < 0;
+                return !this.options.getOption('checkExternalUrls') && url.indexOf(this._url['hostname']) < 0;
             },
 
             /**
@@ -127,16 +122,30 @@ export default class Checker extends Base {
              * @private
              */
             skipExcludedUrls: url => {
-                return this.rules.getRule('excludeLinkPatterns').some(pattern => {
+                return this.options.getOption('excludeLinkPatterns').some(pattern => {
                     return !!url.match(pattern);
                 });
+            },
+
+            skipOnMode: url => {
+                var mode = this.options.getOption('mode');
+                const MODES = this.constructor.CONSTANTS.MODE;
+
+                if (mode === MODES.PAGE) {
+                    return true;
+                } else if (mode === MODES.SECTION) {
+                    return url.indexOf(this._url.path) === -1;
+                } else {
+                    return false;
+                }
             }
         };
     }
 
     /**
      * Returns true if anyone of skip conditions returns true
-     * @param {String} url - request url
+     * @param {String} url - url of link
+     * @param {String} baseUrl - url of page where link is
      * @returns {boolean} — result flag
      */
     isNeedToSkipUrl(url) {
