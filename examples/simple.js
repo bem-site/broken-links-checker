@@ -2,20 +2,22 @@ var BrokenLinksChecker = require('../index').BrokenLinksChecker,
     checker;
 
 checker = new BrokenLinksChecker({
-    concurrent: 100,
-    logger: { level: 'info' },
-    requestRetriesAmount: 5,
-    requestTimeout: 10000,
-    excludeLinkPatterns: [
-        /\/__example/i,
-        /\/forum/i,
-        /\/optimizers\/svgo/i,
-        /\/optimizers\/csso/i
+    "url": "http://tadatuta.ru",
+    "logger": {
+        "level": "debug"
+    },
+    "concurrent": 50,
+    "requestHeaders": {
+        "user-agent": "node-spider"
+    },
+    "requestRetriesAmount": 5,
+    "requestTimeout": 5000,
+    "acceptedSchemes": [
+        "http:",
+        "https:"
     ],
-    acceptedSchemes: ['http:', 'https:'],
-    checkExternalUrls: false
-    });
+    "checkExternalUrls": true,
+    "excludeLinkPatterns": []
+});
 
-// checker.start('http://ru.bem.info');
-// checker.start('https://legoa.test.yandex-team.ru');
-checker.start('https://ru.bem.info.nodejs.test.spec.yandex.net');
+checker.start('http://tadatuta.ru');

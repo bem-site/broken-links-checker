@@ -12,7 +12,6 @@ export function run (options) {
     try {
         config = require(path.join(process.cwd(), configFileName));
     } catch (error) {
-        console.log(error);
         throw new Error('Configuration file not found');
     }
 
@@ -26,8 +25,7 @@ export function run (options) {
             .info('-- Total urls: [%s]', statistic.getAllCount())
             .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
 
-        var reportDirName = path.basename(configFileName, '.js');
-        return (new ReporterJson(options)).createReport(reportDirName, statistic);
+        return (new ReporterJson(options)).createReport(path.basename(configFileName, '.js'), statistic);
     };
 
     ['concurrent', 'requestRetriesAmount', 'requestTimeout', 'checkExternalUrls', 'mode'].forEach(item => {
@@ -36,6 +34,5 @@ export function run (options) {
         }
     });
 
-    // TODO allow to override params from configuration file here
     (new Checker(config)).start(options.url || config.url);
 }

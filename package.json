@@ -31,7 +31,8 @@
     "cheerio": "^0.19.x",
     "coa": "^1.0.1",
     "easy-table": "^1.0.0",
-    "got": "^4.1.1"
+    "got": "^4.1.1",
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
     "babel": "^5.8.20",

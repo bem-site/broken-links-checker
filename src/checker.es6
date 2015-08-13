@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import got  from 'got';
-import Url  from 'url';
 import Base  from './base';
 import BasedOptions  from './based-option';
 import Document  from './model/document';
 import Statistic  from './model/statistic';
+import LinkAnalyzer from './link-analyzer';
 
 require('http').globalAgent.maxSockets = Infinity;
 require('https').globalAgent.maxSockets = Infinity;
@@ -87,79 +88,6 @@ export default class Checker extends Base {
     }
 
     /**
-     * Initialize predefined skip rules for prevent deeper crawling for given url
-     * @param {String} initial - initial url
-     * @returns {{skipNonAcceptableProtocols: Function, skipOuterUrls: Function, skipExcludedUrls: Function}}
-     */
-    initSkipRules(initial) {
-        this._url = Url.parse(initial);
-        this._skipRules = {
-            /**
-             * Check if protocol of given url satisfies acceptedSchemes criteria
-             * @param {String} url - request url
-             * @returns {boolean} — result flag
-             * @private
-             */
-            skipNonAcceptableProtocols: url => {
-                return this.options.getOption('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;
-            },
-
-            /**
-             * Checks if given url has the different hostname then initial
-             * (If 'checkExternalUrls' rule is set to true)
-             * @param {String} url — request url
-             * @returns {boolean} — result flag
-             * @private
-             */
-            skipExternalUrls: url => {
-                return !this.options.getOption('checkExternalUrls') && url.indexOf(this._url['hostname']) < 0;
-            },
-
-            /**
-             * Checks if given url has host different then host of initial url
-             * @param {String} url — request url
-             * @returns {boolean} — result flag
-             * @private
-             */
-            skipExcludedUrls: url => {
-                return this.options.getOption('excludeLinkPatterns').some(pattern => {
-                    return !!url.match(pattern);
-                });
-            },
-
-            /**
-             * Checks if given url is need to be check depending on mode configuration option
-             * @type {boolean} - result flag
-             * @private
-             */
-            skipOnMode: url => {
-                var mode = this.options.getOption('mode');
-                const MODES = this.constructor.CONSTANTS.MODE;
-
-                if (mode === MODES.PAGE) {
-                    return true;
-                } else if (mode === MODES.SECTION) {
-                    return url.indexOf(this._url.path) === -1;
-                } else {
-                    return false;
-                }
-            }
-        };
-    }
-
-    /**
-     * Returns true if anyone of skip conditions returns true
-     * @param {String} url - url of link
-     * @param {String} baseUrl - url of page where link is
-     * @returns {boolean} — result flag
-     */
-    isNeedToSkipUrl(url) {
-        return Object.keys(this._skipRules).some(fName => {
-            return this._skipRules[fName](url);
-        });
-    }
-
-    /**
      * Processes loaded document
      * @param {Document}                   document - document model
      * @param {String}                     document.url - request url
@@ -170,23 +98,24 @@ export default class Checker extends Base {
             documentUrl = document.url,
             $ = document.$;
 
+        console.log(document.url);
         $('a').each(function () {
-            var href = $(this).attr('href'),
-                url;
+            var href = $(this).attr('href');
 
-            if (!href) {
-                return;
+            if (href) {
+                let url = document.resolve(href.split('#')[ 0 ]);
+                if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
+                    return;
+                }
+
+                if (url.indexOf(_this._linkAnalyzer.url['hostname']) < 0) {
+                    _this._external.set(url, { page: documentUrl, href: href })
+                } else {
+                    _this._addToQueue(url, { page: documentUrl, href: href });
+                }
             }
-
-            url = document.resolve(href.split('#')[0]);
-
-            _this._logger.verbose('Found link: %s', href).verbose('Resolved url: %s', url);
-            if (_this.isNeedToSkipUrl(url)) {
-                return;
-            }
-
-            _this._addToQueue(url, { page: documentUrl, href: href });
         });
+        this._onFinishLoad(documentUrl);
     }
 
     /**
@@ -202,12 +131,11 @@ export default class Checker extends Base {
             throw new Error('Urls is not valid');
         }
 
-        this.initSkipRules(url);
-
         this._pending = [];
         this._active = [];
         this._external = new Map();
         this._processed = new Map();
+        this._linkAnalyzer = new LinkAnalyzer(url, this.options);
         this._statistic = Statistic.create();
 
         this._logger
@@ -223,29 +151,25 @@ export default class Checker extends Base {
      * @param {Number} attempt - number of request attempt
      * @param {Function} callback - callback function
      */
-    load(url, advanced, attempt, callback) {
+    loadInternal(url, advanced, attempt, callback) {
         if (attempt === 0) {
             this._active.push(url);
         }
 
-        var isInternal = url.indexOf(this._url.hostname) > -1,
-            requestOptions = {
-                encoding: 'utf-8',
-                headers: this.options.getOption('headers'),
-                timeout: this.options.getOption('requestTimeout')
-            },
-            method = isInternal ? 'get' : 'head';
+        var requestOptions = {
+            encoding: 'utf-8',
+            headers: this.options.getOption('headers'),
+            timeout: this.options.getOption('requestTimeout')
+        };
 
-        got[method](url, requestOptions, (error, data, res) => {
+        got.get(url, requestOptions, (error, data, res) => {
             if (error) {
-                 if (isInternal && !error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
-                     return this.load(url, advanced, ++attempt, callback);
+                 if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
+                     return this.loadInternal(url, advanced, ++attempt, callback);
                  } else {
-                     if (isInternal || error.statusCode === 404) {
-                         this._statistic.getBroken().add(url, advanced, error.statusCode);
-                         this._logger.error('Broken [%s] link: => %s on page: => %s',
-                            error.statusCode, advanced.href, advanced.page);
-                     }
+                     this._statistic.getBroken().add(url, advanced, error.statusCode);
+                     this._logger.error('Broken [%s] link: => %s on page: => %s',
+                         error.statusCode, advanced.href, advanced.page);
                  }
                  return this._onFinishLoad(url);
             }
@@ -253,14 +177,51 @@ export default class Checker extends Base {
             this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
                 this._pending.length, this._active.length, res ? res.statusCode : -1, url);
 
-            if (isInternal) {
-                this._statistic.increaseInternalCount();
-                callback.call(this, new Document(url, data));
-            } else {
-                this._statistic.increaseExternalCount();
-            }
-            this._onFinishLoad(url);
+
+            this._statistic.increaseInternalCount();
+            callback.call(this, new Document(url, data));
         });
+    }
+
+    checkExternalLink(item) {
+        var url = item[0],
+            advanced = item[1],
+            requestOptions = {
+                encoding: 'utf-8',
+                headers: this.options.getOption('headers'),
+                timeout: this.options.getOption('requestTimeout')
+            };
+
+        return new Promise(resolve => {
+            got.head(url, requestOptions, (error, data, res) => {
+                if (error) {
+                    this._statistic.getBroken().add(url, advanced, error.statusCode);
+                    this._logger.error('Broken [%s] link: => %s on page: => %s',
+                        error.statusCode, advanced.href, advanced.page);
+                }
+
+                this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
+                    this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+
+                this._statistic.increaseExternalCount();
+                resolve();
+            });
+        });
+    }
+
+    checkExternalLinks() {
+        if (!this._external.size) {
+            return this._done.call(this);
+        }
+
+        this._logger.info('Start to verify external links ...');
+
+        var portions = _.chunk(Array.from(this._external), 20);
+        return portions.reduce((prev, portion) => {
+            return prev.then(() => {
+                return Promise.all(portion.map(this.checkExternalLink.bind(this)));
+            });
+        }, Promise.resolve()).then(this._done.bind(this));
     }
 
     /**
@@ -296,7 +257,7 @@ export default class Checker extends Base {
         }
         this._processed.set(url, true);
         this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
-            this.load(url, advanced, 0, this.processLoadedDocument.bind(this));
+            this.loadInternal(url, advanced, 0, this.processLoadedDocument.bind(this));
     }
 
     /**
@@ -313,9 +274,7 @@ export default class Checker extends Base {
             if (next) {
                 this.load(next.url, next.advanced, 0, this.processLoadedDocument.bind(this));
             } else if (!this._active.length) {
-                console.log('pending length: %s', this._pending.length);
-                console.log('active length: %s', this._active.length);
-                this._done.call(this);
+                this.checkExternalLinks();
             }
         }
     }
