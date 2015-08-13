@@ -4,7 +4,6 @@ import Base  from './base';
 import BasedOptions  from './based-option';
 import Document  from './model/document';
 import Statistic  from './model/statistic';
-// import Util from './util';
 
 require('http').globalAgent.maxSockets = Infinity;
 require('https').globalAgent.maxSockets = Infinity;
@@ -32,16 +31,17 @@ export default class Checker extends Base {
 
         this._options = new BasedOptions();
 
+        const def = this.constructor.DEFAULT;
         this.options
-            .setOption(options, 'concurrent', this.constructor.DEFAULT.concurrent)
-            .setOption(options, 'requestHeaders', this.constructor.DEFAULT.requestHeaders)
-            .setOption(options, 'requestRetriesAmount', this.constructor.DEFAULT.requestRetriesAmount)
-            .setOption(options, 'requestTimeout', this.constructor.DEFAULT.requestTimeout)
-            .setOption(options, 'mode', this.constructor.DEFAULT.mode)
-            .setOption(options, 'onDone', this.onDone.bind(this))
-            .setOption(options, 'acceptedSchemes', this.constructor.DEFAULT.acceptedSchemes)
-            .setOption(options, 'checkExternalUrls', this.constructor.DEFAULT.checkExternalUrls)
-            .setOption(options, 'excludeLinkPatterns', this.constructor.DEFAULT.excludeLinkPatterns);
+            .setOption(options, 'mode', def.mode)
+            .setOption(options, 'concurrent', def.concurrent)
+            .setOption(options, 'requestHeaders', def.requestHeaders)
+            .setOption(options, 'requestTimeout', def.requestTimeout)
+            .setOption(options, 'acceptedSchemes', def.acceptedSchemes)
+            .setOption(options, 'checkExternalUrls', def.checkExternalUrls)
+            .setOption(options, 'excludeLinkPatterns', def.excludeLinkPatterns)
+            .setOption(options, 'requestRetriesAmount', def.requestRetriesAmount)
+            .setOption(options, 'onDone', this.onDone.bind(this));
     }
 
     /**
@@ -59,11 +59,11 @@ export default class Checker extends Base {
      */
     static get DEFAULT() {
         return {
+            mode: 'website',
             concurrent: 100,
             requestHeaders: { 'user-agent': 'node-spider' },
             requestRetriesAmount: 5,
             requestTimeout: 5000,
-            mode: 'website',
             acceptedSchemes: ['http:', 'https:'],
             checkExternalUrls: false,
             excludeLinkPatterns: []
@@ -127,6 +127,11 @@ export default class Checker extends Base {
                 });
             },
 
+            /**
+             * Checks if given url is need to be check depending on mode configuration option
+             * @type {boolean} - result flag
+             * @private
+             */
             skipOnMode: url => {
                 var mode = this.options.getOption('mode');
                 const MODES = this.constructor.CONSTANTS.MODE;
@@ -175,17 +180,13 @@ export default class Checker extends Base {
 
             url = document.resolve(href.split('#')[0]);
 
-            _this._logger
-                .verbose('Found link: %s', href)
-                .verbose('Resolved url: %s', url);
-
+            _this._logger.verbose('Found link: %s', href).verbose('Resolved url: %s', url);
             if (_this.isNeedToSkipUrl(url)) {
                 return;
             }
 
             _this._addToQueue(url, { page: documentUrl, href: href });
         });
-        this._onFinishLoad(documentUrl);
     }
 
     /**
@@ -205,6 +206,7 @@ export default class Checker extends Base {
 
         this._pending = [];
         this._active = [];
+        this._external = new Map();
         this._processed = new Map();
         this._statistic = Statistic.create();
 
@@ -226,37 +228,38 @@ export default class Checker extends Base {
             this._active.push(url);
         }
 
-        var requestOptions = {
+        var isInternal = url.indexOf(this._url.hostname) > -1,
+            requestOptions = {
                 encoding: 'utf-8',
                 headers: this.options.getOption('headers'),
                 timeout: this.options.getOption('requestTimeout')
             },
-            isInternal = url.indexOf(this._url.hostname) > -1,
             method = isInternal ? 'get' : 'head';
 
         got[method](url, requestOptions, (error, data, res) => {
             if (error) {
-                 if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
-                    attempt++;
-                    this._logger.warn('[%s] attempt to request url: %s', attempt, url);
-                    return this.load(url, advanced, attempt, callback);
+                 if (isInternal && !error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
+                     return this.load(url, advanced, ++attempt, callback);
                  } else {
-                    this._statistic.getBroken().add(url, advanced, error.statusCode);
-                    this._logger.error('Broken [%s] link: => %s on page: => %s',
-                        error.statusCode, advanced.href, advanced.page);
+                     if (isInternal || error.statusCode === 404) {
+                         this._statistic.getBroken().add(url, advanced, error.statusCode);
+                         this._logger.error('Broken [%s] link: => %s on page: => %s',
+                            error.statusCode, advanced.href, advanced.page);
+                     }
                  }
+                 return this._onFinishLoad(url);
             }
 
             this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
                 this._pending.length, this._active.length, res ? res.statusCode : -1, url);
 
-            isInternal ?
-                this._statistic.increaseInternalCount() :
+            if (isInternal) {
+                this._statistic.increaseInternalCount();
+                callback.call(this, new Document(url, data));
+            } else {
                 this._statistic.increaseExternalCount();
-
-            isInternal ?
-                callback.call(this, new Document(url, data)) :
-                this._onFinishLoad(url);
+            }
+            this._onFinishLoad(url);
         });
     }
 
@@ -291,9 +294,7 @@ export default class Checker extends Base {
         if (this._processed.has(url)) {
             return;
         }
-
         this._processed.set(url, true);
-
         this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
             this.load(url, advanced, 0, this.processLoadedDocument.bind(this));
     }
@@ -305,14 +306,15 @@ export default class Checker extends Base {
      * @private
      */
     _onFinishLoad(url) {
-        var i = this._active.indexOf(url);
-        this._active.splice(i, 1);
+        this._active.splice(this._active.indexOf(url), 1);
 
         if (!this._isQueueFull()) {
             var next = this._pending.shift();
             if (next) {
                 this.load(next.url, next.advanced, 0, this.processLoadedDocument.bind(this));
             } else if (!this._active.length) {
+                console.log('pending length: %s', this._pending.length);
+                console.log('active length: %s', this._active.length);
                 this._done.call(this);
             }
         }
