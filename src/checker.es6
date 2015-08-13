@@ -110,7 +110,7 @@ export default class Checker extends Base {
                 }
 
                 if (url.indexOf(_this._linkAnalyzer.url['hostname']) < 0) {
-                    _this._external.set(url, { page: documentUrl, href: href })
+                    _this._external.set(url, { page: documentUrl, href: href });
                 } else {
                     _this._addToQueue(url, { page: documentUrl, href: href });
                 }

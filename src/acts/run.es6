@@ -2,6 +2,7 @@ import path from 'path';
 import Logger from 'bem-site-logger';
 import Checker  from '../checker';
 import ReporterJson from '../reporters/json';
+import ReporterHtml from '../reporters/html';
 
 const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);
 
@@ -35,7 +36,10 @@ export function run (options) {
             .info('-- Total urls: [%s]', statistic.getAllCount())
             .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
 
-        return (new ReporterJson(options)).createReport(path.basename(configFileName, '.js'), statistic);
+        return Promise.all[
+            [(new ReporterJson(options)), (new ReporterHtml(options))].map(item => {
+                return item.createReport(path.basename(configFileName, '.js'), statistic);
+            })];
     };
 
     ['concurrent', 'requestRetriesAmount', 'requestTimeout', 'checkExternalUrls', 'mode'].forEach(item => {

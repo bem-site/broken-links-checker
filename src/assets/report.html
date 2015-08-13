@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Broken Link Checker Report</title>
+</head>
+<style>
+    .table {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #111;
+        border-collapse: collapse;
+    }
+    .table__th {
+        border: 1px solid #666;
+        font-size: large;
+        background-color: #fc8c84;
+    }
+    .table__th_type_number {
+        width: 50px;
+    }
+    .table__td_type_number {
+        width: 50px;
+    }
+    .table__th_type_status-code {
+        width: 120px;
+    }
+    .table__td_type_status-code {
+        width: 120px;
+    }
+    .table__td {
+        padding-left: 3px;
+        border: 1px solid #666;
+        text-align: left;
+    }
+</style>
+<body>
+    <div class="header">
+        <p class="header__internal">
+            <span class="header__label">Internal Links:</span>
+            <span class="header__value"><%= report.internalCount %></span>
+        </p>
+        <p class="header__external">
+            <span class="header__label">External Links:</span>
+            <span class="header__value"><%= report.externalCount %></span>
+        </p>
+        <p class="header__total">
+            <span class="header__label">Total Links:</span>
+            <span class="header__value"><%= report.totalCount %></span>
+        </p>
+        <p class="header__broken">
+            <span class="header__label">Broken Links:</span>
+            <span class="header__value"><%= report.brokenCount %></span>
+        </p>
+    </div>
+    <div class="broken">
+        <table class="table">
+            <tr>
+                <th class="table__th table__th_type_number">#</th>
+                <th class="table__th table__th_type_status-code">Status Code</th>
+                <th class="table__th table__th_type_href">Href</th>
+                <th class="table__th table__th_type_page-url">Page Url</th>
+            </tr>
+            <% _.forEach(report.broken, function(item, index) { %>
+            <tr>
+                <td class="table__td table__td_type_number"><%- index %></td>
+                <td class="table__td table__td_type_status-code"><%- item.code %></td>
+                <td class="table__td table__td_type_href"><%- item.advanced.href %></td>
+                <td class="table__td table__td_type_page-url">
+                    <a href="<%- item.advanced.page %>"><%- item.advanced.page %></a>
+                </td>
+            </tr>
+            <% }); %>
+        </table>
+    </div>
+</body>
+</html>
