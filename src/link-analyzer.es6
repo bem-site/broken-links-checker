@@ -1,6 +1,10 @@
 import Url from 'url';
 import Checker from './checker';
 
+/**
+ * @class LinkAnalyzer
+ * @desc Hold logic about recursive links processing
+ */
 export default class LinkAnalyzer {
     /**
      * Initialize predefined skip rules for prevent deeper crawling for given url
@@ -31,6 +35,11 @@ export default class LinkAnalyzer {
         });
     }
 
+    /**
+     * Getter for _url
+     * @returns {String} - root url
+     * @getter
+     */
     get url() {
         return this._url;
     }

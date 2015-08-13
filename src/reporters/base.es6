@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import moment from 'moment';
 import Logger from 'bem-site-logger';
 import Util from '../util';
 
@@ -37,9 +38,16 @@ export default class ReporterBase {
         } catch (error) {}
     }
 
+    /**
+     * Saves report to file
+     * @param {String} configurationName - name of configuration
+     * @param {String} type - report type
+     * @param {String} content - report content
+     * @returns {Promise}
+     */
     saveReportFile(configurationName, type, content) {
         this.createReportFolder(configurationName);
-        var fileName = `${+(new Date())}.${type}`,
+        var fileName = `${moment().format("DD-MM-YYYY:hh:mm:ss")}.${type}`,
             filePath = path.join(Util.getReportsDirectory(), configurationName, fileName);
 
         return new Promise((resolve, reject) => {

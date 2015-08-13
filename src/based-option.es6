@@ -1,5 +1,5 @@
+import _ from 'lodash';
 import Base from './base';
-import Util from './util';
 
 /**
  * @exports
@@ -18,7 +18,7 @@ export default class BasedOption extends Base {
     setOption (options, name, defaultValue) {
         this._options = this._options || {};
         this._options[name] = options[name] || defaultValue;
-        if (!Util.isFunction(this._options[name]) && !Util.isObject(this._options[name])) {
+        if (!_.isFunction(this._options[name]) && !_.isObject(this._options[name])) {
             this._logger.info('Set option [%s] => %s', name, this._options[name]);
         }
         return this;

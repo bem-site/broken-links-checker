@@ -14,6 +14,7 @@ export default class Checker extends Base {
     /**
      * Constructor
      * @param {Object}    [options]                            — configuration object
+     * @param {String}    [options.mode]                       - mode of checking ("website", "section" or "page")
      * @param {Number}    [options.concurrent]                 — number of concurrent requests
      * @param {Object}    [options.requestHeaders]             — set custom request headers for crawler requests
      * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first
@@ -92,13 +93,13 @@ export default class Checker extends Base {
      * @param {Document}                   document - document model
      * @param {String}                     document.url - request url
      * @param {HttpResponse|HttpsResponse} document.res - response object
+     * @protected
      */
     processLoadedDocument(document) {
         var _this = this,
             documentUrl = document.url,
             $ = document.$;
 
-        console.log(document.url);
         $('a').each(function () {
             var href = $(this).attr('href');
 
@@ -120,7 +121,9 @@ export default class Checker extends Base {
 
     /**
      * Start to crawl pages for given url
-     * @param {String} url - initial site url for start crawl
+     * @param {String} url - initial site url for start
+     * @throws Error
+     * @public
      */
     start(url) {
         if (!url) {
@@ -145,30 +148,32 @@ export default class Checker extends Base {
     }
 
     /**
+     * onDone callback function
+     * @param {Statistic} statistic model instance
+     * @protected
+     */
+    onDone(statistic) {
+        return statistic;
+    }
+
+    /**
      * Makes request to given url
      * @param {String} url - link url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
-     * @param {Function} callback - callback function
      */
-    loadInternal(url, advanced, attempt, callback) {
+    _checkInternalLink(url, advanced, attempt = 0) {
         if (attempt === 0) {
             this._active.push(url);
         }
 
-        var requestOptions = {
-            encoding: 'utf-8',
-            headers: this.options.getOption('headers'),
-            timeout: this.options.getOption('requestTimeout')
-        };
-
-        got.get(url, requestOptions, (error, data, res) => {
+        got.get(url, this._getRequestOptions(), (error, data, res) => {
             if (error) {
                  if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
-                     return this.loadInternal(url, advanced, ++attempt, callback);
+                     return this._checkInternalLink(url, advanced, ++attempt);
                  } else {
                      this._statistic.getBroken().add(url, advanced, error.statusCode);
-                     this._logger.error('Broken [%s] link: => %s on page: => %s',
+                     this._logger.warn('Broken [%s] link: => %s on page: => %s',
                          error.statusCode, advanced.href, advanced.page);
                  }
                  return this._onFinishLoad(url);
@@ -179,24 +184,27 @@ export default class Checker extends Base {
 
 
             this._statistic.increaseInternalCount();
-            callback.call(this, new Document(url, data));
+            this.processLoadedDocument(new Document(url, data));
         });
     }
 
-    checkExternalLink(item) {
+    /**
+     * Checks given external link item
+     * @param {Object} item - external link item object
+     * @param {String} item.url - external link url
+     * @param {Object} item.advanced - external link advanced meta data object
+     * @returns {Promise}
+     * @private
+     */
+    _checkExternalLink(item) {
         var url = item[0],
-            advanced = item[1],
-            requestOptions = {
-                encoding: 'utf-8',
-                headers: this.options.getOption('headers'),
-                timeout: this.options.getOption('requestTimeout')
-            };
+            advanced = item[1];
 
         return new Promise(resolve => {
-            got.head(url, requestOptions, (error, data, res) => {
+            got.head(url, this._getRequestOptions(), (error, data, res) => {
                 if (error) {
                     this._statistic.getBroken().add(url, advanced, error.statusCode);
-                    this._logger.error('Broken [%s] link: => %s on page: => %s',
+                    this._logger.warn('Broken [%s] link: => %s on page: => %s',
                         error.statusCode, advanced.href, advanced.page);
                 }
 
@@ -209,31 +217,26 @@ export default class Checker extends Base {
         });
     }
 
-    checkExternalLinks() {
+    /**
+     * Check all collected external links
+     * @returns {Promise}
+     * @private
+     */
+    _checkExternalLinks() {
         if (!this._external.size) {
             return this._done.call(this);
         }
 
         this._logger.info('Start to verify external links ...');
 
-        var portions = _.chunk(Array.from(this._external), 20);
+        var portions = _.chunk(Array.from(this._external), 100);
         return portions.reduce((prev, portion) => {
             return prev.then(() => {
-                return Promise.all(portion.map(this.checkExternalLink.bind(this)));
+                return Promise.all(portion.map(this._checkExternalLink.bind(this)));
             });
         }, Promise.resolve()).then(this._done.bind(this));
     }
 
-    /**
-     * onDone callback function
-     * @param {Statistic} statistic model instance
-     * @protected
-     */
-    onDone(statistic) {
-        return statistic;
-    }
-
-    /* ----- private methods ----- */
     /**
      * Checks if loading queue is full
      * @returns {Boolean}
@@ -257,7 +260,7 @@ export default class Checker extends Base {
         }
         this._processed.set(url, true);
         this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
-            this.loadInternal(url, advanced, 0, this.processLoadedDocument.bind(this));
+            this._checkInternalLink(url, advanced);
     }
 
     /**
@@ -272,9 +275,9 @@ export default class Checker extends Base {
         if (!this._isQueueFull()) {
             var next = this._pending.shift();
             if (next) {
-                this.load(next.url, next.advanced, 0, this.processLoadedDocument.bind(this));
+                this._checkInternalLink(next.url, next.advanced);
             } else if (!this._active.length) {
-                this.checkExternalLinks();
+                this._checkExternalLinks();
             }
         }
     }
@@ -286,5 +289,18 @@ export default class Checker extends Base {
      */
     _done() {
         return this.options.getOption('onDone')(this._statistic);
+    }
+
+    /**
+     * Returns request options hash
+     * @returns {{encoding: string, headers: *, timeout: *}}
+     * @private
+     */
+    _getRequestOptions() {
+        return {
+            encoding: 'utf-8',
+            headers: this.options.getOption('headers'),
+            timeout: this.options.getOption('requestTimeout')
+        };
     }
 }

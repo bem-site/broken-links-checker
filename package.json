@@ -30,9 +30,9 @@
     "bem-site-logger": "^0.0.x",
     "cheerio": "^0.19.x",
     "coa": "^1.0.1",
-    "easy-table": "^1.0.0",
     "got": "^4.1.1",
-    "lodash": "^3.10.1"
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6"
   },
   "devDependencies": {
     "babel": "^5.8.20",
