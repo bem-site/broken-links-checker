@@ -13,12 +13,13 @@ Broken links checker for website pages
 
 Broken links checker может быть использован как самостоятельное [NodeJS](http://nodejs.org) приложение так и [npm](https://www.npmjs.com) - зависимость которая может быть подключена к вашему проекту.
 
-В первом случае, для установки потребуется склонировать репозиторий проекта и переключится на
-последний стабильный тег:
+В первом случае, для установки потребуется склонировать репозиторий проекта, переключится на
+последний стабильный тег и установить [npm](https://www.npmjs.com) - зависимости:
 ```
 $ git clone https://github.com/bem-site/broken-links-checker.git
 $ cd broken-links-checker
 $ git checkout vx.y.z
+$ npm install
 ```
 
 Во втором случае его достаточно подключить как npm-зависимость:
