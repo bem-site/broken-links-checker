@@ -9,7 +9,7 @@ export default class ReporterHtml extends ReporterBase {
         this._logger.info('create html report');
         var report = {
                 name: options.url,
-                date: moment().format("DD-MM-YYYY:hh:mm:ss"),
+                date: moment().format('DD-MM-YYYY:hh:mm:ss'),
                 internalCount: statistic.getInternalCount(),
                 externalCount: statistic.getExternalCount(),
                 totalCount: statistic.getAllCount(),
@@ -17,12 +17,9 @@ export default class ReporterHtml extends ReporterBase {
                 broken: statistic.getBroken().getAll(),
                 options: options
             },
-            htmlTemplate,
-            compiled;
+            htmlTemplate = fs.readFileSync('./src/assets/report.html', { encoding: 'utf-8' }),
+            compiled = _.template(htmlTemplate);
 
-        htmlTemplate = fs.readFileSync('./src/assets/report.html', { encoding: 'utf-8' });
-        compiled = _.template(htmlTemplate);
-
-        return this.saveReportFile(configurationName, 'html', compiled({ report: report }));
+        return this.saveReportFile(configurationName, 'html', compiled({ report: report }, report.date));
     }
 }

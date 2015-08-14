@@ -36,12 +36,12 @@ export default class LinkAnalyzer {
     }
 
     /**
-     * Getter for _url
-     * @returns {String} - root url
-     * @getter
+     * Checks if given url is external
+     * @param  {String}  url - request url
+     * @return {boolean} true if url is external. false otherwise
      */
-    get url() {
-        return this._url;
+    isExternal(url) {
+        return url.indexOf(this._url['hostname']) < 0;
     }
 
     /**

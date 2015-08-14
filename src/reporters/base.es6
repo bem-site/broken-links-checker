@@ -43,11 +43,12 @@ export default class ReporterBase {
      * @param {String} configurationName - name of configuration
      * @param {String} type - report type
      * @param {String} content - report content
+     * @param {String} date - formatted date
      * @returns {Promise}
      */
-    saveReportFile(configurationName, type, content) {
+    saveReportFile(configurationName, type, content, date = moment().format('DD-MM-YYYY:hh:mm:ss')) {
         this.createReportFolder(configurationName);
-        var fileName = `${moment().format("DD-MM-YYYY:hh:mm:ss")}.${type}`,
+        var fileName = `${date}.${type}`,
             filePath = path.join(Util.getReportsDirectory(), configurationName, fileName);
 
         return new Promise((resolve, reject) => {

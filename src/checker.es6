@@ -104,12 +104,14 @@ export default class Checker extends Base {
             var href = $(this).attr('href');
 
             if (href) {
-                let url = document.resolve(href.split('#')[ 0 ]);
+                let url = document.resolve(href.split('#')[ 0 ]),
+                    func;
+
                 if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
                     return;
                 }
 
-                if (url.indexOf(_this._linkAnalyzer.url['hostname']) < 0) {
+                if(_this._linkAnalyzer.isExternal(url)) {
                     _this._external.set(url, { page: documentUrl, href: href });
                 } else {
                     _this._addToQueue(url, { page: documentUrl, href: href });
@@ -226,7 +228,7 @@ export default class Checker extends Base {
         if (!this._external.size) {
             return Promise.resolve();
         }
-        
+
         this._logger.info('Start to verify external links ...');
 
         var portions = _.chunk(Array.from(this._external), 100);
@@ -277,18 +279,11 @@ export default class Checker extends Base {
             if (next) {
                 this._checkInternalLink(next.url, next.advanced);
             } else if (!this._active.length) {
-                return this._checkExternalLinks().then(this._done.bind(this));
+                return this._checkExternalLinks().then(() => {
+                    this.options.getOption('onDone')(this._statistic);
+                });
             }
         }
-    }
-
-    /**
-     * Done callback function. Calls configured onDone callback with statistic argument
-     * @return {*}
-     * @private
-     */
-    _done() {
-        return this.options.getOption('onDone')(this._statistic);
     }
 
     /**
