@@ -104,8 +104,7 @@ export default class Checker extends Base {
             var href = $(this).attr('href');
 
             if (href) {
-                let url = document.resolve(href.split('#')[ 0 ]),
-                    func;
+                let url = document.resolve(href.split('#')[ 0 ]);
 
                 if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
                     return;
