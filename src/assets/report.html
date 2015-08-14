@@ -3,76 +3,102 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>Broken Link Checker Report</title>
+    <link type="text/css" rel="stylesheet" href="../../node_modules/materialize-css/bin/materialize.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 <style>
-    .table {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        border: 1px solid #111;
-        border-collapse: collapse;
-    }
-    .table__th {
-        border: 1px solid #666;
-        font-size: large;
-        background-color: #fc8c84;
-    }
-    .table__th_type_number {
-        width: 50px;
-    }
-    .table__td_type_number {
-        width: 50px;
-    }
-    .table__th_type_status-code {
-        width: 120px;
-    }
-    .table__td_type_status-code {
-        width: 120px;
-    }
-    .table__td {
-        padding-left: 3px;
-        border: 1px solid #666;
-        text-align: left;
-    }
+
 </style>
 <body>
-    <div class="header">
-        <p class="header__internal">
-            <span class="header__label">Internal Links:</span>
-            <span class="header__value"><%= report.internalCount %></span>
-        </p>
-        <p class="header__external">
-            <span class="header__label">External Links:</span>
-            <span class="header__value"><%= report.externalCount %></span>
-        </p>
-        <p class="header__total">
-            <span class="header__label">Total Links:</span>
-            <span class="header__value"><%= report.totalCount %></span>
-        </p>
-        <p class="header__broken">
-            <span class="header__label">Broken Links:</span>
-            <span class="header__value"><%= report.brokenCount %></span>
-        </p>
+    <div class="row">
+        <div class="col s12">
+            <div class="section">
+                <h3>Report: <%= report.name %></h3>
+                <p><%= report.date %></p>
+                <h5>Options</h5>
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Mode</th>
+                            <th>Concurrency</th>
+                            <th>Request retries amount</th>
+                            <th>Request timeout</th>
+                            <th>Request accepted schemes</th>
+                            <th>Check external urls</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= report.options.mode %></td>
+                            <td><%= report.options.concurrent %></td>
+                            <td><%= report.options.requestRetriesAmount %></td>
+                            <td><%= report.options.requestTimeout %></td>
+                            <td><%= report.options.acceptedSchemes %></td>
+                            <td><%= report.options.checkExternalUrls %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <div class="broken">
-        <table class="table">
-            <tr>
-                <th class="table__th table__th_type_number">#</th>
-                <th class="table__th table__th_type_status-code">Status Code</th>
-                <th class="table__th table__th_type_href">Href</th>
-                <th class="table__th table__th_type_page-url">Page Url</th>
-            </tr>
-            <% _.forEach(report.broken, function(item, index) { %>
-            <tr>
-                <td class="table__td table__td_type_number"><%- index %></td>
-                <td class="table__td table__td_type_status-code"><%- item.code %></td>
-                <td class="table__td table__td_type_href"><%- item.advanced.href %></td>
-                <td class="table__td table__td_type_page-url">
-                    <a href="<%- item.advanced.page %>"><%- item.advanced.page %></a>
-                </td>
-            </tr>
-            <% }); %>
-        </table>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s12">
+            <div class="section">
+                <h5>Summary</h5>
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>Internal Links</th>
+                            <th>External Links</th>
+                            <th>Broken Links</th>
+                            <th>Total Links</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><%= report.internalCount %></td>
+                            <td><%= report.externalCount %></td>
+                            <td><%= report.brokenCount %></td>
+                            <td><%= report.totalCount %></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    <div class="divider"></div>
+    <div class="row">
+        <div class="col s12">
+            <div class="section">
+                <h5>Broken Links</h5>
+                <table class="bordered striped hoverable responsive-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Status Code</th>
+                            <th>Href</th>
+                            <th>Page Url</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% _.forEach(report.broken, function(item, index) { %>
+                    <tr>
+                        <td><%- index %></td>
+                        <td><%- item.code %></td>
+                        <td><%- item.advanced.href %></td>
+                        <td>
+                            <a href="<%- item.advanced.page %>"><%- item.advanced.page %></a>
+                        </td>
+                    </tr>
+                    <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="../../node_modules/materialize-css/bin/materialize.js"></script>
 </body>
 </html>

@@ -40,6 +40,7 @@ export default function () {
             .name('mode')
             .title('Mode of analyze ("website", "section", "page")')
             .short('m').long('mode')
+            .def('website')
             .end()
         .act((options) => {
             action.run(options);

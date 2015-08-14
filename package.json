@@ -32,6 +32,7 @@
     "coa": "^1.0.1",
     "got": "^4.1.1",
     "lodash": "^3.10.1",
+    "materialize-css": "^0.96.1",
     "moment": "^2.10.6"
   },
   "devDependencies": {
@@ -45,7 +46,8 @@
     "mocha-lcov-reporter": "0.0.x",
     "mock-fs": "^3.0.0",
     "serve-static": "^1.10.0",
-    "should": "~6.x"
+    "should": "~6.x",
+    "vow": "^0.4.10"
   },
   "scripts": {
     "jshint": "node_modules/.bin/jshint --extra-ext .es6 .",

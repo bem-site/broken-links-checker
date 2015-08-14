@@ -1,23 +1,39 @@
 var Url = require('url'),
+    vow = require('vow'),
     should = require('should'),
+    Statistic = require('../../lib/model/statistic'),
     Checker = require('../../lib/checker');
 
 describe('checker', function () {
+    var server, port;
+
+        before(function (done) {
+            try {
+                port = process.env.PORT || 3000,
+                server = require('../mock/server');
+                setTimeout(function () {
+                    done();
+                }, 1000);
+            } catch(error) {
+                done();
+            }
+        });
+
+
     describe('constructor', function () {
         function assertDefault(checker) {
-            var options = checker.options,
-                rules = checker.rules;
+            var options = checker.options;
 
             options.getOption('concurrent').should.equal(Checker.DEFAULT.concurrent);
+            options.getOption('checkExternalUrls').should.equal(Checker.DEFAULT.checkExternalUrls);
+            options.getOption('requestRetriesAmount').should.equal(Checker.DEFAULT.requestRetriesAmount);
+            options.getOption('requestTimeout').should.equal(Checker.DEFAULT.requestTimeout);
+            options.getOption('mode').should.equal(Checker.DEFAULT.mode)
+
             should.deepEqual(options.getOption('requestHeaders'), Checker.DEFAULT.requestHeaders);
-            should.deepEqual(options.getOption('requestRetriesAmount'), Checker.DEFAULT.requestRetriesAmount);
-            should.deepEqual(options.getOption('requestTimeout'), Checker.DEFAULT.requestTimeout);
-
             should.deepEqual(options.getOption('onDone'), checker.onDone.bind(checker));
-
             should.deepEqual(options.getOption('acceptedSchemes'), Checker.DEFAULT.acceptedSchemes);
             should.deepEqual(options.getOption('excludeLinkPatterns'), Checker.DEFAULT.excludeLinkPatterns);
-            options.getOption('checkExternalUrls').should.equal(Checker.DEFAULT.checkExternalUrls);
         }
 
         it('should be initialized with default params if options were not set', function () {
@@ -77,21 +93,44 @@ describe('checker', function () {
         });
     });
 
-    describe('crawl mock server', function () {
-        var server, port;
+    describe('_getRequestOptions', function () {
+        it('should return valid request options object', function () {
+            var checker = new Checker();
+            should.deepEqual(checker._getRequestOptions(), {
+                encoding: 'utf-8',
+                headers: { 'user-agent': 'node-spider' },
+                timeout: 5000
+            });
+        });
+    });
 
-        before(function (done) {
-            try {
-                port = process.env.PORT || 3000,
-                server = require('../mock/server');
-                setTimeout(function () {
-                    done();
-                }, 1000);
-            } catch(error) {
-                done();
-            }
+    describe('_checkExternalLink', function () {
+        var checker;
+
+        beforeEach(function () {
+            checker = new Checker();
+            checker._statistic = Statistic.create();
+            checker._pending = [];
+            checker._active = [];
         });
 
+        it('should check existed existed external link', function () {
+            var item = ['http://yandex.ru', { href: 'http://yandex.ru', page: 'http://my.site.com' }];
+            return checker._checkExternalLink(item).then(function () {
+                checker._statistic.getExternalCount().should.equal(1);        
+            });
+        });
+
+        it('should check existed non-existed external link', function () {
+            var item = ['http://invlid-url', { href: 'http://invlid-url', page: 'http://my.site.com' }];
+            return checker._checkExternalLink(item).then(function () {
+                checker._statistic.getExternalCount().should.equal(1);
+                checker._statistic.getBrokenCount().should.equal(1);        
+            });
+        });
+    });          
+
+    describe('test mock server', function () {
         it('should crawl pages', function (done) {
             var checker = new Checker({
                 onDone: function (statistic) {
@@ -115,7 +154,6 @@ describe('checker', function () {
             checker.start('http://localhost:' + port);
         });
 
-        /*
         it('should check outer urls', function (done) {
             var checker = new Checker({
                 checkExternalUrls: true,
@@ -124,9 +162,7 @@ describe('checker', function () {
                     done();
                 }
             });
-
             checker.start('http://localhost:' + port);
         });
-        */
     });
 });

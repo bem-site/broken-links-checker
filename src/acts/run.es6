@@ -26,27 +26,37 @@ export function run (options) {
         throw new Error('Configuration file not found');
     }
 
-    config.onDone = (statistic) => {
-        logger.info('finish to analyze pages');
-
-        logger
-            .info('-- Internal urls: [%s]', statistic.getInternalCount())
-            .info('-- External urls: [%s]', statistic.getExternalCount())
-            .info('-- Broken urls: [%s]', statistic.getBrokenCount())
-            .info('-- Total urls: [%s]', statistic.getAllCount())
-            .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
-
-        return Promise.all[
-            [(new ReporterJson(options)), (new ReporterHtml(options))].map(item => {
-                return item.createReport(path.basename(configFileName, '.js'), statistic);
-            })];
-    };
-
     ['concurrent', 'requestRetriesAmount', 'requestTimeout', 'checkExternalUrls', 'mode'].forEach(item => {
         if (options[item]) {
             config[item] = options[item];
         }
     });
 
-    (new Checker(config)).start(options.url || config.url);
+    return new Promise((resolve, reject) => {
+        config.onDone = (statistic) => {
+            logger.info('finish to analyze pages');
+
+            logger
+                .info('-- Internal urls: [%s]', statistic.getInternalCount())
+                .info('-- External urls: [%s]', statistic.getExternalCount())
+                .info('-- Broken urls: [%s]', statistic.getBrokenCount())
+                .info('-- Total urls: [%s]', statistic.getAllCount())
+                .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
+
+            var reporters = [
+                new ReporterJson(options), 
+                new ReporterHtml(options)
+            ];
+
+            reporters = reporters.map(item => {
+                return item.createReport(path.basename(configFileName, '.js'), statistic, config);
+            });
+
+             return Promise.all(reporters)
+                .then(() => { resolve(); })
+                .catch((error) => { reject(error); });
+        };
+
+        (new Checker(config)).start(options.url || config.url);
+    });
 }

@@ -190,7 +190,7 @@ export default class Checker extends Base {
 
     /**
      * Checks given external link item
-     * @param {Object} item - external link item object
+     * @param {Object[]} item - external link item object
      * @param {String} item.url - external link url
      * @param {Object} item.advanced - external link advanced meta data object
      * @returns {Promise}
@@ -224,9 +224,9 @@ export default class Checker extends Base {
      */
     _checkExternalLinks() {
         if (!this._external.size) {
-            return this._done.call(this);
+            return Promise.resolve();
         }
-
+        
         this._logger.info('Start to verify external links ...');
 
         var portions = _.chunk(Array.from(this._external), 100);
@@ -234,7 +234,7 @@ export default class Checker extends Base {
             return prev.then(() => {
                 return Promise.all(portion.map(this._checkExternalLink.bind(this)));
             });
-        }, Promise.resolve()).then(this._done.bind(this));
+        }, Promise.resolve());
     }
 
     /**
@@ -277,7 +277,7 @@ export default class Checker extends Base {
             if (next) {
                 this._checkInternalLink(next.url, next.advanced);
             } else if (!this._active.length) {
-                this._checkExternalLinks();
+                return this._checkExternalLinks().then(this._done.bind(this));
             }
         }
     }
@@ -299,7 +299,7 @@ export default class Checker extends Base {
     _getRequestOptions() {
         return {
             encoding: 'utf-8',
-            headers: this.options.getOption('headers'),
+            headers: this.options.getOption('requestHeaders'),
             timeout: this.options.getOption('requestTimeout')
         };
     }
