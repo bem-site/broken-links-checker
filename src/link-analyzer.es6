@@ -8,20 +8,25 @@ import Checker from './checker';
 export default class LinkAnalyzer {
     /**
      * Initialize predefined skip rules for prevent deeper crawling for given url
-     * @param {String} initial - initial url
-     * @param {Object} options - options object
+     * @param {String} initial url
+     * @param {Object} options object
      * @constructor
      */
     constructor(initial, options) {
+        /**
+         * Parsed url object from Url.parse
+         * @param  {Object} initial url - base (root) url where analyze started from
+         * @return {Object} options object
+         */
         this._url = Url.parse(initial);
         this._options = options;
     }
 
     /**
      * Returns true if anyone of skip conditions returns true
-     * @param {String} url - url of link
-     * @param {String} baseUrl - url of page where link is
-     * @returns {boolean} — result flag
+     * @param {String} url url of link
+     * @param {String} baseUrl url of page where link is
+     * @returns {boolean} result flag
      * @public
      */
     isNeedToSkipUrl(url, baseUrl) {
@@ -37,8 +42,9 @@ export default class LinkAnalyzer {
 
     /**
      * Checks if given url is external
-     * @param  {String}  url - request url
+     * @param  {String}  url request url
      * @return {boolean} true if url is external. false otherwise
+     * @public
      */
     isExternal(url) {
         return url.indexOf(this._url['hostname']) < 0;
@@ -46,8 +52,8 @@ export default class LinkAnalyzer {
 
     /**
      * Check if protocol of given url satisfies acceptedSchemes criteria
-     * @param {String} url - request url
-     * @returns {boolean} — result flag
+     * @param {String} url request url
+     * @returns {boolean} result flag
      * @private
      */
     _skipNonAcceptableProtocols(url) {
@@ -56,9 +62,9 @@ export default class LinkAnalyzer {
 
     /**
      * Checks if given url has the different hostname then initial
-     * (If 'checkExternalUrls' rule is set to true)
-     * @param {String} url — request url
-     * @returns {boolean} — result flag
+     * (If 'checkExternalUrls'rule is set to true)
+     * @param {String} url request url
+     * @returns {boolean} result flag
      * @private
      */
     _skipExternalUrls(url) {
@@ -67,8 +73,8 @@ export default class LinkAnalyzer {
 
     /**
      * Checks if given url has host different then host of initial url
-     * @param {String} url — request url
-     * @returns {boolean} — result flag
+     * @param {String} url request
+     * @returns {boolean} result flag
      * @private
      */
     _skipExcludedUrls(url) {
@@ -79,7 +85,7 @@ export default class LinkAnalyzer {
 
     /**
      * Checks if given url is need to be check depending on mode configuration option
-     * @type {boolean} - result flag
+     * @type {boolean} result flag
      * @private
      */
     _skipOnMode(url, baseUrl) {

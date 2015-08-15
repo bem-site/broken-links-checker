@@ -1,6 +1,7 @@
 var Url = require('url'),
     vow = require('vow'),
     should = require('should'),
+    Model = require('../../lib/model/model');
     Statistic = require('../../lib/model/statistic'),
     Checker = require('../../lib/checker');
 
@@ -109,26 +110,25 @@ describe('checker', function () {
 
         beforeEach(function () {
             checker = new Checker();
-            checker._statistic = Statistic.create();
-            checker._pending = [];
-            checker._active = [];
+            checker.initStatistic(new Statistic());
+            checker.initModel(new Model());
         });
 
         it('should check existed existed external link', function () {
             var item = ['http://yandex.ru', { href: 'http://yandex.ru', page: 'http://my.site.com' }];
             return checker._checkExternalLink(item).then(function () {
-                checker._statistic.getExternalCount().should.equal(1);        
+                checker.statistic.getExternalCount().should.equal(1);
             });
         });
 
         it('should check existed non-existed external link', function () {
             var item = ['http://invlid-url', { href: 'http://invlid-url', page: 'http://my.site.com' }];
             return checker._checkExternalLink(item).then(function () {
-                checker._statistic.getExternalCount().should.equal(1);
-                checker._statistic.getBrokenCount().should.equal(1);        
+                checker.statistic.getExternalCount().should.equal(1);
+                checker.statistic.getBrokenCount().should.equal(1);
             });
         });
-    });          
+    });
 
     describe('test mock server', function () {
         it('should crawl pages', function (done) {

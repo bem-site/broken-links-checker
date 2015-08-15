@@ -17,7 +17,7 @@ export function createConfigsDir() {
 
 /**
  * Creates stub configuration file with default params
- * @return {Object} - stub config object
+ * @return {Object} stub config object
  */
 export function createConfigStub() {
     return [
@@ -39,7 +39,7 @@ export function createConfigStub() {
 
 /**
  * Generates stub configuration file inside configuration folder
- * @param  {String} fileName - name of file
+ * @param  {String} fileName name of file
  * @return {Boolean} returns true if success, false otherwise
  */
 export function createConfigFile(fileName) {

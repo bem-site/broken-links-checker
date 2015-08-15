@@ -4,13 +4,26 @@ import moment from 'moment';
 import Logger from 'bem-site-logger';
 import Util from '../util';
 
+/**
+ * @class ReporterBase
+ * @desc Base reporter class
+ */
 export default class ReporterBase {
 
+    /**
+     * constructor
+     * @param  {Object} reporter options
+     */
     constructor(options = {}) {
         options.logger = options.logger || {
             level: 'info'
         };
         options.logger.useDate = false;
+
+        /**
+         * Logger instance
+         * @param {Logger} options.logger
+         */
         this._logger = Logger.setOptions(options.logger).createLogger(module);
     }
 
@@ -27,7 +40,7 @@ export default class ReporterBase {
 
     /**
      * Creates folder named as given configurationName inside reports folder
-     * @param  {String} configurationName - name of configuration file
+     * @param  {String} configurationName name of configuration file
      * @return void 0
      * @protected
      */
@@ -40,10 +53,10 @@ export default class ReporterBase {
 
     /**
      * Saves report to file
-     * @param {String} configurationName - name of configuration
-     * @param {String} type - report type
-     * @param {String} content - report content
-     * @param {String} date - formatted date
+     * @param {String} configurationName name of configuration
+     * @param {String} type of report
+     * @param {String} content of report
+     * @param {String} date formatted
      * @returns {Promise}
      */
     saveReportFile(configurationName, type, content, date = moment().format('DD-MM-YYYY:hh:mm:ss')) {

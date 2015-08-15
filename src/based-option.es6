@@ -16,6 +16,10 @@ export default class BasedOption extends Base {
      * @public
      */
     setOption (options, name, defaultValue) {
+        /**
+         * Options hash
+         * @type {Object}
+         */
         this._options = this._options || {};
         this._options[name] = options[name] || defaultValue;
         if (!_.isFunction(this._options[name]) && !_.isObject(this._options[name])) {
@@ -26,7 +30,7 @@ export default class BasedOption extends Base {
 
     /**
      * Returns option value by given option name
-     * @param {String} name — option name
+     * @param {String} name of option
      * @returns {*}
      * @public
      */

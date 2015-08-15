@@ -12,9 +12,22 @@ export default class Statistic {
      * @constructor
      */
     constructor() {
+        /**
+         * Brokens links model
+         * @return {Broken}
+         */
         this._broken = Broken.create();
 
+        /**
+         * Number of processed external links
+         * @type {Number}
+         */
         this._countExternal = 0;
+
+        /**
+         * Number of processed internal links
+         * @type {Number}
+         */
         this._countInternal = 0;
     }
 

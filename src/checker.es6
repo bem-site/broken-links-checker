@@ -2,6 +2,7 @@ import _ from 'lodash';
 import got  from 'got';
 import Base  from './base';
 import BasedOptions  from './based-option';
+import Model from './model/model';
 import Document  from './model/document';
 import Statistic  from './model/statistic';
 import LinkAnalyzer from './link-analyzer';
@@ -29,8 +30,12 @@ export default class Checker extends Base {
     constructor(options = {}) {
         super(options, module);
 
-        this._logger.info('Initialize crawler instance');
+        this.logger.info('Initialize crawler instance');
 
+        /**
+         * Checker options
+         * @type {BasedOptions}
+         */
         this._options = new BasedOptions();
 
         const def = this.constructor.DEFAULT;
@@ -52,6 +57,68 @@ export default class Checker extends Base {
      */
     get options() {
         return this._options;
+    }
+
+    /**
+     * Returns logger instance
+     * @return {Logger} logger
+     */
+    get logger() {
+        return this._logger;
+    }
+
+    /**
+     * Returns model instance
+     * @return {Model} model
+     */
+    get model() {
+        return this._model;
+    }
+
+    /**
+     * Returns instance of LinkAnalyzer class
+     * @return {LinkAnalyzer} linkAnalyzer
+     */
+    get linkAnalyzer() {
+        return this._linkAnalyzer;
+    }
+
+    /**
+     * Returns instance of Statistic class
+     * @return {Statistic} statistic
+     */
+    get statistic() {
+        return this._statistic;
+    }
+
+    /**
+     * Sets model instance
+     * @param {Model} model instance
+     * @return {Checker}
+     */
+    initModel(model) {
+        this._model = model;
+        return this;
+    }
+
+    /**
+     * Sets linkAnalyzer instance
+     * @param {LinkAnalyzer} linkAnalyzer
+     * @return {Checker}
+     */
+    initLinkAnalyzer(linkAnalyzer) {
+        this._linkAnalyzer = linkAnalyzer;
+        return this;
+    }
+
+    /**
+     * Sets Statistic instance
+     * @param  {Statistic} statistic
+     * @return {Checker}
+     */
+    initStatistic(statistic) {
+        this._statistic = statistic;
+        return this;
     }
 
     /**
@@ -104,14 +171,14 @@ export default class Checker extends Base {
             var href = $(this).attr('href');
 
             if (href) {
-                let url = document.resolve(href.split('#')[ 0 ]);
+                let url = document.resolve(href.split('#')[0]);
 
-                if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
+                if (_this.linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
                     return;
                 }
 
-                if(_this._linkAnalyzer.isExternal(url)) {
-                    _this._external.set(url, { page: documentUrl, href: href });
+                if(_this.linkAnalyzer.isExternal(url)) {
+                    _this.model.addToExternal(url, documentUrl, href);
                 } else {
                     _this._addToQueue(url, { page: documentUrl, href: href });
                 }
@@ -135,14 +202,11 @@ export default class Checker extends Base {
             throw new Error('Urls is not valid');
         }
 
-        this._pending = [];
-        this._active = [];
-        this._external = new Map();
-        this._processed = new Map();
-        this._linkAnalyzer = new LinkAnalyzer(url, this.options);
-        this._statistic = Statistic.create();
-
-        this._logger
+        this
+            .initStatistic(new Statistic())
+            .initModel(new Model())
+            .initLinkAnalyzer(new LinkAnalyzer(url, this.options))
+            .logger
             .info('Start to analyze pages for: => %s', url)
             .info('It can be take a long time. Please wait ...');
         this._addToQueue(url, { page: url });
@@ -162,10 +226,11 @@ export default class Checker extends Base {
      * @param {String} url - link url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
+     * @private
      */
     _checkInternalLink(url, advanced, attempt = 0) {
         if (attempt === 0) {
-            this._active.push(url);
+            this.model.addToActive(url);
         }
 
         got.get(url, this._getRequestOptions(), (error, data, res) => {
@@ -173,18 +238,17 @@ export default class Checker extends Base {
                  if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
                      return this._checkInternalLink(url, advanced, ++attempt);
                  } else {
-                     this._statistic.getBroken().add(url, advanced, error.statusCode);
-                     this._logger.warn('Broken [%s] link: => %s on page: => %s',
+                     this.statistic.getBroken().add(url, advanced, error.statusCode);
+                     this.logger.warn('Broken [%s] link: => %s on page: => %s',
                          error.statusCode, advanced.href, advanced.page);
                  }
                  return this._onFinishLoad(url);
             }
 
-            this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
-                this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+            this.logger.debug('[%s] [%s] Receive [%s] for url: => %s',
+                this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-
-            this._statistic.increaseInternalCount();
+            this.statistic.increaseInternalCount();
             this.processLoadedDocument(new Document(url, data));
         });
     }
@@ -204,15 +268,15 @@ export default class Checker extends Base {
         return new Promise(resolve => {
             got.head(url, this._getRequestOptions(), (error, data, res) => {
                 if (error) {
-                    this._statistic.getBroken().add(url, advanced, error.statusCode);
-                    this._logger.warn('Broken [%s] link: => %s on page: => %s',
+                    this.statistic.getBroken().add(url, advanced, error.statusCode);
+                    this.logger.warn('Broken [%s] link: => %s on page: => %s',
                         error.statusCode, advanced.href, advanced.page);
                 }
 
-                this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',
-                    this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+                this.logger.debug('[%s] [%s] Receive [%s] for url: => %s',
+                    this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-                this._statistic.increaseExternalCount();
+                this.statistic.increaseExternalCount();
                 resolve();
             });
         });
@@ -224,27 +288,18 @@ export default class Checker extends Base {
      * @private
      */
     _checkExternalLinks() {
-        if (!this._external.size) {
+        if (!this.model.areExternal()) {
             return Promise.resolve();
         }
 
-        this._logger.info('Start to verify external links ...');
+        this.logger.info('Start to verify external links ...');
 
-        var portions = _.chunk(Array.from(this._external), 100);
+        var portions = _.chunk(Array.from(this.model.external), 100);
         return portions.reduce((prev, portion) => {
             return prev.then(() => {
                 return Promise.all(portion.map(this._checkExternalLink.bind(this)));
             });
         }, Promise.resolve());
-    }
-
-    /**
-     * Checks if loading queue is full
-     * @returns {Boolean}
-     * @private
-     */
-    _isQueueFull() {
-        return this._active.length >= this.options.getOption('concurrent');
     }
 
     /**
@@ -256,12 +311,11 @@ export default class Checker extends Base {
     _addToQueue(url, advanced) {
         url = url.replace(/\/$/, '');
 
-        if (this._processed.has(url)) {
-            return;
+        if (this.model.addToProcessed(url)) {
+            this.model.isQueueFull(this.options.getOption('concurrent')) ?
+                this.model.addToPending(url, advanced) :
+                this._checkInternalLink(url, advanced);
         }
-        this._processed.set(url, true);
-        this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
-            this._checkInternalLink(url, advanced);
     }
 
     /**
@@ -271,15 +325,14 @@ export default class Checker extends Base {
      * @private
      */
     _onFinishLoad(url) {
-        this._active.splice(this._active.indexOf(url), 1);
-
-        if (!this._isQueueFull()) {
-            var next = this._pending.shift();
+        this.model.removeFromActive(url);
+        if (!this.model.isQueueFull(this.options.getOption('concurrent'))) {
+            var next = this.model.removeFromPending();
             if (next) {
                 this._checkInternalLink(next.url, next.advanced);
-            } else if (!this._active.length) {
+            } else if (!this.model.areActive()) {
                 return this._checkExternalLinks().then(() => {
-                    this.options.getOption('onDone')(this._statistic);
+                    this.options.getOption('onDone')(this.statistic);
                 });
             }
         }

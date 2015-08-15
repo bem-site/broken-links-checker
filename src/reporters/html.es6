@@ -3,6 +3,10 @@ import _ from 'lodash';
 import moment from 'moment';
 import ReporterBase from './base';
 
+/**
+ * @class ReporterHtml
+ * @desc Class for creating html report
+ */
 export default class ReporterHtml extends ReporterBase {
 
     createReport(configurationName, statistic, options) {

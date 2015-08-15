@@ -1,5 +1,9 @@
 import ReporterBase from './base';
 
+/**
+ * @class ReporterJson
+ * @desc Class for creating json report
+ */
 export default class ReporterJson extends ReporterBase {
 
     createReport(configurationName, statistic) {

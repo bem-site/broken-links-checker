@@ -8,12 +8,12 @@ const logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger
 
 /**
  * Runs application from cli interface
- * @param {Object}    [options]                            — configuration object
- * @param {String}    [options.mode]                       - mode of checking ("website", "section" or "page")
- * @param {Number}    [options.concurrent]                 — number of concurrent requests
- * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first
- * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)
- * @param {Boolean}   [options.checkExternalUrls]          — set `true` for check outer links
+ * @param {Object}    [options]                            configuration object
+ * @param {String}    [options.mode]                       mode of checking ("website", "section" or "page")
+ * @param {Number}    [options.concurrent]                 number of concurrent requests
+ * @param {Number}    [options.requestRetriesAmount]       number of attempts for request if it fails at first
+ * @param {Number}    [options.requestTimeout]             request timeout (in milliseconds)
+ * @param {Boolean}   [options.checkExternalUrls]          set `true` for check outer links
  * @trows Error
  */
 export function run (options) {
@@ -44,7 +44,7 @@ export function run (options) {
                 .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());
 
             var reporters = [
-                new ReporterJson(options), 
+                new ReporterJson(options),
                 new ReporterHtml(options)
             ];
 
