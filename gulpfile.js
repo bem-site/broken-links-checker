@@ -2,7 +2,6 @@ var fs = require('fs'),
     gulp = require('gulp'),
     babel = require('gulp-babel'),
     jscs = require('gulp-jscs'),
-    notify = require('gulp-notify'),
     jshint = require('gulp-jshint'),
     esdoc = require('gulp-esdoc'),
     ghPages = require('gulp-gh-pages'),
@@ -40,8 +39,7 @@ gulp.task('esdoc', function () {
 
 gulp.task('ghPages', function () {
     return gulp.src('./jsdoc/**/*')
-        .pipe(ghPages())
-        .pipe(notify({ message: 'gh-pages task complete' }));
+        .pipe(ghPages());
 });
 
 gulp.task('publish-doc', ['esdoc', 'ghPages']);
