@@ -48,9 +48,14 @@ gulp.task('esdoc', ['clean-jsdoc'], function () {
         .pipe(esdoc(esdocConfig));
 });
 
-gulp.task('ghPages', function () {
+gulp.task('copy-logo', ['esdoc'], function() {
+    return gulp.src('./logo.gif')
+        .pipe(gulp.dest('./jsdoc'));
+});
+
+gulp.task('ghPages', ['esdoc', 'copy-logo'], function () {
     return gulp.src('./jsdoc/**/*')
         .pipe(ghPages());
 });
 
-gulp.task('publish-doc', ['esdoc', 'ghPages']);
+gulp.task('publish-doc', ['esdoc', 'copy-logo', 'ghPages']);
