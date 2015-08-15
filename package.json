@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Broken links checker tool fow web sites",
   "keywords": ["broken link", "broken url", "link", "url", "broken", "checker", "cli", "website crawler", "analyze"],
+  "homepage": "http://bem-site.github.io/broken-links-checker",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem-site/broken-links-checker.git"
