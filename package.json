@@ -2,9 +2,14 @@
   "name": "bs-broken-links-checker",
   "version": "0.0.1",
   "description": "Broken links checker tool fow web sites",
+  "keywords": ["broken link", "broken url", "link", "url", "broken", "checker", "cli", "website crawler", "analyze"],
   "repository": {
     "type": "git",
     "url": "git://github.com/bem-site/broken-links-checker.git"
+  },
+  "bugs": {
+      "url" : "https://github.com/bem-site/broken-links-checker/issues",
+      "email" : "andrey.kuznetsov48@yandex.ru"
   },
   "author": {
     "name": "Andrey Kuznetsov",
@@ -12,12 +17,10 @@
     "url": "http://github.com/tormozz48"
   },
   "maintainers": [
-    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ua> (http://github.com/tormozz48)"
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ru> (http://github.com/tormozz48)"
   ],
   "contributors": [
-    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ua> (http://github.com/tormozz48)",
-    "Nikolay Ilchenko <tavria@yandex-team.ru> (http://github.com/tavriaforever)",
-    "Gela Konstantinova <gela-d@yandex-team.ru> (http://github.com/gela-d)"
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ru> (http://github.com/tormozz48)"
   ],
   "engines": {
     "node": ">= 0.10.0"
@@ -39,9 +42,15 @@
     "babel": "^5.8.20",
     "connect": "^3.4.0",
     "esdoc": "^0.1.4",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.0",
+    "gulp-esdoc": "0.0.1",
+    "gulp-gh-pages": "^0.5.2",
+    "gulp-jscs": "^2.0.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-notify": "^2.2.0",
     "istanbul": "^0.3.x",
-    "jscs": "^1.11.x",
-    "jshint": "~2.8.x",
+    "jshint-stylish": "^2.0.1",
     "mocha": "~2.2.x",
     "mocha-lcov-reporter": "0.0.x",
     "mock-fs": "^3.0.0",
@@ -50,14 +59,13 @@
     "vow": "^0.4.10"
   },
   "scripts": {
-    "jshint": "node_modules/.bin/jshint --extra-ext .es6 .",
-    "jscs": "node_modules/.bin/jscs -c .jscs.js .",
-    "codestyle": "npm run jshint && npm run jscs",
-    "jsdoc": "esdoc -c esdoc.json",
-    "compile": "babel src --optional runtime --out-dir lib",
-    "pretest": "npm run codestyle && npm run compile",
-    "prepublish": "npm run compile",
-    "deps": "npm install && npm run compile",
+    "codestyle": "gulp codestyle",
+    "jsdoc": "gulp esdoc",
+    "publish-doc": "gulp publish-doc",
+    "compile": "gulp compile",
+    "pretest": "gulp pretest",
+    "prepublish": "gulp compile",
+    "deps": "npm install && gulp compile",
     "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
   },
   "readmeFilename": "README.md",
