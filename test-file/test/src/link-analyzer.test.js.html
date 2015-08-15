@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">test/src/link-analyzer.test.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="git://github.com/bem-site/broken-links-checker.git">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div data-ice="classWrap">
+  <h2>Class</h2>
+  <ul>
+    
+  <li data-ice="classDoc"><span><a href="class/src/base.es6~Base.html">Base</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/based-option.es6~BasedOption.html">BasedOption</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/broken.es6~BrokenUrls.html">BrokenUrls</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/util.es6~Util.html">Util</a></span></li>
+</ul>
+</div>
+
+
+
+<div data-ice="functionWrap">
+  <h2><a href="function/">Function</a></h2>
+  <ul>
+    
+  <li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdconfig">cmdconfig</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdrun">cmdrun</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdversion">cmdversion</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigFile">createConfigFile</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigStub">createConfigStub</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigsDir">createConfigsDir</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-run">run</a></span></li>
+</ul>
+</div>
+
+
+
+
+
+
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">test/src/link-analyzer.test.js</h1>
+<pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">var Url = require(&apos;url&apos;),
+    should = require(&apos;should&apos;),
+    BasedOption = require(&apos;../../lib/based-option&apos;);
+    LinkAnalyzer = require(&apos;../../lib/link-analyzer&apos;);
+
+describe(&apos;LinkAnalyzer&apos;, function () {
+    describe(&apos;constructor&apos;, function () {
+        var la;
+
+        beforeEach(function () {
+            la = new LinkAnalyzer(&apos;http://my.site.com&apos;, { foo: &apos;bar&apos; });
+        });
+
+        it(&apos;should have valid _url field value after initialization&apos;, function () {
+            should.deepEqual(la._url, Url.parse(&apos;http://my.site.com&apos;));
+        });
+
+        it(&apos;should have valid _options field value after initialization&apos;, function () {
+            should.deepEqual(la._options, { foo: &apos;bar&apos; });
+        });
+    });
+
+    describe(&apos;_skipNonAcceptableProtocols&apos;, function () {
+        var linkAnalyzer;
+
+        beforeEach(function () {
+            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com&apos;, new BasedOption());
+        });
+
+        it (&apos;should return true if scheme of given url does not exist in list of acceptable acceptedSchemes&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;acceptedSchemes&apos;, [&apos;http:&apos;, &apos;https:&apos;]);
+            linkAnalyzer._skipNonAcceptableProtocols(&apos;mailto://my.host/url1&apos;).should.equal(true);
+        });
+
+        it (&apos;should return false if scheme of given url exists in list of acceptable acceptedSchemes&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;acceptedSchemes&apos;, [&apos;http:&apos;, &apos;https:&apos;]);
+            linkAnalyzer._skipNonAcceptableProtocols(&apos;http://my.host/url1&apos;).should.equal(false);
+        });
+    });
+
+    describe(&apos;_skipExternalUrls&apos;, function () {
+        var linkAnalyzer;
+
+        beforeEach(function () {
+            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com&apos;, new BasedOption());
+        });
+
+        it (&apos;should return false if checkExternalUrls option is set to true&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;checkExternalUrls&apos;, true);
+            linkAnalyzer._skipExternalUrls(&apos;http://outer.host:80/url1&apos;).should.equal(false);
+        });
+
+        it (&apos;should return true if host of given url is different then host of initial url&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;checkExternalUrls&apos;, false);
+            linkAnalyzer._skipExternalUrls(&apos;http://outer.host:80/url1&apos;).should.equal(true);
+        });
+
+        it (&apos;should return false if host of given url is the same as host of initial url&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;checkExternalUrls&apos;, false);
+            linkAnalyzer._skipExternalUrls(&apos;http://my.site.com/url2&apos;).should.equal(false);
+        });
+
+    });
+
+    describe(&apos;_skipExcludedUrls&apos;, function () {
+        var linkAnalyzer;
+
+        beforeEach(function () {
+            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com&apos;, new BasedOption());
+        });
+
+        it (&apos;should return false in case of empty &quot;excludeLinkPatterns&quot; array&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;excludeLinkPatterns&apos;, []);
+            linkAnalyzer._skipExcludedUrls(&apos;http://my.site.com/url1&apos;).should.be.equal(false);
+        });
+
+        it (&apos;should return false if any of excluded patterns does not match given url&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;excludeLinkPatterns&apos;, [/\/foo1/i, /\/foo2/i]);
+            linkAnalyzer._skipExcludedUrls(&apos;http://my.site.com/url1&apos;).should.be.equal(false);
+        });
+
+        it (&apos;should return true if any excluded patterns matches on given url&apos;, function () {
+            linkAnalyzer._options.setOption({}, &apos;excludeLinkPatterns&apos;, [/\/foo1/i, /\/foo2/i]);
+            linkAnalyzer._skipExcludedUrls(&apos;http://my.site.com/foo1&apos;).should.be.equal(true);
+        });
+    });
+
+    describe(&apos;_skipOnMode&apos;, function () {
+        var linkAnalyzer;
+
+        beforeEach(function () {
+            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com&apos;, new BasedOption());
+        });
+
+        it(&apos;should return false for mode &quot;page&quot; and direct links of target page&apos;, function () {
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;page&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1&apos;, &apos;http://my.site.com&apos;).should.be.equal(false);     
+        });
+
+        it(&apos;should return true for mode &quot;page&quot; and non-direct links of target page&apos;, function () {
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;page&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);     
+        });
+
+        it(&apos;should return false for mode &quot;section&quot; and sub-links of initial link&apos;, function() {
+           linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(false);       
+        });
+
+        it(&apos;should return true for mode &quot;section&quot; and sibling of initial link&apos;, function() {
+           linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo21&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);       
+        });
+
+        it(&apos;should return true for mode &quot;section&quot; and parent of initial link&apos;, function() {
+           linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);       
+        });      
+    });
+
+    describe(&apos;isNeedToSkipUrl&apos;, function () {
+        var linkAnalyzer;
+
+        beforeEach(function () {
+            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com&apos;, new BasedOption());
+            linkAnalyzer._options.setOption({}, &apos;acceptedSchemes&apos;, [&apos;http:&apos;, &apos;https:&apos;]);
+            linkAnalyzer._options.setOption({}, &apos;checkExternalUrls&apos;, false);
+            linkAnalyzer._options.setOption({}, &apos;excludeLinkPatterns&apos;, [/\/foo1/i, /\/foo2/i]);
+        });
+
+        [
+            { url: &apos;mailto://my.site.com/url1&apos;, result: true },
+            { url: &apos;http://google.com&apos;, result: true },
+            { url: &apos;http://my.site.com/url1&apos;, result: false },
+            { url: &apos;http://my.site.com/foo1&apos;, result: true },
+            { url: &apos;http://my.site.com/url1/foo2&apos;, result: true },
+            { url: &apos;http://my.site.com/foo1/foo2&apos;, result: true },
+            { url: &apos;https://my.site.com/url2/&apos;, result: false },
+            { url: &apos;mailto://my.site.com/foo2&apos;, result: true },
+        ].forEach(function (item) {
+            it (&apos;&quot;isNeedToSkipUrl&quot; should return &quot;&apos;+ item.result + &apos;&quot; for url: &quot;&apos; + item.url + &apos;&quot;&apos;, function () {
+                linkAnalyzer.isNeedToSkipUrl(item.url).should.be.equal(item.result);
+            });
+        });
+    });
+})
+</code></pre>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

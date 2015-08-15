@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="git://github.com/bem-site/broken-links-checker.git">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div data-ice="classWrap">
+  <h2>Class</h2>
+  <ul>
+    
+  <li data-ice="classDoc"><span><a href="class/src/base.es6~Base.html">Base</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/based-option.es6~BasedOption.html">BasedOption</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/broken.es6~BrokenUrls.html">BrokenUrls</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/util.es6~Util.html">Util</a></span></li>
+</ul>
+</div>
+
+
+
+<div data-ice="functionWrap">
+  <h2><a href="function/">Function</a></h2>
+  <ul>
+    
+  <li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdconfig">cmdconfig</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdrun">cmdrun</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdversion">cmdversion</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigFile">createConfigFile</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigStub">createConfigStub</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigsDir">createConfigsDir</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-run">run</a></span></li>
+</ul>
+</div>
+
+
+
+
+
+
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index"><!-- # broken-links-checker -->
+<p>Broken links checker for website pages</p>
+<p><a href="http://www.npmjs.org/package/bs-broken-links-checker"><img src="http://img.shields.io/npm/v/bs-broken-links-checker.svg?style=flat" alt="NPM version"></a>
+<a href="https://coveralls.io/r/bem-site/broken-links-checker?branch=master"><img src="https://img.shields.io/coveralls/bem-site/broken-links-checker/master.svg" alt="Coveralls branch"></a>
+<a href="https://travis-ci.org/bem-site/broken-links-checker"><img src="https://img.shields.io/travis/bem-site/broken-links-checker.svg" alt="Travis"></a>
+<a href="https://codeclimate.com/github/bem-site/broken-links-checker"><img src="https://codeclimate.com/github/bem-site/broken-links-checker/badges/gpa.svg" alt="Code Climate"></a>
+<a href="https://david-dm.org/bem-site/broken-links-checker"><img src="https://img.shields.io/david/bem-site/broken-links-checker.svg" alt="David"></a></p>
+<p><img src="./logo.gif" alt="GitHub Logo"></p>
+<h2 id="-cli-">&#x420;&#x430;&#x431;&#x43E;&#x442;&#x430; &#x441; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x43E;&#x43C; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x43D;&#x43E;&#x439; &#x441;&#x442;&#x440;&#x43E;&#x43A;&#x438; (cli)</h2>
+<p>Broken links checker &#x43C;&#x43E;&#x436;&#x435;&#x442; &#x431;&#x44B;&#x442;&#x44C; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D; &#x43A;&#x430;&#x43A; &#x441;&#x430;&#x43C;&#x43E;&#x441;&#x442;&#x43E;&#x44F;&#x442;&#x435;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; <a href="http://nodejs.org">NodeJS</a> &#x43F;&#x440;&#x438;&#x43B;&#x43E;&#x436;&#x435;&#x43D;&#x438;&#x435; &#x442;&#x430;&#x43A; &#x438; <a href="https://www.npmjs.com">npm</a> - &#x437;&#x430;&#x432;&#x438;&#x441;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x44C; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x430;&#x44F; &#x43C;&#x43E;&#x436;&#x435;&#x442; &#x431;&#x44B;&#x442;&#x44C; &#x43F;&#x43E;&#x434;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D;&#x430; &#x43A; &#x432;&#x430;&#x448;&#x435;&#x43C;&#x443; &#x43F;&#x440;&#x43E;&#x435;&#x43A;&#x442;&#x443;.</p>
+<p>&#x412; &#x43F;&#x435;&#x440;&#x432;&#x43E;&#x43C; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x435;, &#x434;&#x43B;&#x44F; &#x443;&#x441;&#x442;&#x430;&#x43D;&#x43E;&#x432;&#x43A;&#x438; &#x43F;&#x43E;&#x442;&#x440;&#x435;&#x431;&#x443;&#x435;&#x442;&#x441;&#x44F; &#x441;&#x43A;&#x43B;&#x43E;&#x43D;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x440;&#x435;&#x43F;&#x43E;&#x437;&#x438;&#x442;&#x43E;&#x440;&#x438;&#x439; &#x43F;&#x440;&#x43E;&#x435;&#x43A;&#x442;&#x430;, &#x43F;&#x435;&#x440;&#x435;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x441;&#x44F; &#x43D;&#x430;
+&#x43F;&#x43E;&#x441;&#x43B;&#x435;&#x434;&#x43D;&#x438;&#x439; &#x441;&#x442;&#x430;&#x431;&#x438;&#x43B;&#x44C;&#x43D;&#x44B;&#x439; &#x442;&#x435;&#x433;, &#x443;&#x441;&#x442;&#x430;&#x43D;&#x43E;&#x432;&#x438;&#x442;&#x44C; <a href="https://www.npmjs.com">npm</a> - &#x437;&#x430;&#x432;&#x438;&#x441;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x438; &#x438; &#x441;&#x43A;&#x43E;&#x43C;&#x43F;&#x438;&#x43B;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x43A;&#x43E;&#x434;
+&#x434;&#x43B;&#x44F; &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x435;&#x43D;&#x438;&#x44F;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ git clone https://github.com/bem-site/broken-links-checker.git
+$ cd broken-links-checker
+$ git checkout vx.y.z
+$ npm run deps</code></pre>
+</code></pre><p>&#x412;&#x43E; &#x432;&#x442;&#x43E;&#x440;&#x43E;&#x43C; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x435; &#x435;&#x433;&#x43E; &#x434;&#x43E;&#x441;&#x442;&#x430;&#x442;&#x43E;&#x447;&#x43D;&#x43E; &#x43F;&#x43E;&#x434;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x43A;&#x430;&#x43A; npm-&#x437;&#x430;&#x432;&#x438;&#x441;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x44C;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ npm install --save bs-broken-links-checker</code></pre>
+</code></pre><h3 id="-">&#x418;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;:</h3>
+<p>&#x420;&#x430;&#x431;&#x43E;&#x442;&#x430; &#x441; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x43E;&#x43C; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; cli &#x441;&#x43E;&#x441;&#x442;&#x43E;&#x438;&#x442; &#x438;&#x437; 3-&#x445; &#x448;&#x430;&#x433;&#x43E;&#x432;:</p>
+<ol>
+<li>&#x413;&#x435;&#x43D;&#x435;&#x440;&#x430;&#x446;&#x438;&#x44F; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430; &#x434;&#x43B;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <a href="#config">config</a>.</li>
+<li>&#x417;&#x430;&#x43F;&#x443;&#x441;&#x43A; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <a href="#run">run</a>.</li>
+<li>&#x41F;&#x440;&#x43E;&#x441;&#x43C;&#x43E;&#x442;&#x440; &#x441;&#x433;&#x435;&#x43D;&#x435;&#x440;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; <code>*.html</code> &#x444;&#x430;&#x439;&#x43B;&#x430; &#x43E;&#x442;&#x447;&#x435;&#x442;&#x430;.</li>
+</ol>
+<h3 id="-">&#x41A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B;</h3>
+<ul>
+<li><a href="#config">config</a> - &#x433;&#x435;&#x43D;&#x435;&#x440;&#x430;&#x446;&#x438;&#x44F; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430;</li>
+<li><a href="#run">run</a> - &#x437;&#x430;&#x43F;&#x443;&#x441;&#x43A; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;</li>
+<li><a href="#version">version</a> - &#x43F;&#x440;&#x43E;&#x441;&#x43C;&#x43E;&#x442;&#x440; &#x432;&#x435;&#x440;&#x441;&#x438;&#x438; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;</li>
+</ul>
+<h3 id="config">config</h3>
+<p>&#x414;&#x430;&#x43D;&#x43D;&#x430;&#x44F; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x430; &#x43F;&#x440;&#x435;&#x434;&#x43D;&#x430;&#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x430; &#x434;&#x43B;&#x44F; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x43D;&#x438;&#x44F; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430; &#x432; <code>.js</code> &#x444;&#x43E;&#x440;&#x43C;&#x430;&#x442;&#x435;.
+&#x41D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x44C; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435; &#x43E;&#x431;&#x443;&#x441;&#x43B;&#x43E;&#x432;&#x43B;&#x435;&#x43D;&#x430; 2-&#x43C;&#x44F; &#x43F;&#x440;&#x438;&#x447;&#x438;&#x43D;&#x430;&#x43C;&#x438;:</p>
+<ul>
+<li><ul>
+<li>&#x433;&#x440;&#x43E;&#x43C;&#x43E;&#x437;&#x434;&#x43A;&#x43E;&#x441;&#x442;&#x44C;&#x44E; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x439; &#x447;&#x430;&#x441;&#x442;&#x438; &#x43E;&#x43F;&#x446;&#x438;&#x439;.</li>
+</ul>
+</li>
+<li><ul>
+<li>&#x443;&#x434;&#x43E;&#x431;&#x441;&#x442;&#x432;&#x43E;&#x43C; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;. (&#x43E;&#x442;&#x441;&#x443;&#x442;&#x441;&#x442;&#x432;&#x438;&#x435;&#x43C; &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x438; &#x43F;&#x435;&#x440;&#x435;&#x447;&#x438;&#x441;&#x43B;&#x44F;&#x442;&#x44C; &#x432;&#x441;&#x435; &#x43E;&#x43F;&#x446;&#x438;&#x438; &#x43F;&#x440;&#x438; &#x43A;&#x430;&#x436;&#x434;&#x43E;&#x43C; &#x437;&#x430;&#x43F;&#x443;&#x441;&#x43A;&#x435; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <a href="#run">run</a> &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; cli).</li>
+</ul>
+</li>
+</ul>
+<h5 id="-">&#x41F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x44B;:</h5>
+<ul>
+<li><code>name</code> - &#x438;&#x43C;&#x44F; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430;. &#x414;&#x43B;&#x44F; &#x443;&#x434;&#x43E;&#x431;&#x441;&#x442;&#x432;&#x430; &#x432; &#x43A;&#x430;&#x447;&#x435;&#x442;&#x432;&#x435; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x440;&#x435;&#x43A;&#x43E;&#x43C;&#x435;&#x43D;&#x434;&#x443;&#x435;&#x442;&#x441;&#x44F; &#x443;&#x43A;&#x430;&#x437;&#x44B;&#x432;&#x430;&#x442;&#x44C; &#x438;&#x43C;&#x44F; &#x445;&#x43E;&#x441;&#x442;&#x430; web-&#x440;&#x435;&#x441;&#x443;&#x440;&#x441;&#x430; &#x434;&#x43B;&#x44F; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x433;&#x43E; &#x431;&#x443;&#x434;&#x435;&#x442; &#x43F;&#x440;&#x43E;&#x438;&#x437;&#x432;&#x43E;&#x434;&#x438;&#x442;&#x44C;&#x441;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;</li>
+</ul>
+<p>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc config -n my.broken-site.com</code></pre>
+</code></pre><p>&#x41E;&#x436;&#x438;&#x434;&#x430;&#x435;&#x43C;&#x44B;&#x439; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; &#x432;&#x44B;&#x432;&#x43E;&#x434;&#x430; &#x432; &#x43A;&#x43E;&#x43D;&#x441;&#x43E;&#x43B;&#x44C;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">INFO acts/config.js: Configuration file: =&gt; my.broken-site.com.js has been generated successfully</code></pre>
+</code></pre><p><strong>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x447;&#x430;&#x43D;&#x438;&#x435;</strong>: &#x43F;&#x43E;&#x441;&#x43B;&#x435; &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x435;&#x43D;&#x438;&#x44F; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x439; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; &#x441;&#x433;&#x435;&#x43D;&#x435;&#x440;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x44B;&#x439; &#x444;&#x430;&#x439;&#x43B; <code>my.broken-site.com.js</code> &#x431;&#x443;&#x434;&#x435;&#x442; &#x43F;&#x43E;&#x43C;&#x435;&#x449;&#x435;&#x43D; &#x432; &#x434;&#x438;&#x440;&#x435;&#x43A;&#x442;&#x43E;&#x440;&#x438;&#x44E; <code>./configs</code> &#x432;&#x43D;&#x443;&#x442;&#x440;&#x438; &#x440;&#x430;&#x431;&#x43E;&#x447;&#x435;&#x439; &#x434;&#x438;&#x440;&#x435;&#x43A;&#x442;&#x43E;&#x440;&#x438;&#x438; &#x43F;&#x440;&#x438;&#x43B;&#x43E;&#x436;&#x435;&#x43D;&#x438;&#x44F;.</p>
+<h4 id="-">&#x421;&#x442;&#x440;&#x443;&#x43A;&#x442;&#x443;&#x440;&#x430; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430;:</h4>
+<p>&#x41A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x44B;&#x439; &#x444;&#x430;&#x439;&#x43B; &#x43F;&#x440;&#x435;&#x434;&#x441;&#x442;&#x430;&#x432;&#x43B;&#x44F;&#x435;&#x442; &#x438;&#x437; &#x441;&#x435;&#x431;&#x44F; &#x43E;&#x431;&#x44B;&#x447;&#x43D;&#x44B;&#x439; <a href="http://nodejs.org">NodeJS</a> &#x43C;&#x43E;&#x434;&#x443;&#x43B;&#x44C;, &#x44D;&#x43A;&#x43F;&#x43E;&#x440;&#x442;&#x438;&#x440;&#x443;&#x44E;&#x449;&#x438;&#x439;
+&#x43E;&#x431;&#x44A;&#x435;&#x43A;&#x442; &#x432; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x43C; &#x43A;&#x43B;&#x44E;&#x447;&#x430;&#x43C;&#x438; &#x44F;&#x432;&#x43B;&#x44F;&#x44E;&#x442;&#x441;&#x44F; &#x438;&#x43C;&#x435;&#x43D;&#x430; &#x43E;&#x43F;&#x446;&#x438;&#x439; &#x430; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F;&#x43C;&#x438; - &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x43E;&#x43F;&#x446;&#x438;&#x439;.</p>
+<ul>
+<li><p><code>url</code> - &#x430;&#x434;&#x440;&#x435;&#x441; &#x441;&#x430;&#x439;&#x442;&#x430;, &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x430; &#x438;&#x43B;&#x438; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E; &#x43F;&#x440;&#x43E;&#x441;&#x43A;&#x430;&#x43D;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x43D;&#x430; &#x43F;&#x440;&#x435;&#x434;&#x43C;&#x435;&#x442; &quot;&#x431;&#x438;&#x442;&#x44B;&#x445;&quot; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A;.</p>
+</li>
+<li><p><code>logger</code> - &#x43F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43D;&#x430;&#x441;&#x442;&#x440;&#x43E;&#x438;&#x442;&#x44C; &#x440;&#x435;&#x436;&#x438;&#x43C; &#x43B;&#x43E;&#x433;&#x433;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;. &#x412;&#x43E;&#x437;&#x43C;&#x43E;&#x436;&#x43D;&#x44B;&#x435; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x434;&#x43B;&#x44F; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x443;&#x440;&#x43E;&#x432;&#x43D;&#x44F; &#x43B;&#x43E;&#x433;&#x433;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;
+<code>level</code>: &apos;verbose&apos;, &apos;debug&apos;, &apos;info&apos;, &apos;warn&apos;, &apos;error&apos;;</p>
+</li>
+<li><p><code>concurrent</code> - &#x447;&#x438;&#x441;&#x43B;&#x43E; &#x432;&#x43D;&#x443;&#x442;&#x440;&#x435;&#x43D;&#x43D;&#x438;&#x445; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x441;&#x430;&#x439;&#x442;&#x430;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x442;&#x44C;&#x441;&#x44F; &#x43E;&#x434;&#x43D;&#x43E;&#x432;&#x440;&#x435;&#x43C;&#x435;&#x43D;&#x43D;&#x43E;. &#x414;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; &#x434;&#x43B;&#x44F; &#x43A;&#x430;&#x436;&#x434;&#x43E;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E; &#x43F;&#x43E;&#x434;&#x431;&#x438;&#x440;&#x430;&#x442;&#x44C; &#x43E;&#x43F;&#x44B;&#x442;&#x43D;&#x44B;&#x43C; &#x43F;&#x443;&#x442;&#x435;&#x43C;, &#x442;&#x430;&#x43A; &#x43A;&#x430;&#x43A; &#x441;&#x43B;&#x438;&#x448;&#x43A;&#x43E;&#x43C; &#x43D;&#x438;&#x437;&#x43A;&#x43E;&#x435; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x443;&#x432;&#x435;&#x43B;&#x438;&#x447;&#x438;&#x442; &#x432;&#x440;&#x435;&#x43C;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430;, &#x430; &#x441;&#x43B;&#x438;&#x448;&#x43A;&#x43E;&#x43C; &#x432;&#x44B;&#x441;&#x43E;&#x43A;&#x43E;&#x435; &#x443;&#x432;&#x435;&#x43B;&#x438;&#x447;&#x438;&#x442; &#x43D;&#x430;&#x433;&#x440;&#x443;&#x437;&#x43A;&#x443; &#x43D;&#x430; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440; &#x441;&#x430;&#x439;&#x442;&#x430; &#x438; &#x43C;&#x43E;&#x436;&#x435;&#x442; &#x43F;&#x440;&#x438;&#x432;&#x435;&#x441;&#x442;&#x438; &#x43A; &#x43D;&#x435;&#x43A;&#x43E;&#x440;&#x440;&#x435;&#x43A;&#x442;&#x43D;&#x44B;&#x43C; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x430;&#x43C;.</p>
+</li>
+</ul>
+<p><strong>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x447;&#x430;&#x43D;&#x438;&#x435;</strong>: &#x434;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; &#x438;&#x43C;&#x435;&#x435;&#x442; &#x434;&#x435;&#x439;&#x441;&#x442;&#x432;&#x438;&#x435; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x434;&#x43B;&#x44F; &#x432;&#x43D;&#x443;&#x442;&#x440;&#x435;&#x43D;&#x43D;&#x438;&#x445; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x438;&#x440;&#x443;&#x435;&#x43C;&#x43E;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430;. &#x412;&#x43D;&#x435;&#x448;&#x43D;&#x438;&#x435; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x44E;&#x442;&#x441;&#x44F; &#x43F;&#x43E;&#x440;&#x446;&#x438;&#x44F;&#x43C;&#x438; &#x43F;&#x43E; 100 &#x448;&#x442;&#x443;&#x43A; &#x43E;&#x434;&#x43D;&#x43E;&#x432;&#x440;&#x435;&#x43C;&#x435;&#x43D;&#x43D;&#x43E;.</p>
+<ul>
+<li><p><code>requestHeaders</code> - &#x434;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; &#x43F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x437;&#x430;&#x434;&#x430;&#x432;&#x430;&#x442;&#x44C; &#x43F;&#x440;&#x43E;&#x438;&#x437;&#x432;&#x43E;&#x43B;&#x44C;&#x43D;&#x44B;&#x435; &#x437;&#x430;&#x433;&#x43E;&#x43B;&#x43E;&#x432;&#x43A;&#x438; &#x434;&#x43B;&#x44F; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x43E;&#x432; &#x43A; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x443; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x438;&#x440;&#x443;&#x435;&#x43C;&#x43E;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430;.</p>
+</li>
+<li><p><code>requestRetriesAmount</code> - &#x43C;&#x430;&#x43A;&#x441;&#x438;&#x43C;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; &#x447;&#x438;&#x441;&#x43B;&#x43E; &#x43F;&#x43E;&#x43F;&#x44B;&#x442;&#x43E;&#x43A; &#x43F;&#x43E;&#x43B;&#x443;&#x447;&#x438;&#x442;&#x44C; &#x43E;&#x442;&#x432;&#x435;&#x442; &#x43E;&#x442; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43F;&#x43E; &#x437;&#x430;&#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x43C;&#x443; &#x443;&#x440;&#x43B;&#x443;.</p>
+</li>
+</ul>
+<p><strong>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x447;&#x430;&#x43D;&#x438;&#x435;</strong>: &#x434;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; &#x438;&#x43C;&#x435;&#x435;&#x442; &#x434;&#x435;&#x439;&#x441;&#x442;&#x432;&#x438;&#x435; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x434;&#x43B;&#x44F; &#x432;&#x43D;&#x443;&#x442;&#x440;&#x435;&#x43D;&#x43D;&#x438;&#x445; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x438;&#x440;&#x443;&#x435;&#x43C;&#x43E;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430;.
+&#x414;&#x43B;&#x44F; &#x43E;&#x43F;&#x440;&#x43E;&#x441;&#x430; &#x43F;&#x43E; &#x432;&#x43D;&#x435;&#x448;&#x43D;&#x438;&#x43C; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x430;&#x43C; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>requestRetriesAmount</code> &#x440;&#x430;&#x432;&#x43D;&#x43E; 1.</p>
+<ul>
+<li><p><code>requestTimeout</code> - &#x43C;&#x430;&#x43A;&#x441;&#x438;&#x43C;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;&#x435; &#x432;&#x440;&#x435;&#x43C;&#x44F; &#x43E;&#x436;&#x438;&#x434;&#x430;&#x43D;&#x438;&#x44F; &#x43E;&#x442;&#x432;&#x435;&#x442;&#x430; &#x43E;&#x442; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;&#x430; &#x432;&#x43E; &#x432;&#x440;&#x435;&#x43C;&#x44F; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x430; &#x432; &#x43C;&#x438;&#x43B;&#x43B;&#x438;&#x441;&#x435;&#x43A;&#x443;&#x43D;&#x434;&#x430;&#x445;.</p>
+</li>
+<li><p><code>acceptedSchemes</code> - &#x440;&#x430;&#x437;&#x440;&#x435;&#x448;&#x435;&#x43D;&#x43D;&#x44B;&#x435; &#x43F;&#x440;&#x43E;&#x442;&#x43E;&#x43A;&#x43E;&#x43B;&#x44B; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A;. &#x412;&#x441;&#x435; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438; url-&#x44B; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x445; &#x441;&#x43E;&#x434;&#x435;&#x440;&#x436;&#x430;&#x442; &#x43F;&#x440;&#x43E;&#x442;&#x43E;&#x43A;&#x43E;&#x43B;&#x44B; &#x43E;&#x442;&#x43B;&#x438;&#x447;&#x43D;&#x44B;&#x435;
+&#x43E;&#x442; &#x442;&#x435;&#x445;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D;&#x44B; &#x432; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x438; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x440;&#x43E;&#x438;&#x433;&#x43D;&#x43E;&#x440;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x44B;.</p>
+</li>
+<li><p><code>checkExternalUrls</code> - &#x444;&#x43B;&#x430;&#x433; &#x432;&#x43A;&#x43B;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x43A;&#x438; &#x432;&#x43D;&#x435;&#x448;&#x43D;&#x438;&#x445; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A;. &#x415;&#x441;&#x43B;&#x438; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x44F;&#x432;&#x43B;&#x44F;&#x435;&#x442;&#x441;&#x44F;
+<code>false</code>, &#x442;&#x43E; &#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x440;&#x43E;&#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x44B; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x432;&#x43D;&#x443;&#x442;&#x440;&#x435;&#x43D;&#x43D;&#x438;&#x435; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438; &#x441;&#x430;&#x439;&#x442;&#x430;.</p>
+</li>
+<li><p><code>excludeLinkPatterns</code> - &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; &#x440;&#x435;&#x433;&#x443;&#x43B;&#x44F;&#x440;&#x43D;&#x44B;&#x445; &#x432;&#x44B;&#x440;&#x430;&#x436;&#x435;&#x43D;&#x438;&#x439; &#x43F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x442;&#x44C; &#x43F;&#x430;&#x442;&#x442;&#x435;&#x440;&#x43D;&#x44B; &#x443;&#x440;&#x43B;&#x43E;&#x432;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435;
+&#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x440;&#x43E;&#x438;&#x433;&#x43D;&#x43E;&#x440;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x44B; &#x43F;&#x440;&#x438; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x435; &#x441;&#x430;&#x439;&#x442;&#x430;. &#x41D;&#x430;&#x43F;&#x440;&#x438;&#x43C;&#x435;&#x440;, &#x435;&#x441;&#x43B;&#x438; &#x432; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x435; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43D;&#x435; &#x434;&#x43E;&#x43B;&#x436;&#x43D;&#x44B; &#x443;&#x447;&#x430;&#x441;&#x442;&#x432;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438;
+&#x43D;&#x430; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x44B; &#x441;&#x430;&#x439;&#x442;&#x430; <code>/contacts</code>, &#x442;&#x43E; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x430; &#x43C;&#x43E;&#x436;&#x43D;&#x43E; &#x438;&#x441;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x438;&#x437; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x43F;&#x443;&#x442;&#x435;&#x43C; &#x432;&#x44B;&#x441;&#x442;&#x430;&#x432;&#x43B;&#x435;&#x43D;&#x438;&#x44F;
+&#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x43E;&#x43F;&#x446;&#x438;&#x438; <code>excludeLinkPatterns</code> &#x441;&#x43B;&#x435;&#x434;&#x443;&#x44E;&#x449;&#x435;&#x433;&#x43E; &#x43A;&#x43E;&#x434;&#x430;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">module.exports = {
+  ...
+  &quot;excludeLinkPatterns&quot;: [
+      /\/contacts/
+  ]
+}</code></pre>
+</code></pre></li>
+</ul>
+<h3 id="run">run</h3>
+<p>&#x414;&#x430;&#x43D;&#x43D;&#x430;&#x44F; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x430; &#x43F;&#x440;&#x435;&#x434;&#x43D;&#x430;&#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x430; &#x434;&#x43B;&#x44F; &#x437;&#x430;&#x43F;&#x443;&#x441;&#x43A;&#x430; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43D;&#x430; &#x43F;&#x440;&#x435;&#x434;&#x43C;&#x435;&#x442; &quot;&#x431;&#x438;&#x442;&#x44B;&#x445;&quot; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A;.</p>
+<h5 id="-">&#x41F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x44B;:</h5>
+<ul>
+<li><p><code>-c</code> &#x438;&#x43B;&#x438; <code>--config</code>: &#x41F;&#x443;&#x442;&#x44C; &#x43A; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C;&#x443; &#x444;&#x430;&#x439;&#x43B;&#x443; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x431;&#x443;&#x434;&#x435;&#x442; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D; &#x434;&#x43B;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430;. &#x41E;&#x431;&#x44F;&#x437;&#x430;&#x442;&#x435;&#x43B;&#x44C;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;.</p>
+</li>
+<li><p><code>-u</code> &#x438;&#x43B;&#x438; <code>--url</code>: &#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; url &#x441;&#x430;&#x439;&#x442;&#x430; (&#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x430;, &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B;) &#x434;&#x43B;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+</li>
+<li><p><code>-cc</code> &#x438;&#x43B;&#x438; <code>--concurrent</code>: &#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; <code>concurrent</code> &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+</li>
+<li><p><code>-rra</code> &#x438;&#x43B;&#x438; <code>--requestRetriesAmount</code>: &#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; <code>requestRetriesAmount</code> &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+</li>
+<li><p><code>-rt</code> &#x438;&#x43B;&#x438; <code>--requestTimeout</code>: &#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; <code>requestTimeout</code> &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+</li>
+<li><p><code>-ext</code> &#x438;&#x43B;&#x438; <code>--checkExternalUrls</code>: &#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; <code>checkExternalUrls</code> &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+</li>
+<li><p><code>-m</code> &#x438;&#x43B;&#x438; <code>--mode</code>: &#x414;&#x430;&#x43D;&#x43D;&#x44B;&#x439; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440; &#x43C;&#x43E;&#x436;&#x435;&#x442; &#x43F;&#x440;&#x438;&#x43D;&#x438;&#x43C;&#x430;&#x442;&#x44C; 3 &#x432;&#x43E;&#x437;&#x43C;&#x43E;&#x436;&#x43D;&#x44B;&#x445; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F;: &apos;website&apos; (&#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;), &apos;section&apos; &#x438; &apos;page&apos;.</p>
+</li>
+</ul>
+<p><strong>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x447;&#x430;&#x43D;&#x438;&#x435;:</strong></p>
+<p>&#x418;&#x43D;&#x43E;&#x433;&#x434;&#x430; &#x431;&#x44B;&#x432;&#x430;&#x435;&#x442; &#x443;&#x434;&#x43E;&#x431;&#x43D;&#x43E; &#x43F;&#x440;&#x43E;&#x441;&#x43A;&#x430;&#x43D;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x447;&#x430;&#x441;&#x442;&#x44C; &#x441;&#x430;&#x439;&#x442;&#x430;: &#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x435;&#x43D;&#x43D;&#x44B;&#x439; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B; &#x438;&#x43B;&#x438; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x443;. &#x412; &#x44D;&#x442;&#x43E;&#x43C; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x435; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>mode</code> &#x431;&#x44B;&#x432;&#x430;&#x435;&#x442; &#x43E;&#x447;&#x435;&#x43D;&#x44C; &#x443;&#x434;&#x43E;&#x431;&#x43D;&#x43E;.</p>
+<p>&#x412; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x435; &#x435;&#x441;&#x43B;&#x438; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>mode</code> &#x440;&#x430;&#x432;&#x43D;&#x43E; &apos;section&apos;, &#x442;&#x43E; &#x431;&#x443;&#x434;&#x435;&#x442; &#x43F;&#x440;&#x43E;&#x441;&#x43A;&#x430;&#x43D;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43A;&#x43E;&#x440;&#x43D;&#x435;&#x432;&#x43E;&#x439; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x435;&#x439; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x433;&#x43E; &#x44F;&#x432;&#x43B;&#x44F;&#x435;&#x442;&#x441;&#x44F; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>url</code>. &#x41D;&#x430;&#x43F;&#x440;&#x438;&#x43C;&#x435;&#x440;, &#x435;&#x441;&#x43B;&#x438; &#x441;&#x430;&#x439;&#x442; <code>my.site.com</code> (&#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x44B;&#x439; &#x444;&#x430;&#x439;&#x43B; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x433;&#x43E; &#x43B;&#x435;&#x436;&#x438;&#x442; &#x432; &#x434;&#x438;&#x440;&#x435;&#x43A;&#x442;&#x43E;&#x440;&#x438;&#x438; <code>./configs</code> &#x43F;&#x43E;&#x434; &#x438;&#x43C;&#x435;&#x43D;&#x435;&#x43C; <code>my.site.com.js</code>) &#x438;&#x43C;&#x435;&#x435;&#x442; &#x441;&#x43B;&#x435;&#x434;&#x443;&#x44E;&#x449;&#x443;&#x44E; &#x441;&#x442;&#x440;&#x443;&#x43A;&#x442;&#x443;&#x440;&#x443;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">/
+/foo
+/foo/foo1
+/foo/foo2
+/bar</code></pre>
+</code></pre><p> &#x442;&#x43E; &#x43F;&#x440;&#x438; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x435; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <code>run</code>:</p>
+<pre><code><pre class="source-code"><code class="prettyprint"> $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m section</code></pre>
+</code></pre><p>&#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x440;&#x43E;&#x441;&#x43A;&#x430;&#x43D;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x44B; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B;: <code>/foo</code>, <code>/foo1</code>, <code>/foo2</code>, &#x430; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x430; &apos;/bar&apos; &#x43D;&#x435; &#x431;&#x443;&#x434;&#x435;&#x442; &#x443;&#x447;&#x430;&#x441;&#x442;&#x432;&#x43E;&#x432;&#x430;&#x442;&#x44C; &#x430; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x435;.</p>
+<p>&#x412; &#x441;&#x43B;&#x443;&#x447;&#x430;&#x435; &#x435;&#x441;&#x43B;&#x438; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>mode</code> &#x440;&#x430;&#x432;&#x43D;&#x43E; &apos;page&apos;, &#x442;&#x43E; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x43E;&#x43C; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x430; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <code>run</code>:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m page</code></pre>
+</code></pre><p>&#x431;&#x443;&#x434;&#x435;&#x442; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x43D;&#x430; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x435; <code>/foo</code>.</p>
+<h4 id="-run-">&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440;&#x44B; &#x432;&#x44B;&#x437;&#x43E;&#x432;&#x430; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <code>run</code>:</h4>
+<ul>
+<li><p>&#x41F;&#x440;&#x43E;&#x441;&#x442;&#x43E;&#x439; &#x432;&#x44B;&#x437;&#x43E;&#x432; &#x441; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D;&#x438;&#x435;&#x43C; &#x43F;&#x443;&#x442;&#x438; &#x43A; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C;&#x443; &#x444;&#x430;&#x439;&#x43B;&#x443;</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js</code></pre>
+</code></pre></li>
+<li><p>&#x410;&#x43D;&#x430;&#x43B;&#x438;&#x437; &#x441;&#x430;&#x439;&#x442;&#x430; <code>http://my.another.site.com</code> c &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;&#x43C; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x444;&#x430;&#x439;&#x43B;&#x430; &#x434;&#x43B;&#x44F; &#x441;&#x430;&#x439;&#x442;&#x430; <code>my.site.com</code>.</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.another.site.com</code></pre>
+</code></pre></li>
+<li><p>&#x418;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x43E;&#x432; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x43E;&#x432; &#x43E;&#x442;&#x43B;&#x438;&#x447;&#x43D;&#x44B;&#x445; &#x43E;&#x442; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x43D;&#x44B;&#x445; &#x432; &#x43A;&#x43E;&#x43D;&#x444;&#x438;&#x433;&#x443;&#x440;&#x430;&#x446;&#x438;&#x43E;&#x43D;&#x43D;&#x43E;&#x43C; &#x444;&#x430;&#x439;&#x43B;&#x435;.</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -cc 50 -rt 10000 -rra 20</code></pre>
+</code></pre></li>
+<li><p>&#x412;&#x44B;&#x431;&#x43E;&#x440;&#x43E;&#x447;&#x43D;&#x44B;&#x439; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B; <code>/foo/bar</code> &#x441;&#x430;&#x439;&#x442;&#x430; <code>http://my.site.com</code>.</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo/bar -m page</code></pre>
+</code></pre></li>
+</ul>
+<h4 id="-run-">&#x420;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x44B; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x44B; <code>run</code>:</h4>
+<p>&#x420;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x43E;&#x43C; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x44B; &#x434;&#x43E;&#x43B;&#x436;&#x435;&#x43D; &#x441;&#x442;&#x430;&#x442;&#x44C; &#x432;&#x44B;&#x432;&#x43E;&#x434; &#x432; &#x43A;&#x43E;&#x43D;&#x441;&#x43E;&#x43B;&#x44C; &#x438;&#x442;&#x43E;&#x433;&#x43E;&#x432;&#x44B;&#x445; &#x434;&#x430;&#x43D;&#x43D;&#x44B;&#x445; &#x43E; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x430;&#x445;
+&#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430; &#x438; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x43D;&#x430; &#x444;&#x430;&#x439;&#x43B;&#x44B; &#x43E;&#x442;&#x447;&#x435;&#x442;&#x43E;&#x432; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x431;&#x44B;&#x43B;&#x438; &#x441;&#x43E;&#x445;&#x440;&#x430;&#x43D;&#x435;&#x43D;&#x44B; &#x43D;&#x430; &#x444;&#x430;&#x439;&#x43B;&#x43E;&#x432;&#x43E;&#x439; &#x441;&#x438;&#x441;&#x442;&#x435;&#x43C;&#x435;.</p>
+<h3 id="version">version</h3>
+<p>&#x414;&#x430;&#x43D;&#x43D;&#x430;&#x44F; &#x43A;&#x43E;&#x43C;&#x430;&#x43D;&#x434;&#x430; &#x43F;&#x440;&#x435;&#x434;&#x43D;&#x430;&#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x430; &#x434;&#x43B;&#x44F; &#x43F;&#x440;&#x43E;&#x441;&#x43C;&#x43E;&#x442;&#x440;&#x430; &#x442;&#x435;&#x43A;&#x443;&#x449;&#x435;&#x439; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x443;&#x435;&#x43C;&#x43E;&#x439; &#x432;&#x435;&#x440;&#x441;&#x438;&#x438; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;.
+&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc version</code></pre>
+</code></pre><p>&#x41E;&#x436;&#x438;&#x434;&#x430;&#x435;&#x43C;&#x44B;&#x439; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442; &#x432;&#x44B;&#x432;&#x43E;&#x434;&#x430; &#x432; &#x43A;&#x43E;&#x43D;&#x441;&#x43E;&#x43B;&#x44C; (c &#x442;&#x43E;&#x447;&#x43D;&#x43E;&#x441;&#x442;&#x44C;&#x44E; &#x434;&#x43E; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x432;&#x435;&#x440;&#x441;&#x438;&#x438;):</p>
+<pre><code><pre class="source-code"><code class="prettyprint">INFO cli/cmd-version.js: Application name: =&gt; bs-broken-links-checker
+INFO cli/cmd-version.js: Application version: =&gt; 0.0.1</code></pre>
+</code></pre><h2 id="-javascript-api">&#x420;&#x430;&#x431;&#x43E;&#x442;&#x430; &#x441; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x43E;&#x43C; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; JavaScript API</h2>
+<p>&#x41F;&#x430;&#x43A;&#x435;&#x442; &#x443;&#x441;&#x442;&#x430;&#x43D;&#x430;&#x432;&#x43B;&#x438;&#x432;&#x430;&#x435;&#x442;&#x441;&#x44F; &#x43A;&#x430;&#x43A; &#x43E;&#x431;&#x44B;&#x447;&#x43D;&#x430;&#x44F; <a href="https://www.npmjs.com">npm</a> &#x437;&#x430;&#x432;&#x438;&#x441;&#x438;&#x43C;&#x43E;&#x441;&#x442;&#x44C;</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ npm install --save bs-broken-links-checker</code></pre>
+</code></pre><p>&#x414;&#x43B;&#x44F; &#x438;&#x43D;&#x438;&#x446;&#x438;&#x430;&#x43B;&#x438;&#x437;&#x430;&#x446;&#x438;&#x438; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E; &#x441;&#x43E;&#x437;&#x434;&#x430;&#x442;&#x44C; &#x43D;&#x43E;&#x432;&#x44B;&#x439; &#x44D;&#x43A;&#x437;&#x435;&#x43C;&#x43F;&#x43B;&#x44F;&#x440; &#x43A;&#x43B;&#x430;&#x441;&#x441;&#x430; <code>BrokenLinksChecker</code>.</p>
+<pre><code><pre class="source-code"><code class="prettyprint">var BrokenLinksChecker = require(&apos;bs-broken-links-checker&apos;).BrokenLinksChecker,
+    brokenLinksChecker = new BrokenLinksChecker();</code></pre>
+</code></pre><p>&#x414;&#x43B;&#x44F; &#x437;&#x430;&#x43F;&#x443;&#x441;&#x43A;&#x430; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; &#x441;&#x43B;&#x435;&#x434;&#x443;&#x435;&#x442; &#x432;&#x44B;&#x437;&#x432;&#x430;&#x442;&#x44C; &#x43C;&#x435;&#x442;&#x43E;&#x434; <code>start</code> &#x438; &#x43F;&#x435;&#x440;&#x435;&#x434;&#x430;&#x442;&#x44C; &#x435;&#x43C;&#x443; &#x432; &#x43A;&#x430;&#x447;&#x435;&#x441;&#x442;&#x432;&#x435; &#x430;&#x440;&#x433;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; url &#x441;&#x430;&#x439;&#x442;&#x430; &#x43D;&#x430; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x430;&#x445; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x433;&#x43E; &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x438;&#x442;&#x44C; &#x43F;&#x43E;&#x43B;&#x43E;&#x43C;&#x430;&#x43D;&#x43D;&#x44B;&#x435; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438;, &#x43D;&#x430;&#x43F;&#x440;&#x438;&#x43C;&#x435;&#x440;:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">brokenLinksChecker.start(&apos;https://ru.bem.info&apos;);</code></pre>
+</code></pre><p>&#x41A;&#x43E;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43A;&#x442;&#x43E;&#x440; &#x43A;&#x43B;&#x430;&#x441;&#x441;&#x430; <code>BrokenLinksChecker</code> &#x432; &#x43A;&#x430;&#x447;&#x435;&#x441;&#x442;&#x432;&#x435; &#x430;&#x440;&#x433;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; &#x43F;&#x440;&#x438;&#x43D;&#x438;&#x43C;&#x430;&#x435;&#x442; &#x43E;&#x431;&#x44A;&#x435;&#x43A;&#x442; &#x432; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x43C; &#x43C;&#x43E;&#x433;&#x443;&#x442; &#x43D;&#x430;&#x445;&#x43E;&#x434;&#x438;&#x442;&#x441;&#x44F; &#x43E;&#x43F;&#x446;&#x438;&#x438; &#x434;&#x43B;&#x44F;
+&#x431;&#x43E;&#x43B;&#x435;&#x435; &#x434;&#x435;&#x442;&#x430;&#x43B;&#x44C;&#x43D;&#x43E;&#x439; &#x43D;&#x430;&#x441;&#x442;&#x440;&#x43E;&#x439;&#x43A;&#x438; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;.</p>
+<h4 id="-">&#x41E;&#x43F;&#x446;&#x438;&#x438;</h4>
+<h5 id="concurrent">concurrent</h5>
+<p>&#x427;&#x438;&#x441;&#x43B;&#x43E; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x43E;&#x432; &#x434;&#x43B;&#x44F; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x43A;&#x438; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x432;&#x44B;&#x43F;&#x43E;&#x43B;&#x43D;&#x44F;&#x435;&#x43C;&#x44B;&#x445; &#x43E;&#x434;&#x43D;&#x43E;&#x432;&#x440;&#x435;&#x43C;&#x435;&#x43D;&#x43D;&#x43E;. &#x423;&#x432;&#x435;&#x43B;&#x438;&#x447;&#x438;&#x432;&#x430;&#x44F; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x44D;&#x442;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430;
+&#x43C;&#x43E;&#x436;&#x43D;&#x43E; &#x443;&#x43C;&#x435;&#x43D;&#x44C;&#x448;&#x438;&#x442;&#x44C; &#x432;&#x440;&#x435;&#x43C;&#x44F; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x434;&#x43B;&#x44F; &#x432;&#x441;&#x435;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430;, &#x43D;&#x43E; &#x43F;&#x43E;&#x432;&#x44B;&#x441;&#x438;&#x442;&#x44C; &#x43D;&#x430;&#x433;&#x440;&#x443;&#x437;&#x43A;&#x443; &#x43D;&#x430; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440;.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>100</code>.</p>
+<h5 id="requestheaders">requestHeaders</h5>
+<p>&#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x43F;&#x435;&#x440;&#x435;&#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x438;&#x442;&#x44C; &#x437;&#x430;&#x433;&#x43E;&#x43B;&#x43E;&#x432;&#x43A;&#x438; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x43E;&#x432; &#x43F;&#x43E;&#x441;&#x44B;&#x43B;&#x430;&#x435;&#x43C;&#x44B;&#x445; &#x43D;&#x430; &#x441;&#x435;&#x440;&#x432;&#x435;&#x440; &#x441;&#x430;&#x439;&#x442;&#x430; &#x43F;&#x440;&#x438; &#x435;&#x433;&#x43E; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x435;.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>{ &apos;user-agent&apos;: &apos;node-spider&apos; }</code>.</p>
+<h5 id="requestretriesamount">requestRetriesAmount</h5>
+<p>&#x41A;&#x43E;&#x43B;&#x438;&#x447;&#x435;&#x441;&#x442;&#x432;&#x43E; &#x43F;&#x43E;&#x432;&#x442;&#x43E;&#x440;&#x43D;&#x44B;&#x445; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x43E;&#x432;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; &#x431;&#x443;&#x434;&#x443;&#x442; &#x43F;&#x43E;&#x441;&#x43B;&#x430;&#x43D;&#x44B; &#x43D;&#x430; url &#x441;&#x430;&#x439;&#x442;&#x430;, &#x43F;&#x435;&#x440;&#x432;&#x43E;&#x43D;&#x430;&#x447;&#x430;&#x43B;&#x44C;&#x43D;&#x44B;&#x439; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;
+&#x43A; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x43C;&#x443; &#x431;&#x44B;&#x43B; &#x437;&#x430;&#x432;&#x435;&#x440;&#x448;&#x435;&#x43D; &#x441; &#x43E;&#x448;&#x438;&#x431;&#x43A;&#x43E;&#x439; &#x431;&#x435;&#x437; &#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x435;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43A;&#x43E;&#x434;&#x430;. &#x41F;&#x43E; &#x434;&#x43E;&#x441;&#x442;&#x438;&#x436;&#x435;&#x43D;&#x438;&#x44E; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x44F; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; <code>requestRetriesAmount</code> url &#x431;&#x443;&#x434;&#x435;&#x442; &#x43F;&#x43E;&#x43C;&#x435;&#x447;&#x435;&#x43D; &#x43E;&#x448;&#x438;&#x431;&#x43A;&#x43E;&#x439;.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>1</code>.</p>
+<h5 id="requesttimeout">requestTimeout</h5>
+<p>&#x422;&#x430;&#x439;&#x43C;&#x430;&#x443;&#x442; &#x437;&#x430;&#x43F;&#x440;&#x43E;&#x441;&#x430; &#x432; &#x43C;&#x438;&#x43B;&#x43B;&#x438;&#x441;&#x435;&#x43A;&#x443;&#x43D;&#x434;&#x430;&#x445;.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>5000</code>.</p>
+<h5 id="acceptedschemes">acceptedSchemes</h5>
+<p>&#x41C;&#x430;&#x441;&#x441;&#x438;&#x432; &#x441; &#x434;&#x43E;&#x43F;&#x443;&#x441;&#x442;&#x438;&#x43C;&#x44B;&#x43C;&#x438; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C;&#x438; &#x43F;&#x440;&#x43E;&#x442;&#x43E;&#x43A;&#x43E;&#x43B;&#x43E;&#x432; &#x430;&#x434;&#x440;&#x435;&#x441;&#x43E;&#x432; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x435;&#x43C;&#x44B;&#x445; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A;. &#x41D;&#x430;&#x43F;&#x440;&#x438;&#x43C;&#x435;&#x440;, &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x442;&#x44C;
+&#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; url-&#x44B;, &#x432;&#x438;&#x434;&#x430; <code>http://...</code> &#x438; <code>https://...</code>, &#x43D;&#x435;&#x43E;&#x431;&#x445;&#x43E;&#x434;&#x438;&#x43C;&#x43E; &#x432;&#x44B;&#x441;&#x442;&#x430;&#x432;&#x438;&#x442;&#x44C; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x439; &#x43E;&#x43F;&#x446;&#x438;&#x438;: <code>[&apos;http:&apos;, &apos;https:&apos;]</code>.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>[&apos;http:&apos;, &apos;https:&apos;]</code>.</p>
+<h5 id="checkexternalurls">checkExternalUrls</h5>
+<p>&#x424;&#x43B;&#x430;&#x433; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x439; &#x43F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x443;&#x43F;&#x440;&#x430;&#x432;&#x43B;&#x44F;&#x442;&#x44C; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x43A;&#x43E;&#x439; &#x441;&#x441;&#x44B;&#x43B;&#x43E;&#x43A; &#x43D;&#x430; &#x432;&#x43D;&#x435;&#x448;&#x43D;&#x438;&#x435; &#x440;&#x435;&#x441;&#x443;&#x440;&#x441;&#x44B;. &#x41F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;, &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;
+&#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x43F;&#x430;&#x440;&#x430;&#x43C;&#x435;&#x442;&#x440;&#x430; &#x440;&#x430;&#x432;&#x43D;&#x43E; <code>false</code>, &#x447;&#x442;&#x43E; &#x43E;&#x437;&#x43D;&#x430;&#x447;&#x430;&#x435;&#x442;, &#x447;&#x442;&#x43E; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x442;&#x44C;&#x441;&#x44F; &#x431;&#x443;&#x434;&#x443;&#x442; &#x442;&#x43E;&#x43B;&#x44C;&#x43A;&#x43E; &#x441;&#x441;&#x44B;&#x43B;&#x43A;&#x438; &#x43D;&#x430; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B; &#x43F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x44F;&#x435;&#x43C;&#x43E;&#x433;&#x43E; &#x441;&#x430;&#x439;&#x442;&#x430;.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>false</code></p>
+<h5 id="excludelinkpatterns">excludeLinkPatterns</h5>
+<p>&#x41F;&#x43E;&#x437;&#x432;&#x43E;&#x43B;&#x44F;&#x435;&#x442; &#x438;&#x441;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x43E;&#x43F;&#x440;&#x435;&#x434;&#x435;&#x43B;&#x435;&#x43D;&#x43D;&#x44B;&#x435; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x44B; &#x441;&#x430;&#x439;&#x442;&#x430; &#x438;&#x437; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430;. &#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x44D;&#x442;&#x43E;&#x439; &#x43E;&#x43F;&#x446;&#x438;&#x438; &#x44F;&#x43B;&#x44F;&#x435;&#x442;&#x441;&#x44F; &#x43C;&#x430;&#x441;&#x441;&#x438;&#x432; &#x440;&#x435;&#x433;&#x443;&#x43B;&#x44F;&#x440;&#x43D;&#x44B;&#x445; &#x432;&#x44B;&#x440;&#x430;&#x436;&#x435;&#x43D;&#x438;&#x439; &#x43F;&#x440;&#x438; &#x43C;&#x430;&#x442;&#x447;&#x438;&#x43D;&#x433;&#x435; &#x43D;&#x430; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x44B;&#x435; url &#x431;&#x443;&#x434;&#x435;&#x442; &#x432;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D; &#x438;&#x43B;&#x438; &#x438;&#x441;&#x43A;&#x43B;&#x44E;&#x447;&#x435;&#x43D; &#x438;&#x437; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430;. &#x41D;&#x430;&#x43F;&#x440;&#x438;&#x43C;&#x435;&#x440;, &#x434;&#x43B;&#x44F; &#x442;&#x43E;&#x433;&#x43E; &#x447;&#x442;&#x43E;&#x431;&#x44B; &#x438;&#x441;&#x43A;&#x43B;&#x44E;&#x447;&#x438;&#x442;&#x44C; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B;&#x44B; <code>foo</code> &#x438; <code>bar</code> &#x438;&#x437; &#x43F;&#x440;&#x43E;&#x446;&#x435;&#x441;&#x441;&#x430; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; c&#x430;&#x439;&#x442;&#x430;, &#x43D;&#x443;&#x436;&#x43D;&#x43E; &#x443;&#x43A;&#x430;&#x437;&#x430;&#x442;&#x44C; &#x437;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x43E;&#x43F;&#x446;&#x438;&#x438;
+<code>[/\/foo/i, /\/bar/i]</code>.</p>
+<p>&#x417;&#x43D;&#x430;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x43F;&#x43E; &#x443;&#x43C;&#x43E;&#x43B;&#x447;&#x430;&#x43D;&#x438;&#x44E;: <code>[]</code></p>
+<h5 id="ondone">onDone</h5>
+<p>&#x424;&#x443;&#x43D;&#x43A;&#x446;&#x438;&#x44F;, &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x430;&#x44F; &#x431;&#x443;&#x434;&#x435;&#x442; &#x432;&#x44B;&#x437;&#x432;&#x430;&#x43D;&#x430; &#x43F;&#x43E; &#x437;&#x430;&#x432;&#x435;&#x440;&#x448;&#x435;&#x43D;&#x438;&#x44E; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x441;&#x430;&#x439;&#x442;&#x430;. &#x414;&#x430;&#x43D;&#x43D;&#x430;&#x44F; &#x444;&#x443;&#x43D;&#x43A;&#x446;&#x438;&#x44F; &#x43F;&#x440;&#x438;&#x43D;&#x438;&#x43C;&#x430;&#x435;&#x442; &#x430;&#x440;&#x433;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x43E;&#x43C; &#x44D;&#x43A;&#x437;&#x435;&#x43C;&#x43F;&#x43B;&#x44F;&#x440; &#x43A;&#x43B;&#x430;&#x441;&#x441;&#x430; <code>Statistic</code>, &#x432; &#x43A;&#x43E;&#x442;&#x43E;&#x440;&#x43E;&#x43C; &#x445;&#x440;&#x430;&#x43D;&#x44F;&#x442;&#x441;&#x44F; &#x432;&#x441;&#x435; &#x440;&#x435;&#x437;&#x443;&#x43B;&#x44C;&#x442;&#x430;&#x442;&#x44B; &#x430;&#x43D;&#x430;&#x43B;&#x438;&#x437;&#x430; &#x438; &#x43C;&#x435;&#x442;&#x43E;&#x434;&#x44B; &#x434;&#x43B;&#x44F; &#x440;&#x430;&#x431;&#x43E;&#x442;&#x44B; &#x441; &#x43D;&#x438;&#x43C;&#x438;.</p>
+<p>&#x41F;&#x440;&#x438;&#x43C;&#x435;&#x440;&#x44B; &#x438;&#x441;&#x43F;&#x43E;&#x43B;&#x44C;&#x437;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x44F; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; &#x43C;&#x43E;&#x436;&#x43D;&#x43E; &#x43F;&#x43E;&#x441;&#x43C;&#x43E;&#x442;&#x440;&#x435;&#x442;&#x44C; <a href="&apos;./examples&apos;">&#x437;&#x434;&#x435;&#x441;&#x44C;</a>.</p>
+<h2 id="-">&#x422;&#x435;&#x441;&#x442;&#x438;&#x440;&#x43E;&#x432;&#x430;&#x43D;&#x438;&#x435;</h2>
+<p>&#x417;&#x430;&#x43F;&#x443;&#x441;&#x43A; &#x442;&#x435;&#x441;&#x442;&#x43E;&#x432; &#x441; &#x432;&#x44B;&#x447;&#x438;&#x441;&#x43B;&#x435;&#x43D;&#x438;&#x435;&#x43C; &#x43F;&#x43E;&#x43A;&#x440;&#x44B;&#x442;&#x438;&#x44F; &#x43A;&#x43E;&#x434;&#x430; &#x442;&#x435;&#x441;&#x442;&#x430;&#x43C;&#x438; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430; <a href="https://www.npmjs.com/package/istanbul">istanbul</a>:</p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ npm test</code></pre>
+</code></pre><p>&#x41F;&#x440;&#x43E;&#x432;&#x435;&#x440;&#x43A;&#x430; &#x441;&#x438;&#x43D;&#x442;&#x430;&#x43A;&#x441;&#x438;&#x441;&#x430; &#x43A;&#x43E;&#x434;&#x430; &#x441; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C;&#x44E;:
+<a href="https://www.npmjs.com/package/jshint">jshint</a>,
+<a href="https://www.npmjs.com/package/jscs">jscs</a></p>
+<pre><code><pre class="source-code"><code class="prettyprint">$ npm run codestyle</code></pre>
+</code></pre><p>&#x41E;&#x441;&#x43E;&#x431;&#x430;&#x44F; &#x431;&#x43B;&#x430;&#x433;&#x43E;&#x434;&#x430;&#x440;&#x43D;&#x43E;&#x441;&#x442;&#x44C; &#x437;&#x430; &#x43F;&#x43E;&#x43C;&#x43E;&#x449;&#x44C; &#x432; &#x440;&#x430;&#x437;&#x440;&#x430;&#x431;&#x43E;&#x442;&#x43A;&#x435;:</p>
+<ul>
+<li><a href="http://github.com/tavriaforever">&#x418;&#x43B;&#x44C;&#x447;&#x435;&#x43D;&#x43A;&#x43E; &#x41D;&#x438;&#x43A;&#x43E;&#x43B;&#x430;&#x439;</a></li>
+<li><a href="http://github.com/gela-d">&#x41A;&#x43E;&#x43D;&#x441;&#x442;&#x430;&#x43D;&#x442;&#x438;&#x43D;&#x43E;&#x432;&#x430; &#x413;&#x435;&#x43B;&#x430;</a></li>
+<li><a href="http://github.com/tadatuta">&#x413;&#x440;&#x438;&#x43D;&#x435;&#x43D;&#x43A;&#x43E; &#x412;&#x43B;&#x430;&#x434;&#x438;&#x43C;&#x438;&#x440;</a></li>
+<li><a href="https://github.com/blond">&#x410;&#x431;&#x440;&#x430;&#x43C;&#x43E;&#x432; &#x410;&#x43D;&#x434;&#x440;&#x435;&#x439;</a></li>
+<li><a href="https://github.com/SwinX">&#x418;&#x441;&#x443;&#x43F;&#x43E;&#x432; &#x418;&#x43B;&#x44C;&#x44F;</a></li>
+</ul>
+<p>&#x420;&#x430;&#x437;&#x440;&#x430;&#x431;&#x43E;&#x442;&#x447;&#x438;&#x43A;: <a href="https://github.com/tormozz48">&#x41A;&#x443;&#x437;&#x43D;&#x435;&#x446;&#x43E;&#x432; &#x410;&#x43D;&#x434;&#x440;&#x435;&#x439;</a></p>
+<p>&#x412;&#x43E;&#x43F;&#x440;&#x43E;&#x441;&#x44B; &#x438; &#x43F;&#x440;&#x435;&#x434;&#x43B;&#x43E;&#x436;&#x435;&#x43D;&#x438;&#x44F; &#x43F;&#x440;&#x438;&#x441;&#x44B;&#x43B;&#x430;&#x442;&#x44C; &#x43F;&#x43E; <a href="mailto:andrey.kuznetsov48@yandex.ru">&#x430;&#x434;&#x440;&#x435;&#x441;&#x443;</a> &#x438;&#x43B;&#x438; &#x432; &#x440;&#x430;&#x437;&#x434;&#x435;&#x43B; <a href="https://github.com/bem-site/broken-links-checker/issues">issues</a> &#x440;&#x435;&#x43F;&#x43E;&#x437;&#x438;&#x442;&#x43E;&#x440;&#x438;&#x44F; &#x434;&#x430;&#x43D;&#x43D;&#x43E;&#x433;&#x43E; &#x438;&#x43D;&#x441;&#x442;&#x440;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;.</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

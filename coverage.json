@@ -1,0 +1,71 @@
+{
+  "coverage": "71.73%",
+  "expectCount": 92,
+  "actualCount": 66,
+  "files": {
+    "src/model/document.es6": {
+      "expectCount": 9,
+      "actualCount": 8
+    },
+    "src/base.es6": {
+      "expectCount": 3,
+      "actualCount": 3
+    },
+    "src/based-option.es6": {
+      "expectCount": 4,
+      "actualCount": 3
+    },
+    "src/model/broken.es6": {
+      "expectCount": 10,
+      "actualCount": 10
+    },
+    "src/checker.es6": {
+      "expectCount": 22,
+      "actualCount": 14
+    },
+    "src/link-analyzer.es6": {
+      "expectCount": 10,
+      "actualCount": 8
+    },
+    "src/reporters/base.es6": {
+      "expectCount": 7,
+      "actualCount": 3
+    },
+    "src/reporters/html.es6": {
+      "expectCount": 2,
+      "actualCount": 0
+    },
+    "src/reporters/json.es6": {
+      "expectCount": 2,
+      "actualCount": 0
+    },
+    "src/model/statistic.es6": {
+      "expectCount": 13,
+      "actualCount": 10
+    },
+    "src/util.es6": {
+      "expectCount": 3,
+      "actualCount": 3
+    },
+    "src/cli/cmd-config.es6": {
+      "expectCount": 1,
+      "actualCount": 0
+    },
+    "src/cli/cmd-run.es6": {
+      "expectCount": 1,
+      "actualCount": 0
+    },
+    "src/cli/cmd-version.es6": {
+      "expectCount": 1,
+      "actualCount": 0
+    },
+    "src/acts/config.es6": {
+      "expectCount": 3,
+      "actualCount": 3
+    },
+    "src/acts/run.es6": {
+      "expectCount": 1,
+      "actualCount": 1
+    }
+  }
+}

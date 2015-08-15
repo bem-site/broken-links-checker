@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">test/src/model/broken.test.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="git://github.com/bem-site/broken-links-checker.git">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div data-ice="classWrap">
+  <h2>Class</h2>
+  <ul>
+    
+  <li data-ice="classDoc"><span><a href="class/src/base.es6~Base.html">Base</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/based-option.es6~BasedOption.html">BasedOption</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/broken.es6~BrokenUrls.html">BrokenUrls</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/util.es6~Util.html">Util</a></span></li>
+</ul>
+</div>
+
+
+
+<div data-ice="functionWrap">
+  <h2><a href="function/">Function</a></h2>
+  <ul>
+    
+  <li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdconfig">cmdconfig</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdrun">cmdrun</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdversion">cmdversion</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigFile">createConfigFile</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigStub">createConfigStub</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigsDir">createConfigsDir</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-run">run</a></span></li>
+</ul>
+</div>
+
+
+
+
+
+
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">test/src/model/broken.test.js</h1>
+<pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">var should = require(&apos;should&apos;),
+    BrokenUrls = require(&apos;../../../lib/model/broken&apos;);
+
+describe(&apos;broken&apos;, function () {
+    var brokenUrls;
+
+    beforeEach(function () {
+        brokenUrls = new BrokenUrls();
+    });
+
+    describe(&apos;constructor&apos;, function () {
+       it (&apos;should initialize empty broken urls model after initialization&apos;, function () {
+           brokenUrls._urls.should.be.instanceOf(Array).and.be.empty;
+       });
+    });
+
+    describe(&apos;add&apos;, function () {
+        it (&apos;should add broken links model item to list of broken links&apos;, function () {
+            brokenUrls.getAll().should.have.length(0);
+            brokenUrls.add(&apos;http://my.host/url1&apos;, { page: &apos;http://my.host&apos; }, 404);
+            brokenUrls.getAll().should.have.length(1);
+            should.deepEqual(brokenUrls.getAll()[0],  {
+                url: &apos;http://my.host/url1&apos;,
+                advanced: { page: &apos;http://my.host&apos; },
+                code: 404
+            });
+        });
+    });
+
+    describe(&apos;getAll&apos;, function () {
+        it (&apos;should return all broke link items from model&apos;, function () {
+            brokenUrls.getAll().should.have.length(0);
+            brokenUrls.add(&apos;http://my.host/url1&apos;, { page: &apos;http://my.host&apos; }, 404);
+            brokenUrls.add(&apos;http://my.host/url2&apos;, { page: &apos;http://my.host&apos; }, 500);
+            brokenUrls.getAll().should.have.length(2);
+        });
+    });
+
+    describe(&apos;getByCode&apos;, function () {
+        beforeEach(function () {
+            brokenUrls.add(&apos;http://my.host/url1&apos;, { page: &apos;http://my.host&apos; }, 404);
+            brokenUrls.add(&apos;http://my.host/url2&apos;, { page: &apos;http://my.host&apos; }, 500);
+            brokenUrls.add(&apos;http://my.host/url3&apos;, { page: &apos;http://my.host&apos; }, 404);
+        });
+
+        it (&apos;should return valid set of broken link items by given status code&apos;, function () {
+            brokenUrls.getByCode(404).should.be.instanceOf(Array).and.have.length(2);
+            brokenUrls.getByCode(500).should.be.instanceOf(Array).and.have.length(1);
+
+            should.deepEqual(brokenUrls.getByCode(404), [
+                { url: &apos;http://my.host/url1&apos;, advanced: { page: &apos;http://my.host&apos; }, code: 404 },
+                { url: &apos;http://my.host/url3&apos;, advanced: { page: &apos;http://my.host&apos; }, code: 404 }
+            ]);
+
+            should.deepEqual(brokenUrls.getByCode(500), [
+                { url: &apos;http://my.host/url2&apos;, advanced: { page: &apos;http://my.host&apos; }, code: 500 }
+            ]);
+        });
+
+        it (&apos;should return valid set of broken link items by status code 404&apos;, function () {
+            should.deepEqual(brokenUrls.get404(), brokenUrls.getByCode(404));
+        });
+
+        it (&apos;should return valid set of broken link items by status code 500&apos;, function () {
+            should.deepEqual(brokenUrls.get500(), brokenUrls.getByCode(500));
+        });
+
+    });
+
+    describe(&apos;clear&apos;, function () {
+        it(&apos;should return instance of BrokenUrls class&apos;, function () {
+            brokenUrls.clear().should.be.instanceOf(BrokenUrls);
+        })
+
+        it (&apos;should clear broken link items model&apos;, function () {
+            brokenUrls.add(&apos;http://my.host/url1&apos;, { page: &apos;http://my.host&apos; }, 404);
+            brokenUrls.add(&apos;http://my.host/url2&apos;, { page: &apos;http://my.host&apos; }, 500);
+
+            brokenUrls.getAll().should.be.instanceOf(Array).and.have.length(2);
+            brokenUrls.clear();
+            brokenUrls.getAll().should.be.empty;
+        });
+    });
+
+    describe(&apos;create&apos;, function () {
+        it (&apos;should create BrokenUrls instance by static method&apos;, function () {
+            BrokenUrls.create().should.be.instanceOf(BrokenUrls);
+        })
+    });
+});
+</code></pre>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

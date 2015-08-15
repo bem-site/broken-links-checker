@@ -1,0 +1,5183 @@
+[
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/acts/config.es6",
+    "memberof": null,
+    "longname": "src/acts/config.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import fs  from 'fs';\nimport path  from 'path';\nimport Logger from 'bem-site-logger';\nimport Checker  from '../checker';\nimport Util  from '../util';\n\nconst logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);\n\n/**\n * Creates configuration directory inside process.cwd() folder\n */\nexport function createConfigsDir() {\n    try {\n        fs.mkdirSync(Util.getConfigurationDirectory());\n    } catch (error) {}\n}\n\n/**\n * Creates stub configuration file with default params\n * @return {Object} - stub config object\n */\nexport function createConfigStub() {\n    return [\n        'concurrent',\n        'requestHeaders',\n        'requestRetriesAmount',\n        'requestTimeout',\n        'acceptedSchemes',\n        'checkExternalUrls',\n        'excludeLinkPatterns'\n    ].reduce((prev, item) => {\n        prev[item] = Checker.DEFAULT[item];\n        return prev;\n    }, {\n        url: 'http://my.site.com',\n        logger: { level: 'info' }\n    });\n}\n\n/**\n * Generates stub configuration file inside configuration folder\n * @param  {String} fileName - name of file\n * @return {Boolean} returns true if success, false otherwise\n */\nexport function createConfigFile(fileName) {\n    fileName = fileName.replace(/\\//g, '') + '.js';\n\n    createConfigsDir();\n    try {\n        fs.writeFileSync(path.join(Util.getConfigurationDirectory(), fileName),\n            'module.exports = ' + JSON.stringify(createConfigStub(), null, 4), 'utf-8');\n        logger.info('Configuration file: => %s has been generated successfully', fileName);\n        return true;\n    } catch (error) {\n        logger\n            .error('Error occur while saving configuration file: %s', fileName)\n            .error(error.message);\n        return false;\n    }\n}\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "logger",
+    "memberof": "src/acts/config.es6",
+    "longname": "src/acts/config.es6~logger",
+    "access": null,
+    "export": false,
+    "importPath": "bs-broken-links-checker/src/acts/config.es6",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "createConfigsDir",
+    "memberof": "src/acts/config.es6",
+    "longname": "src/acts/config.es6~createConfigsDir",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/acts/config.es6",
+    "importStyle": "{createConfigsDir}",
+    "description": "Creates configuration directory inside process.cwd() folder",
+    "lineNumber": 12,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "createConfigStub",
+    "memberof": "src/acts/config.es6",
+    "longname": "src/acts/config.es6~createConfigStub",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/acts/config.es6",
+    "importStyle": "{createConfigStub}",
+    "description": "Creates stub configuration file with default params",
+    "lineNumber": 22,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "stub config object"
+    },
+    "generator": false
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "createConfigFile",
+    "memberof": "src/acts/config.es6",
+    "longname": "src/acts/config.es6~createConfigFile",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/acts/config.es6",
+    "importStyle": "{createConfigFile}",
+    "description": "Generates stub configuration file inside configuration folder",
+    "lineNumber": 45,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "fileName",
+        "description": "name of file"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "returns true if success, false otherwise"
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/acts/run.es6",
+    "memberof": null,
+    "longname": "src/acts/run.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import path from 'path';\nimport Logger from 'bem-site-logger';\nimport Checker  from '../checker';\nimport ReporterJson from '../reporters/json';\nimport ReporterHtml from '../reporters/html';\n\nconst logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);\n\n/**\n * Runs application from cli interface\n * @param {Object}    [options]                            — configuration object\n * @param {String}    [options.mode]                       - mode of checking (\"website\", \"section\" or \"page\")\n * @param {Number}    [options.concurrent]                 — number of concurrent requests\n * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first\n * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)\n * @param {Boolean}   [options.checkExternalUrls]          — set `true` for check outer links\n * @trows Error\n */\nexport function run (options) {\n    var configFileName = options.config,\n        config;\n\n    try {\n        config = require(path.join(process.cwd(), configFileName));\n    } catch (error) {\n        throw new Error('Configuration file not found');\n    }\n\n    ['concurrent', 'requestRetriesAmount', 'requestTimeout', 'checkExternalUrls', 'mode'].forEach(item => {\n        if (options[item]) {\n            config[item] = options[item];\n        }\n    });\n\n    return new Promise((resolve, reject) => {\n        config.onDone = (statistic) => {\n            logger.info('finish to analyze pages');\n\n            logger\n                .info('-- Internal urls: [%s]', statistic.getInternalCount())\n                .info('-- External urls: [%s]', statistic.getExternalCount())\n                .info('-- Broken urls: [%s]', statistic.getBrokenCount())\n                .info('-- Total urls: [%s]', statistic.getAllCount())\n                .info('-- Broken urls percentage: [%s] %', (statistic.getBrokenCount() * 100) / statistic.getAllCount());\n\n            var reporters = [\n                new ReporterJson(options), \n                new ReporterHtml(options)\n            ];\n\n            reporters = reporters.map(item => {\n                return item.createReport(path.basename(configFileName, '.js'), statistic, config);\n            });\n\n             return Promise.all(reporters)\n                .then(() => { resolve(); })\n                .catch((error) => { reject(error); });\n        };\n\n        (new Checker(config)).start(options.url || config.url);\n    });\n}\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "logger",
+    "memberof": "src/acts/run.es6",
+    "longname": "src/acts/run.es6~logger",
+    "access": null,
+    "export": false,
+    "importPath": "bs-broken-links-checker/src/acts/run.es6",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "run",
+    "memberof": "src/acts/run.es6",
+    "longname": "src/acts/run.es6~run",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/acts/run.es6",
+    "importStyle": "{run}",
+    "description": "Runs application from cli interface",
+    "lineNumber": 19,
+    "unknown": [
+      {
+        "tagName": "@trows",
+        "tagValue": "Error"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "— configuration object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.mode",
+        "description": "mode of checking (\"website\", \"section\" or \"page\")"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.concurrent",
+        "description": "— number of concurrent requests"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.requestRetriesAmount",
+        "description": "number of attempts for request if it fails at first"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.requestTimeout",
+        "description": "request timeout (in milliseconds)"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.checkExternalUrls",
+        "description": "— set `true` for check outer links"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/base.es6",
+    "memberof": null,
+    "longname": "src/base.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Logger  from 'bem-site-logger';\n\n/**\n * @exports\n * @class Base\n * @desc Base class for application modules\n */\nexport default class Base {\n    /**\n     * Constructor function\n     * @param  {Object} options object\n     * @param  {Module} module - nodejs module instance\n     * @return {Base}\n     */\n    constructor (options, module) {\n        options = options || {};\n        var logOpts = options['logger'] || { level: 'debug' };\n        logOpts.useDate = false;\n\n        /**\n         * Instance of class logger\n         * @param {Object} loggerOptions - log settings\n         */\n        this._logger = Logger.setOptions(logOpts).createLogger(module);\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Base",
+    "memberof": "src/base.es6",
+    "longname": "src/base.es6~Base",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/base.es6",
+    "importStyle": "Base",
+    "description": "Base class for application modules",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "Base"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/base.es6~Base",
+    "longname": "src/base.es6~Base#constructor",
+    "access": null,
+    "description": "Constructor function",
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": "object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Module"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "module",
+        "description": "nodejs module instance"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Base"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_logger",
+    "memberof": "src/base.es6~Base",
+    "longname": "src/base.es6~Base#_logger",
+    "access": null,
+    "description": "Instance of class logger",
+    "lineNumber": 24,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "loggerOptions",
+        "description": "log settings"
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/based-option.es6",
+    "memberof": null,
+    "longname": "src/based-option.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import _ from 'lodash';\nimport Base from './base';\n\n/**\n * @exports\n * @class BasedOption\n * @desc Implements options set and get logic\n */\nexport default class BasedOption extends Base {\n    /**\n     * Sets value to options model for given option field name\n     * @param {Object} options      — configuration object\n     * @param {String} name         - name of option field\n     * @param {*}      defaultValue - option default value\n     * @returns {BasedOption}\n     * @public\n     */\n    setOption (options, name, defaultValue) {\n        this._options = this._options || {};\n        this._options[name] = options[name] || defaultValue;\n        if (!_.isFunction(this._options[name]) && !_.isObject(this._options[name])) {\n            this._logger.info('Set option [%s] => %s', name, this._options[name]);\n        }\n        return this;\n    }\n\n    /**\n     * Returns option value by given option name\n     * @param {String} name — option name\n     * @returns {*}\n     * @public\n     */\n    getOption (name) {\n        return this._options[name];\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "BasedOption",
+    "memberof": "src/based-option.es6",
+    "longname": "src/based-option.es6~BasedOption",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/based-option.es6",
+    "importStyle": "BasedOption",
+    "description": "Implements options set and get logic",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "BasedOption"
+      }
+    ],
+    "interface": false,
+    "extends": [
+      "src/base~Base"
+    ]
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setOption",
+    "memberof": "src/based-option.es6~BasedOption",
+    "longname": "src/based-option.es6~BasedOption#setOption",
+    "access": "public",
+    "description": "Sets value to options model for given option field name",
+    "lineNumber": 18,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{BasedOption}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": "— configuration object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": "name of option field"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "defaultValue",
+        "description": "option default value"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "BasedOption"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_options",
+    "memberof": "src/based-option.es6~BasedOption",
+    "longname": "src/based-option.es6~BasedOption#_options",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getOption",
+    "memberof": "src/based-option.es6~BasedOption",
+    "longname": "src/based-option.es6~BasedOption#getOption",
+    "access": "public",
+    "description": "Returns option value by given option name",
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": "— option name"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/checker.es6",
+    "memberof": null,
+    "longname": "src/checker.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import _ from 'lodash';\nimport got  from 'got';\nimport Base  from './base';\nimport BasedOptions  from './based-option';\nimport Document  from './model/document';\nimport Statistic  from './model/statistic';\nimport LinkAnalyzer from './link-analyzer';\n\nrequire('http').globalAgent.maxSockets = Infinity;\nrequire('https').globalAgent.maxSockets = Infinity;\nprocess.env.NODE_TLS_REJECT_UNAUTHORIZED = \"0\";\n\nexport default class Checker extends Base {\n    /**\n     * Constructor\n     * @param {Object}    [options]                            — configuration object\n     * @param {String}    [options.mode]                       - mode of checking (\"website\", \"section\" or \"page\")\n     * @param {Number}    [options.concurrent]                 — number of concurrent requests\n     * @param {Object}    [options.requestHeaders]             — set custom request headers for crawler requests\n     * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first\n     * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)\n     * @param {Function}  [options.onDone]                     - set custom done handler function\n     * @param {String[]}  [options.acceptedSchemes]            — set array of accepted request acceptedSchemes\n     * @param {Boolean}   [options.checkExternalUrls]          — set `true` for check outer links\n     * @param {RegExp[]}  [options.excludeLinkPatterns         - array of regular expressions. Urls that matches\n     * for this regular expressions would be excluded from verification\n     * @constructor\n     */\n    constructor(options = {}) {\n        super(options, module);\n\n        this._logger.info('Initialize crawler instance');\n\n        this._options = new BasedOptions();\n\n        const def = this.constructor.DEFAULT;\n        this.options\n            .setOption(options, 'mode', def.mode)\n            .setOption(options, 'concurrent', def.concurrent)\n            .setOption(options, 'requestHeaders', def.requestHeaders)\n            .setOption(options, 'requestTimeout', def.requestTimeout)\n            .setOption(options, 'acceptedSchemes', def.acceptedSchemes)\n            .setOption(options, 'checkExternalUrls', def.checkExternalUrls)\n            .setOption(options, 'excludeLinkPatterns', def.excludeLinkPatterns)\n            .setOption(options, 'requestRetriesAmount', def.requestRetriesAmount)\n            .setOption(options, 'onDone', this.onDone.bind(this));\n    }\n\n    /**\n     * Getter function for options\n     * @returns {BasedOptions}\n     */\n    get options() {\n        return this._options;\n    }\n\n    /**\n     * Returns application default options\n     * @returns {Object}\n     * @constructor\n     */\n    static get DEFAULT() {\n        return {\n            mode: 'website',\n            concurrent: 100,\n            requestHeaders: { 'user-agent': 'node-spider' },\n            requestRetriesAmount: 5,\n            requestTimeout: 5000,\n            acceptedSchemes: ['http:', 'https:'],\n            checkExternalUrls: false,\n            excludeLinkPatterns: []\n        };\n    }\n\n    /**\n     * Returns application constants model\n     * @returns {Object}\n     * @static\n     */\n    static get CONSTANTS() {\n        return {\n            URL_REGEXP: /https?\\:\\/\\/\\w+((\\:\\d+)?\\/\\S*)?/,\n            MODE: {\n                WEBSITE: 'website',\n                SECTION: 'section',\n                PAGE: 'page'\n            }\n        };\n    }\n\n    /**\n     * Processes loaded document\n     * @param {Document}                   document - document model\n     * @param {String}                     document.url - request url\n     * @param {HttpResponse|HttpsResponse} document.res - response object\n     * @protected\n     */\n    processLoadedDocument(document) {\n        var _this = this,\n            documentUrl = document.url,\n            $ = document.$;\n\n        $('a').each(function () {\n            var href = $(this).attr('href');\n\n            if (href) {\n                let url = document.resolve(href.split('#')[ 0 ]);\n\n                if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {\n                    return;\n                }\n\n                if(_this._linkAnalyzer.isExternal(url)) {\n                    _this._external.set(url, { page: documentUrl, href: href });\n                } else {\n                    _this._addToQueue(url, { page: documentUrl, href: href });\n                }\n            }\n        });\n        this._onFinishLoad(documentUrl);\n    }\n\n    /**\n     * Start to crawl pages for given url\n     * @param {String} url - initial site url for start\n     * @throws Error\n     * @public\n     */\n    start(url) {\n        if (!url) {\n            throw new Error('Url was not set');\n        }\n\n        if (!url.match(this.constructor.CONSTANTS.URL_REGEXP)) {\n            throw new Error('Urls is not valid');\n        }\n\n        this._pending = [];\n        this._active = [];\n        this._external = new Map();\n        this._processed = new Map();\n        this._linkAnalyzer = new LinkAnalyzer(url, this.options);\n        this._statistic = Statistic.create();\n\n        this._logger\n            .info('Start to analyze pages for: => %s', url)\n            .info('It can be take a long time. Please wait ...');\n        this._addToQueue(url, { page: url });\n    }\n\n    /**\n     * onDone callback function\n     * @param {Statistic} statistic model instance\n     * @protected\n     */\n    onDone(statistic) {\n        return statistic;\n    }\n\n    /**\n     * Makes request to given url\n     * @param {String} url - link url (url that should be requested)\n     * @param {Object} advanced - object with advanced data\n     * @param {Number} attempt - number of request attempt\n     */\n    _checkInternalLink(url, advanced, attempt = 0) {\n        if (attempt === 0) {\n            this._active.push(url);\n        }\n\n        got.get(url, this._getRequestOptions(), (error, data, res) => {\n            if (error) {\n                 if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {\n                     return this._checkInternalLink(url, advanced, ++attempt);\n                 } else {\n                     this._statistic.getBroken().add(url, advanced, error.statusCode);\n                     this._logger.warn('Broken [%s] link: => %s on page: => %s',\n                         error.statusCode, advanced.href, advanced.page);\n                 }\n                 return this._onFinishLoad(url);\n            }\n\n            this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',\n                this._pending.length, this._active.length, res ? res.statusCode : -1, url);\n\n\n            this._statistic.increaseInternalCount();\n            this.processLoadedDocument(new Document(url, data));\n        });\n    }\n\n    /**\n     * Checks given external link item\n     * @param {Object[]} item - external link item object\n     * @param {String} item.url - external link url\n     * @param {Object} item.advanced - external link advanced meta data object\n     * @returns {Promise}\n     * @private\n     */\n    _checkExternalLink(item) {\n        var url = item[0],\n            advanced = item[1];\n\n        return new Promise(resolve => {\n            got.head(url, this._getRequestOptions(), (error, data, res) => {\n                if (error) {\n                    this._statistic.getBroken().add(url, advanced, error.statusCode);\n                    this._logger.warn('Broken [%s] link: => %s on page: => %s',\n                        error.statusCode, advanced.href, advanced.page);\n                }\n\n                this._logger.debug('[%s] [%s] Receive [%s] for url: => %s',\n                    this._pending.length, this._active.length, res ? res.statusCode : -1, url);\n\n                this._statistic.increaseExternalCount();\n                resolve();\n            });\n        });\n    }\n\n    /**\n     * Check all collected external links\n     * @returns {Promise}\n     * @private\n     */\n    _checkExternalLinks() {\n        if (!this._external.size) {\n            return Promise.resolve();\n        }\n\n        this._logger.info('Start to verify external links ...');\n\n        var portions = _.chunk(Array.from(this._external), 100);\n        return portions.reduce((prev, portion) => {\n            return prev.then(() => {\n                return Promise.all(portion.map(this._checkExternalLink.bind(this)));\n            });\n        }, Promise.resolve());\n    }\n\n    /**\n     * Checks if loading queue is full\n     * @returns {Boolean}\n     * @private\n     */\n    _isQueueFull() {\n        return this._active.length >= this.options.getOption('concurrent');\n    }\n\n    /**\n     * Adds item to check queue\n     * @param {String} url - link url\n     * @param {Object} advanced - object with advanced data\n     * @private\n     */\n    _addToQueue(url, advanced) {\n        url = url.replace(/\\/$/, '');\n\n        if (this._processed.has(url)) {\n            return;\n        }\n        this._processed.set(url, true);\n        this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :\n            this._checkInternalLink(url, advanced);\n    }\n\n    /**\n     * Function which called after request to given url will be finished\n     * @param  {String} url which was requested\n     * @return {*}\n     * @private\n     */\n    _onFinishLoad(url) {\n        this._active.splice(this._active.indexOf(url), 1);\n\n        if (!this._isQueueFull()) {\n            var next = this._pending.shift();\n            if (next) {\n                this._checkInternalLink(next.url, next.advanced);\n            } else if (!this._active.length) {\n                return this._checkExternalLinks().then(() => {\n                    this.options.getOption('onDone')(this._statistic);\n                });\n            }\n        }\n    }\n\n    /**\n     * Returns request options hash\n     * @returns {{encoding: string, headers: *, timeout: *}}\n     * @private\n     */\n    _getRequestOptions() {\n        return {\n            encoding: 'utf-8',\n            headers: this.options.getOption('requestHeaders'),\n            timeout: this.options.getOption('requestTimeout')\n        };\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Checker",
+    "memberof": "src/checker.es6",
+    "longname": "src/checker.es6~Checker",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/checker.es6",
+    "importStyle": "Checker",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/base~Base"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#constructor",
+    "access": null,
+    "description": "Constructor",
+    "lineNumber": 29,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "— configuration object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.mode",
+        "description": "mode of checking (\"website\", \"section\" or \"page\")"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.concurrent",
+        "description": "— number of concurrent requests"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.requestHeaders",
+        "description": "— set custom request headers for crawler requests"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.requestRetriesAmount",
+        "description": "number of attempts for request if it fails at first"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.requestTimeout",
+        "description": "request timeout (in milliseconds)"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.onDone",
+        "description": "set custom done handler function"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String[]"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.acceptedSchemes",
+        "description": "— set array of accepted request acceptedSchemes"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.checkExternalUrls",
+        "description": "— set `true` for check outer links"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "RegExp[]"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.excludeLinkPatterns",
+        "description": "array of regular expressions. Urls that matches\nfor this regular expressions would be excluded from verification"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_options",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_options",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "options",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#options",
+    "access": null,
+    "description": "Getter function for options",
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{BasedOptions}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "BasedOptions"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker.DEFAULT",
+    "access": null,
+    "description": "Returns application default options",
+    "lineNumber": 62,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CONSTANTS",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker.CONSTANTS",
+    "access": null,
+    "description": "Returns application constants model",
+    "lineNumber": 80,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      },
+      {
+        "tagName": "@static",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "processLoadedDocument",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#processLoadedDocument",
+    "access": "protected",
+    "description": "Processes loaded document",
+    "lineNumber": 98,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Document"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "document",
+        "description": "document model"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "document.url",
+        "description": "request url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "HttpResponse",
+          "HttpsResponse"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "document.res",
+        "description": "response object"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "start",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#start",
+    "access": "public",
+    "description": "Start to crawl pages for given url",
+    "lineNumber": 129,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "initial site url for start"
+      }
+    ],
+    "throws": [
+      {
+        "types": [
+          "*"
+        ],
+        "description": "Error"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_pending",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_pending",
+    "access": null,
+    "description": null,
+    "lineNumber": 138,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_active",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_active",
+    "access": null,
+    "description": null,
+    "lineNumber": 139,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_external",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_external",
+    "access": null,
+    "description": null,
+    "lineNumber": 140,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_processed",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_processed",
+    "access": null,
+    "description": null,
+    "lineNumber": 141,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_linkAnalyzer",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_linkAnalyzer",
+    "access": null,
+    "description": null,
+    "lineNumber": 142,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statistic",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_statistic",
+    "access": null,
+    "description": null,
+    "lineNumber": 143,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDone",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#onDone",
+    "access": "protected",
+    "description": "onDone callback function",
+    "lineNumber": 156,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Statistic"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "statistic",
+        "description": "model instance"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_checkInternalLink",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_checkInternalLink",
+    "access": null,
+    "description": "Makes request to given url",
+    "lineNumber": 166,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "link url (url that should be requested)"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "advanced",
+        "description": "object with advanced data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "attempt",
+        "description": "number of request attempt"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_checkExternalLink",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_checkExternalLink",
+    "access": "private",
+    "description": "Checks given external link item",
+    "lineNumber": 200,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "item",
+        "description": "external link item object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "item.url",
+        "description": "external link url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "item.advanced",
+        "description": "external link advanced meta data object"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_checkExternalLinks",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_checkExternalLinks",
+    "access": "private",
+    "description": "Check all collected external links",
+    "lineNumber": 226,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_isQueueFull",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_isQueueFull",
+    "access": "private",
+    "description": "Checks if loading queue is full",
+    "lineNumber": 246,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_addToQueue",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_addToQueue",
+    "access": "private",
+    "description": "Adds item to check queue",
+    "lineNumber": 256,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "link url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "advanced",
+        "description": "object with advanced data"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_onFinishLoad",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_onFinishLoad",
+    "access": "private",
+    "description": "Function which called after request to given url will be finished",
+    "lineNumber": 273,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "which was requested"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_getRequestOptions",
+    "memberof": "src/checker.es6~Checker",
+    "longname": "src/checker.es6~Checker#_getRequestOptions",
+    "access": "private",
+    "description": "Returns request options hash",
+    "lineNumber": 293,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{{encoding: string, headers: *, timeout: *}}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "{encoding: string, headers: *, timeout: *}"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/cli/cmd-config.es6",
+    "memberof": null,
+    "longname": "src/cli/cmd-config.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import * as action from '../acts/config';\n\nexport default function () {\n    return this\n        .title('Config initialization command')\n        .helpful()\n        .opt()\n            .name('name')\n            .title('Name of configuration file')\n            .short('n').long('name')\n            .req()\n            .end()\n        .act((opts) => {\n            action.createConfigFile(opts.name);\n        });\n}\n"
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "cmdconfig",
+    "memberof": "src/cli/cmd-config.es6",
+    "longname": "src/cli/cmd-config.es6~cmdconfig",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/cli/cmd-config.es6",
+    "importStyle": "cmdconfig",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/cli/cmd-run.es6",
+    "memberof": null,
+    "longname": "src/cli/cmd-run.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import * as action from '../acts/run';\n\nexport default function () {\n    return this\n        .title('Run checker command')\n        .helpful()\n        .opt()\n            .name('config')\n            .title('Path to configuration file')\n            .short('c').long('config')\n            .req()\n            .end()\n        .opt()\n            .name('url')\n            .title('Url of website or page')\n            .short('u').long('url')\n            .end()\n        .opt()\n            .name('concurrent')\n            .title('Number of concurrent requests performed simulteniously')\n            .short('cc').long('concurrent')\n            .end()\n        .opt()\n            .name('requestRetriesAmount')\n            .title('Number of request retry attempts')\n            .short('rra').long('requestRetriesAmount')\n            .end()\n        .opt()\n            .name('requestTimeout')\n            .title('Request timeout (in milliseconds)')\n            .short('rt').long('requestTimeout')\n            .end()\n        .opt()\n            .name('checkExternalUrls')\n            .title('Set true to check external urls too')\n            .short('ext').long('checkExternalUrls')\n            .flag()\n            .end()\n        .opt()\n            .name('mode')\n            .title('Mode of analyze (\"website\", \"section\", \"page\")')\n            .short('m').long('mode')\n            .def('website')\n            .end()\n        .act((options) => {\n            action.run(options);\n        });\n}\n"
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "cmdrun",
+    "memberof": "src/cli/cmd-run.es6",
+    "longname": "src/cli/cmd-run.es6~cmdrun",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/cli/cmd-run.es6",
+    "importStyle": "cmdrun",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/cli/cmd-version.es6",
+    "memberof": null,
+    "longname": "src/cli/cmd-version.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Logger from 'bem-site-logger';\nconst logger = Logger.setOptions({ level: 'info', useDate: false }).createLogger(module);\n\nexport default function () {\n    return this\n        .title('Show tool version command')\n        .act(() => {\n            var p = require('../../package.json');\n            logger\n                .info('Application name: => %s', p['name'])\n                .info('Application version: => %s', p.version);\n            return void 0;\n        });\n}\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "logger",
+    "memberof": "src/cli/cmd-version.es6",
+    "longname": "src/cli/cmd-version.es6~logger",
+    "access": null,
+    "export": false,
+    "importPath": "bs-broken-links-checker/src/cli/cmd-version.es6",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "cmdversion",
+    "memberof": "src/cli/cmd-version.es6",
+    "longname": "src/cli/cmd-version.es6~cmdversion",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/cli/cmd-version.es6",
+    "importStyle": "cmdversion",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/cli/coa.es6",
+    "memberof": null,
+    "longname": "src/cli/coa.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "'use strict';\n\nimport commandConfig from './cmd-config';\nimport commandRun from './cmd-run';\nimport commandVersion from './cmd-version';\n\nfunction command() {\n    return require('coa').Cmd()\n        .name(process.argv[1])\n        .title('Broken links checker tool')\n        .helpful()\n        .cmd().name('config').apply(commandConfig).end()\n        .cmd().name('run').apply(commandRun).end()\n        .cmd().name('version').apply(commandVersion).end()\n        .completable();\n}\n\nexport default command();\n"
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "command",
+    "memberof": "src/cli/coa.es6",
+    "longname": "src/cli/coa.es6~command",
+    "access": null,
+    "export": false,
+    "importPath": "bs-broken-links-checker/src/cli/coa.es6",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/link-analyzer.es6",
+    "memberof": null,
+    "longname": "src/link-analyzer.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Url from 'url';\nimport Checker from './checker';\n\n/**\n * @class LinkAnalyzer\n * @desc Hold logic about recursive links processing\n */\nexport default class LinkAnalyzer {\n    /**\n     * Initialize predefined skip rules for prevent deeper crawling for given url\n     * @param {String} initial - initial url\n     * @param {Object} options - options object\n     * @constructor\n     */\n    constructor(initial, options) {\n        this._url = Url.parse(initial);\n        this._options = options;\n    }\n\n    /**\n     * Returns true if anyone of skip conditions returns true\n     * @param {String} url - url of link\n     * @param {String} baseUrl - url of page where link is\n     * @returns {boolean} — result flag\n     * @public\n     */\n    isNeedToSkipUrl(url, baseUrl) {\n        return [\n            '_skipNonAcceptableProtocols',\n            '_skipExternalUrls',\n            '_skipExcludedUrls',\n            '_skipOnMode'\n        ].some(fName => {\n            return this[fName](url, baseUrl);\n        });\n    }\n\n    /**\n     * Checks if given url is external\n     * @param  {String}  url - request url\n     * @return {boolean} true if url is external. false otherwise\n     */\n    isExternal(url) {\n        return url.indexOf(this._url['hostname']) < 0;\n    }\n\n    /**\n     * Check if protocol of given url satisfies acceptedSchemes criteria\n     * @param {String} url - request url\n     * @returns {boolean} — result flag\n     * @private\n     */\n    _skipNonAcceptableProtocols(url) {\n        return this._options.getOption('acceptedSchemes').indexOf(Url.parse(url).protocol) < 0;\n    }\n\n    /**\n     * Checks if given url has the different hostname then initial\n     * (If 'checkExternalUrls' rule is set to true)\n     * @param {String} url — request url\n     * @returns {boolean} — result flag\n     * @private\n     */\n    _skipExternalUrls(url) {\n        return !this._options.getOption('checkExternalUrls') && url.indexOf(this._url['hostname']) < 0;\n    }\n\n    /**\n     * Checks if given url has host different then host of initial url\n     * @param {String} url — request url\n     * @returns {boolean} — result flag\n     * @private\n     */\n    _skipExcludedUrls(url) {\n        return this._options.getOption('excludeLinkPatterns').some(pattern => {\n            return !!url.match(pattern);\n        });\n    }\n\n    /**\n     * Checks if given url is need to be check depending on mode configuration option\n     * @type {boolean} - result flag\n     * @private\n     */\n    _skipOnMode(url, baseUrl) {\n        var mode = this._options.getOption('mode');\n        const MODES = Checker.CONSTANTS.MODE;\n\n        if (mode === MODES.PAGE) {\n            return Url.parse(baseUrl).path !== this._url.path;\n        } else if (mode === MODES.SECTION) {\n            return url.indexOf(this._url.path) === -1;\n        } else {\n            return false;\n        }\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "LinkAnalyzer",
+    "memberof": "src/link-analyzer.es6",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/link-analyzer.es6",
+    "importStyle": "LinkAnalyzer",
+    "description": "Hold logic about recursive links processing",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@class",
+        "tagValue": "LinkAnalyzer"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#constructor",
+    "access": null,
+    "description": "Initialize predefined skip rules for prevent deeper crawling for given url",
+    "lineNumber": 15,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "initial",
+        "description": "initial url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": "options object"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_url",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_url",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_options",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_options",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isNeedToSkipUrl",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#isNeedToSkipUrl",
+    "access": "public",
+    "description": "Returns true if anyone of skip conditions returns true",
+    "lineNumber": 27,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean} — result flag"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "url of link"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "baseUrl",
+        "description": "url of page where link is"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "— result flag"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isExternal",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#isExternal",
+    "access": null,
+    "description": "Checks if given url is external",
+    "lineNumber": 43,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "request url"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "true if url is external. false otherwise"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_skipNonAcceptableProtocols",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_skipNonAcceptableProtocols",
+    "access": "private",
+    "description": "Check if protocol of given url satisfies acceptedSchemes criteria",
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean} — result flag"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "request url"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "— result flag"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_skipExternalUrls",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_skipExternalUrls",
+    "access": "private",
+    "description": "Checks if given url has the different hostname then initial\n(If 'checkExternalUrls' rule is set to true)",
+    "lineNumber": 64,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean} — result flag"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "— request url"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "— result flag"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_skipExcludedUrls",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_skipExcludedUrls",
+    "access": "private",
+    "description": "Checks if given url has host different then host of initial url",
+    "lineNumber": 74,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean} — result flag"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "— request url"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": "— result flag"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_skipOnMode",
+    "memberof": "src/link-analyzer.es6~LinkAnalyzer",
+    "longname": "src/link-analyzer.es6~LinkAnalyzer#_skipOnMode",
+    "access": "private",
+    "description": "Checks if given url is need to be check depending on mode configuration option",
+    "lineNumber": 85,
+    "params": [
+      {
+        "name": "url",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "baseUrl",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "boolean"
+      ]
+    },
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/model/broken.es6",
+    "memberof": null,
+    "longname": "src/model/broken.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "content": "/**\n * @exports\n * @class BrokenUrls\n * @desc Model for holding broken links information and methods for working with this data\n */\nexport default class BrokenUrls {\n    /**\n     * Constructor function\n     * @constructor\n     */\n    constructor() {\n        /**\n         * Array of broken urls infos\n         * @type {Array}\n         */\n        this._urls = [];\n    }\n\n    /**\n     * Static initializer for BrokenLinks instance\n     * @returns {BrokenLinks}\n     * @static\n     */\n    static create() {\n        return new BrokenUrls();\n    }\n\n    /**\n     * Add url with given response status code to model of broken links\n     * @param {String} url - link url\n     * @param {Obect} advanced - advanced data hash\n     * @param {Number} code - response status code\n     * @returns {exports}\n     * @public\n     */\n    add(url, advanced, code) {\n        this._urls.push({ url: url, advanced: advanced, code: code });\n        return this;\n    }\n\n    /**\n     * Return all broken url items\n     * @returns {Object[]}\n     * @public\n     */\n    getAll() {\n        return this._urls;\n    }\n\n    /**\n     * Return broken url items with given status code\n     * @param {Number} code - response status code\n     * @returns {Object[]}\n     * @public\n     */\n    getByCode(code) {\n        return this.getAll().filter(item => {\n            return item.code === code;\n        });\n    }\n\n    /**\n     * Returns broken urls with response status equals to 404. Page not found error\n     * @returns {Object[]}\n     * @public\n     */\n    get404() {\n        return this.getByCode(404);\n    }\n\n    /**\n     * Returns broken urls with response status equals to 500. Server error\n     * @returns {Object[]}\n     * @public\n     */\n    get500() {\n        return this.getByCode(500);\n    }\n\n    /**\n     * Clears broken links model\n     * @returns {exports}\n     * @public\n     */\n    clear() {\n        this._urls = [];\n        return this;\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "BrokenUrls",
+    "memberof": "src/model/broken.es6",
+    "longname": "src/model/broken.es6~BrokenUrls",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/model/broken.es6",
+    "importStyle": "BrokenUrls",
+    "description": "Model for holding broken links information and methods for working with this data",
+    "lineNumber": 6,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "BrokenUrls"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#constructor",
+    "access": null,
+    "description": "Constructor function",
+    "lineNumber": 11,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_urls",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#_urls",
+    "access": null,
+    "description": "Array of broken urls infos",
+    "lineNumber": 16,
+    "type": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "create",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls.create",
+    "access": null,
+    "description": "Static initializer for BrokenLinks instance",
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{BrokenLinks}"
+      },
+      {
+        "tagName": "@static",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "BrokenLinks"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#add",
+    "access": "public",
+    "description": "Add url with given response status code to model of broken links",
+    "lineNumber": 36,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{exports}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "link url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Obect"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "advanced",
+        "description": "advanced data hash"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "code",
+        "description": "response status code"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "exports"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getAll",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#getAll",
+    "access": "public",
+    "description": "Return all broken url items",
+    "lineNumber": 46,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getByCode",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#getByCode",
+    "access": "public",
+    "description": "Return broken url items with given status code",
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object[]}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "code",
+        "description": "response status code"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "get404",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#get404",
+    "access": "public",
+    "description": "Returns broken urls with response status equals to 404. Page not found error",
+    "lineNumber": 67,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "get500",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#get500",
+    "access": "public",
+    "description": "Returns broken urls with response status equals to 500. Server error",
+    "lineNumber": 76,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "clear",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#clear",
+    "access": "public",
+    "description": "Clears broken links model",
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{exports}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "exports"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_urls",
+    "memberof": "src/model/broken.es6~BrokenUrls",
+    "longname": "src/model/broken.es6~BrokenUrls#_urls",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/model/document.es6",
+    "memberof": null,
+    "longname": "src/model/document.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import cheerio  from 'cheerio';\nimport Url  from 'url';\n\n/**\n * @exports\n * @class Document\n * @desc Model for loaded document from link url request\n */\nexport default class Document {\n    /**\n     * Constructor function\n     * @param {String} url - request url\n     * @param {HttpResponse} res - response object\n     * @constructor\n     */\n    constructor (url, res) {\n        /**\n         * Response object\n         * @type {HttpResponse|HttpsResponse} - respose object\n         */\n        this._res = res;\n\n        /**\n         * Url document has been loaded from\n         * @type {String}\n         */\n        this._url = url;\n\n        /**\n         * Cheerio\n         * @param  {String} res.toString('utf-8') response html data string\n         * @return {Function} cherio tree function\n         */\n        try {\n            this._$ = cheerio.load(res.toString('utf-8'));\n        } catch (error) {\n            this._$ = cheerio.load('');\n        }\n    }\n\n    /**\n     * Returns response object\n     * @returns {HttpResponse|HttpsResponse}\n     * @public\n     */\n    get res() {\n        return this._res;\n    }\n\n    /**\n     * Returns document url\n     * @returns {String}\n     * @public\n     */\n    get url() {\n        return this._url;\n    }\n\n    /**\n     * Parses response body parsed by cheerio\n     * @returns {*|any|Object|undefined}\n     * @public\n     */\n    get $() {\n        return this._$;\n    }\n\n    /**\n     * Resolves parsed link against document url\n     * @param {String} link - document link\n     * @public\n     */\n    resolve(link) {\n        return Url.resolve(this._url, link);\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Document",
+    "memberof": "src/model/document.es6",
+    "longname": "src/model/document.es6~Document",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/model/document.es6",
+    "importStyle": "Document",
+    "description": "Model for loaded document from link url request",
+    "lineNumber": 9,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "Document"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#constructor",
+    "access": null,
+    "description": "Constructor function",
+    "lineNumber": 16,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "request url"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "HttpResponse"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "res",
+        "description": "response object"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_res",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#_res",
+    "access": null,
+    "description": "Response object",
+    "lineNumber": 21,
+    "type": {
+      "nullable": null,
+      "types": [
+        "HttpResponse",
+        "HttpsResponse"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_url",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#_url",
+    "access": null,
+    "description": "Url document has been loaded from",
+    "lineNumber": 27,
+    "type": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_$",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#_$",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_$",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#_$",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "res",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#res",
+    "access": "public",
+    "description": "Returns response object",
+    "lineNumber": 46,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{HttpResponse|HttpsResponse}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "HttpResponse",
+        "HttpsResponse"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "url",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#url",
+    "access": "public",
+    "description": "Returns document url",
+    "lineNumber": 55,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "$",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#$",
+    "access": "public",
+    "description": "Parses response body parsed by cheerio",
+    "lineNumber": 64,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*|any|Object|undefined}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*",
+        "any",
+        "Object",
+        "undefined"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "resolve",
+    "memberof": "src/model/document.es6~Document",
+    "longname": "src/model/document.es6~Document#resolve",
+    "access": "public",
+    "description": "Resolves parsed link against document url",
+    "lineNumber": 73,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "link",
+        "description": "document link"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/model/statistic.es6",
+    "memberof": null,
+    "longname": "src/model/statistic.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Broken  from './broken';\n\n/**\n * @exports\n * @class Statistic\n * @desc Model for collection analyze results\n */\nexport default class Statistic {\n\n    /**\n     * Constructor function\n     * @constructor\n     */\n    constructor() {\n        this._broken = Broken.create();\n\n        this._countExternal = 0;\n        this._countInternal = 0;\n    }\n\n    /**\n     * Static constructor for Statistic class\n     * @return {Statistic}\n     * @static\n     */\n    static create() {\n        return new Statistic();\n    }\n\n    /**\n     * Increase count of processed internal website links\n     * @returns {Statistic}\n     * @public\n     */\n    increaseInternalCount() {\n        this._countInternal++;\n        return this;\n    }\n\n    /**\n     * Increase count of processed external website links\n     * @returns {Statistic}\n     * @public\n     */\n    increaseExternalCount() {\n        this._countExternal++;\n        return this;\n    }\n\n    /**\n     * Returns amount of processed internal website links\n     * @returns {Number}\n     * @public\n     */\n    getInternalCount() {\n        return this._countInternal;\n    }\n\n    /**\n     * Returns amount of processed external website links\n     * @returns {Number}\n     * @public\n     */\n    getExternalCount() {\n        return this._countExternal;\n    }\n\n    /**\n     * Returns total amount of processed links (internal and external)\n     * @returns {Number}\n     * @public\n     */\n    getAllCount() {\n        return this.getExternalCount() + this.getInternalCount();\n    }\n\n    /**\n     * Returns model of broken links\n     * @returns {Broken}\n     * @public\n     */\n    getBroken() {\n        return this._broken;\n    }\n\n    /**\n     * Returns amount of founded broken links\n     * @returns {Number}\n     * @public\n     */\n    getBrokenCount() {\n        return this.getBroken().getAll().length;\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Statistic",
+    "memberof": "src/model/statistic.es6",
+    "longname": "src/model/statistic.es6~Statistic",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/model/statistic.es6",
+    "importStyle": "Statistic",
+    "description": "Model for collection analyze results",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "Statistic"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#constructor",
+    "access": null,
+    "description": "Constructor function",
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_broken",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#_broken",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_countExternal",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#_countExternal",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_countInternal",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#_countInternal",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "create",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic.create",
+    "access": null,
+    "description": "Static constructor for Statistic class",
+    "lineNumber": 26,
+    "unknown": [
+      {
+        "tagName": "@static",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Statistic"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "increaseInternalCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#increaseInternalCount",
+    "access": "public",
+    "description": "Increase count of processed internal website links",
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Statistic}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Statistic"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "increaseExternalCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#increaseExternalCount",
+    "access": "public",
+    "description": "Increase count of processed external website links",
+    "lineNumber": 45,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Statistic}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Statistic"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getInternalCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#getInternalCount",
+    "access": "public",
+    "description": "Returns amount of processed internal website links",
+    "lineNumber": 55,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getExternalCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#getExternalCount",
+    "access": "public",
+    "description": "Returns amount of processed external website links",
+    "lineNumber": 64,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getAllCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#getAllCount",
+    "access": "public",
+    "description": "Returns total amount of processed links (internal and external)",
+    "lineNumber": 73,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getBroken",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#getBroken",
+    "access": "public",
+    "description": "Returns model of broken links",
+    "lineNumber": 82,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Broken}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Broken"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getBrokenCount",
+    "memberof": "src/model/statistic.es6~Statistic",
+    "longname": "src/model/statistic.es6~Statistic#getBrokenCount",
+    "access": "public",
+    "description": "Returns amount of founded broken links",
+    "lineNumber": 91,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/reporters/base.es6",
+    "memberof": null,
+    "longname": "src/reporters/base.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import fs from 'fs';\nimport path from 'path';\nimport moment from 'moment';\nimport Logger from 'bem-site-logger';\nimport Util from '../util';\n\nexport default class ReporterBase {\n\n    constructor(options = {}) {\n        options.logger = options.logger || {\n            level: 'info'\n        };\n        options.logger.useDate = false;\n        this._logger = Logger.setOptions(options.logger).createLogger(module);\n    }\n\n    /**\n     * Creates reports folder in current work directory\n     * @return void 0\n     * @protected\n     */\n    createReportsFolder() {\n        try {\n            fs.mkdirSync(Util.getReportsDirectory());\n        } catch (error) {}\n    }\n\n    /**\n     * Creates folder named as given configurationName inside reports folder\n     * @param  {String} configurationName - name of configuration file\n     * @return void 0\n     * @protected\n     */\n    createReportFolder(configurationName) {\n        this.createReportsFolder();\n        try {\n            fs.mkdirSync(path.join(Util.getReportsDirectory(), configurationName));\n        } catch (error) {}\n    }\n\n    /**\n     * Saves report to file\n     * @param {String} configurationName - name of configuration\n     * @param {String} type - report type\n     * @param {String} content - report content\n     * @param {String} date - formatted date\n     * @returns {Promise}\n     */\n    saveReportFile(configurationName, type, content, date = moment().format('DD-MM-YYYY:hh:mm:ss')) {\n        this.createReportFolder(configurationName);\n        var fileName = `${date}.${type}`,\n            filePath = path.join(Util.getReportsDirectory(), configurationName, fileName);\n\n        return new Promise((resolve, reject) => {\n            fs.writeFile(filePath, content, { encoding: 'utf-8' }, error => {\n                if (error) {\n                    this._logger.error('Error occur while saving file: %s', filePath);\n                    reject(error);\n                } else {\n                    this._logger.info('Report saved: %s', filePath);\n                    resolve();\n                }\n            });\n        });\n    }\n\n    createReport() {\n        // TODO override in child class\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ReporterBase",
+    "memberof": "src/reporters/base.es6",
+    "longname": "src/reporters/base.es6~ReporterBase",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/reporters/base.es6",
+    "importStyle": "ReporterBase",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "params": [
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_logger",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#_logger",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createReportsFolder",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#createReportsFolder",
+    "access": "protected",
+    "description": "Creates reports folder in current work directory",
+    "lineNumber": 22,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": "void 0"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createReportFolder",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#createReportFolder",
+    "access": "protected",
+    "description": "Creates folder named as given configurationName inside reports folder",
+    "lineNumber": 34,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configurationName",
+        "description": "name of configuration file"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": "void 0"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "saveReportFile",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#saveReportFile",
+    "access": null,
+    "description": "Saves report to file",
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configurationName",
+        "description": "name of configuration"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "type",
+        "description": "report type"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "content",
+        "description": "report content"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "date",
+        "description": "formatted date"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createReport",
+    "memberof": "src/reporters/base.es6~ReporterBase",
+    "longname": "src/reporters/base.es6~ReporterBase#createReport",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/reporters/html.es6",
+    "memberof": null,
+    "longname": "src/reporters/html.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import fs from 'fs';\nimport _ from 'lodash';\nimport moment from 'moment';\nimport ReporterBase from './base';\n\nexport default class ReporterHtml extends ReporterBase {\n\n    createReport(configurationName, statistic, options) {\n        this._logger.info('create html report');\n        var report = {\n                name: options.url,\n                date: moment().format('DD-MM-YYYY:hh:mm:ss'),\n                internalCount: statistic.getInternalCount(),\n                externalCount: statistic.getExternalCount(),\n                totalCount: statistic.getAllCount(),\n                brokenCount: statistic.getBrokenCount(),\n                broken: statistic.getBroken().getAll(),\n                options: options\n            },\n            htmlTemplate = fs.readFileSync('./src/assets/report.html', { encoding: 'utf-8' }),\n            compiled = _.template(htmlTemplate);\n\n        return this.saveReportFile(configurationName, 'html', compiled({ report: report }, report.date));\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ReporterHtml",
+    "memberof": "src/reporters/html.es6",
+    "longname": "src/reporters/html.es6~ReporterHtml",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/reporters/html.es6",
+    "importStyle": "ReporterHtml",
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/reporters/base~ReporterBase"
+    ]
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createReport",
+    "memberof": "src/reporters/html.es6~ReporterHtml",
+    "longname": "src/reporters/html.es6~ReporterHtml#createReport",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [
+      {
+        "name": "configurationName",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "statistic",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/reporters/json.es6",
+    "memberof": null,
+    "longname": "src/reporters/json.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import ReporterBase from './base';\n\nexport default class ReporterJson extends ReporterBase {\n\n    createReport(configurationName, statistic) {\n        this._logger.info('create json report');\n        var report = {\n            internalCount: statistic.getInternalCount(),\n            externalCount: statistic.getExternalCount(),\n            totalCount: statistic.getAllCount(),\n            brokenCount: statistic.getBrokenCount(),\n            broken: statistic.getBroken().getAll()\n        };\n\n        return this.saveReportFile(configurationName, 'json', JSON.stringify(report, null, 4));\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ReporterJson",
+    "memberof": "src/reporters/json.es6",
+    "longname": "src/reporters/json.es6~ReporterJson",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/reporters/json.es6",
+    "importStyle": "ReporterJson",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/reporters/base~ReporterBase"
+    ]
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createReport",
+    "memberof": "src/reporters/json.es6~ReporterJson",
+    "longname": "src/reporters/json.es6~ReporterJson#createReport",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [
+      {
+        "name": "configurationName",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "statistic",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/util.es6",
+    "memberof": null,
+    "longname": "src/util.es6",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import path  from 'path';\n\n/**\n * @exports\n * @class Util\n * @desc Implements utility methods\n */\nexport default class Util {\n    /**\n     * Returns resolved path to configuration folder\n     * @return {String} path to configuration folder\n     * @static\n     */\n    static getConfigurationDirectory() {\n        return path.join(process.cwd(), './configs');\n    }\n\n    /**\n     * Returns resolved path to reports folder\n     * @return {String} path to reports folder\n     * @static\n     */\n    static getReportsDirectory() {\n        return path.join(process.cwd(), './reports');\n    }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Util",
+    "memberof": "src/util.es6",
+    "longname": "src/util.es6~Util",
+    "access": null,
+    "export": true,
+    "importPath": "bs-broken-links-checker/src/util.es6",
+    "importStyle": "Util",
+    "description": "Implements utility methods",
+    "lineNumber": 8,
+    "unknown": [
+      {
+        "tagName": "@exports",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@class",
+        "tagValue": "Util"
+      }
+    ],
+    "interface": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "getConfigurationDirectory",
+    "memberof": "src/util.es6~Util",
+    "longname": "src/util.es6~Util.getConfigurationDirectory",
+    "access": null,
+    "description": "Returns resolved path to configuration folder",
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@static",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": "path to configuration folder"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "getReportsDirectory",
+    "memberof": "src/util.es6~Util",
+    "longname": "src/util.es6~Util.getReportsDirectory",
+    "access": null,
+    "description": "Returns resolved path to reports folder",
+    "lineNumber": 23,
+    "unknown": [
+      {
+        "tagName": "@static",
+        "tagValue": ""
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": "path to reports folder"
+    },
+    "generator": false
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/acts/config.test.js",
+    "memberof": null,
+    "longname": "test/src/acts/config.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var path = require('path'),\n    fs = require('fs'),\n    should = require('should'),\n    mockFs = require('mock-fs'),\n    config = require('../../../lib/acts/config');\n\ndescribe('acts/config', function () {\n    var configMock = {\n        'url': 'http://my.site.com',\n        'logger': {\n            'level': 'info'\n        },\n        'concurrent': 100,\n        'requestHeaders': {\n            'user-agent': 'node-spider'\n        },\n        'requestRetriesAmount': 5,\n        'requestTimeout': 5000,\n        'acceptedSchemes': [\n            'http:',\n            'https:'\n        ],\n        'checkExternalUrls': false,\n        'excludeLinkPatterns': []\n    };\n\n    beforeEach(function () {\n        mockFs({});\n    });\n\n    it('should create configuration directory', function () {\n        config.createConfigsDir();\n        fs.existsSync('./configs').should.equal(true);\n    });\n\n    it('should create configuration stub', function () {\n        should.deepEqual(config.createConfigStub(), configMock);\n    });\n\n    it('should create configuration file', function () {\n        config.createConfigFile('test').should.equal(true);\n        fs.existsSync('./configs/test.js').should.equal(true);\n        should.deepEqual(require(path.resolve('./configs/test.js')), configMock);\n    });\n\n    afterEach(function () {\n        mockFs.restore();\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe0",
+    "testId": 0,
+    "memberof": "test/src/acts/config.test.js",
+    "testDepth": 0,
+    "longname": "test/src/acts/config.test.js~describe0",
+    "access": null,
+    "description": "acts/config",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it1",
+    "testId": 1,
+    "memberof": "test/src/acts/config.test.js~describe0",
+    "testDepth": 1,
+    "longname": "test/src/acts/config.test.js~describe0.it1",
+    "access": null,
+    "description": "should create configuration directory",
+    "lineNumber": 31
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it2",
+    "testId": 2,
+    "memberof": "test/src/acts/config.test.js~describe0",
+    "testDepth": 1,
+    "longname": "test/src/acts/config.test.js~describe0.it2",
+    "access": null,
+    "description": "should create configuration stub",
+    "lineNumber": 36
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it3",
+    "testId": 3,
+    "memberof": "test/src/acts/config.test.js~describe0",
+    "testDepth": 1,
+    "longname": "test/src/acts/config.test.js~describe0.it3",
+    "access": null,
+    "description": "should create configuration file",
+    "lineNumber": 40
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/acts/run.test.js",
+    "memberof": null,
+    "longname": "test/src/acts/run.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var path = require('path'),\n    fs = require('fs'),\n    should = require('should'),\n    mockFs = require('mock-fs'),\n    run = require('../../../lib/acts/run');\n\ndescribe('acts/run', function () {\n\tbeforeEach(function () {\n\t\tmockFs({\n\t\t\tconfigs: {\n\t\t\t\t'my.site.com.js': fs.readFileSync('./test/mock/my.site.com.js', { encoding: 'utf-8' })\n\t\t\t}\n\t\t});\n\t});\n\n\tit('should throw error if config param was not set', function () {\n\t\t(function () { return run.run({}); }).should.throw('Configuration file not found');\t\n\t});\n\n\tit('should throw error if config file is missed', function () {\n\t\t(function () { return run.run({ config: './configs/invalid.js' }); }).should.throw('Configuration file not found');\t\n\t});\n\n\tafterEach(function() {\n\t\tmockFs.restore();\n\t});\n});"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe4",
+    "testId": 4,
+    "memberof": "test/src/acts/run.test.js",
+    "testDepth": 0,
+    "longname": "test/src/acts/run.test.js~describe4",
+    "access": null,
+    "description": "acts/run",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it5",
+    "testId": 5,
+    "memberof": "test/src/acts/run.test.js~describe4",
+    "testDepth": 1,
+    "longname": "test/src/acts/run.test.js~describe4.it5",
+    "access": null,
+    "description": "should throw error if config param was not set",
+    "lineNumber": 16
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it6",
+    "testId": 6,
+    "memberof": "test/src/acts/run.test.js~describe4",
+    "testDepth": 1,
+    "longname": "test/src/acts/run.test.js~describe4.it6",
+    "access": null,
+    "description": "should throw error if config file is missed",
+    "lineNumber": 20
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/based-option.test.js",
+    "memberof": null,
+    "longname": "test/src/based-option.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var BasedOption = require('../../lib/based-option');\n\ndescribe('based-option', function () {\n    var basedOption;\n\n    beforeEach(function () {\n        basedOption = new BasedOption();\n    });\n\n    describe('setOption', function () {\n        it('should set option value for given option name', function () {\n            basedOption.setOption({ foo: 'bar' }, 'foo', 'bar-default');\n            basedOption._options.foo.should.equal('bar');\n        });\n\n        it('should set default value if option was not set', function () {\n            basedOption.setOption({}, 'foo', 'bar-default');\n            basedOption._options.foo.should.equal('bar-default');\n        });\n    });\n\n    it('should get valid option value', function () {\n        basedOption.setOption({ foo: 'bar' }, 'foo', 'bar-default');\n        basedOption.getOption('foo').should.equal('bar');\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe7",
+    "testId": 7,
+    "memberof": "test/src/based-option.test.js",
+    "testDepth": 0,
+    "longname": "test/src/based-option.test.js~describe7",
+    "access": null,
+    "description": "based-option",
+    "lineNumber": 3
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe8",
+    "testId": 8,
+    "memberof": "test/src/based-option.test.js~describe7",
+    "testDepth": 1,
+    "longname": "test/src/based-option.test.js~describe7.describe8",
+    "access": null,
+    "description": "setOption",
+    "lineNumber": 10
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it9",
+    "testId": 9,
+    "memberof": "test/src/based-option.test.js~describe7.describe8",
+    "testDepth": 2,
+    "longname": "test/src/based-option.test.js~describe7.describe8.it9",
+    "access": null,
+    "description": "should set option value for given option name",
+    "lineNumber": 11
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it10",
+    "testId": 10,
+    "memberof": "test/src/based-option.test.js~describe7.describe8",
+    "testDepth": 2,
+    "longname": "test/src/based-option.test.js~describe7.describe8.it10",
+    "access": null,
+    "description": "should set default value if option was not set",
+    "lineNumber": 16
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it11",
+    "testId": 11,
+    "memberof": "test/src/based-option.test.js~describe7",
+    "testDepth": 1,
+    "longname": "test/src/based-option.test.js~describe7.it11",
+    "access": null,
+    "description": "should get valid option value",
+    "lineNumber": 22
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/checker.test.js",
+    "memberof": null,
+    "longname": "test/src/checker.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var Url = require('url'),\n    vow = require('vow'),\n    should = require('should'),\n    Statistic = require('../../lib/model/statistic'),\n    Checker = require('../../lib/checker');\n\ndescribe('checker', function () {\n    var server, port;\n\n        before(function (done) {\n            try {\n                port = process.env.PORT || 3000,\n                server = require('../mock/server');\n                setTimeout(function () {\n                    done();\n                }, 1000);\n            } catch(error) {\n                done();\n            }\n        });\n\n\n    describe('constructor', function () {\n        function assertDefault(checker) {\n            var options = checker.options;\n\n            options.getOption('concurrent').should.equal(Checker.DEFAULT.concurrent);\n            options.getOption('checkExternalUrls').should.equal(Checker.DEFAULT.checkExternalUrls);\n            options.getOption('requestRetriesAmount').should.equal(Checker.DEFAULT.requestRetriesAmount);\n            options.getOption('requestTimeout').should.equal(Checker.DEFAULT.requestTimeout);\n            options.getOption('mode').should.equal(Checker.DEFAULT.mode)\n\n            should.deepEqual(options.getOption('requestHeaders'), Checker.DEFAULT.requestHeaders);\n            should.deepEqual(options.getOption('onDone'), checker.onDone.bind(checker));\n            should.deepEqual(options.getOption('acceptedSchemes'), Checker.DEFAULT.acceptedSchemes);\n            should.deepEqual(options.getOption('excludeLinkPatterns'), Checker.DEFAULT.excludeLinkPatterns);\n        }\n\n        it('should be initialized with default params if options were not set', function () {\n            assertDefault(new Checker());\n        });\n\n        it('should be initialized with default params if options are empty', function () {\n            assertDefault(new Checker({}));\n        });\n\n        it('should override default concurrent option', function () {\n            var checker = new Checker({ concurrent: 3 });\n            checker.options.getOption('concurrent').should.equal(3);\n        });\n\n        it('should override default requestHeaders option', function () {\n            var checker = new Checker({ requestHeaders: { 'user-agent': 'custom-header' } });\n            should.deepEqual(checker.options.getOption('requestHeaders'), { 'user-agent': 'custom-header' });\n        });\n\n        it('should override default requestRetriesAmount option', function () {\n            var checker = new Checker({ requestRetriesAmount: 3 });\n            checker.options.getOption('requestRetriesAmount').should.equal(3);\n        });\n\n        it('should override default requestTimeout option', function () {\n            var checker = new Checker({ requestTimeout: 2000 });\n            checker.options.getOption('requestTimeout').should.equal(2000);\n        });\n\n        it('should override default acceptedSchemes rule', function () {\n            var checker = new Checker({ acceptedSchemes: ['mail:'] });\n            should.deepEqual(checker.options.getOption('acceptedSchemes'), ['mail:']);\n        });\n\n        it('should override default checkExternalUrls option', function () {\n            var checker = new Checker({ checkExternalUrls: true });\n            checker.options.getOption('checkExternalUrls').should.equal(true);\n        });\n\n        it('should override default excludeLinkPatterns rule', function () {\n            var reg = [/\\/foo1\\/bar1\\//, /\\/foo2\\/bar2\\//],\n                checker = new Checker({ excludeLinkPatterns: reg });\n            should.deepEqual(checker.options.getOption('excludeLinkPatterns'), reg);\n        });\n    });\n\n    describe('start', function () {\n        it('should throw error if url param was not set', function () {\n            var checker = new Checker();\n            (function () { return checker.start(null); }).should.throw('Url was not set');\n        });\n\n        it('should throw error if url param has invalid format', function () {\n            var checker = new Checker();\n            (function () { return checker.start('bla-bla'); }).should.throw('Urls is not valid');\n        });\n    });\n\n    describe('_getRequestOptions', function () {\n        it('should return valid request options object', function () {\n            var checker = new Checker();\n            should.deepEqual(checker._getRequestOptions(), {\n                encoding: 'utf-8',\n                headers: { 'user-agent': 'node-spider' },\n                timeout: 5000\n            });\n        });\n    });\n\n    describe('_checkExternalLink', function () {\n        var checker;\n\n        beforeEach(function () {\n            checker = new Checker();\n            checker._statistic = Statistic.create();\n            checker._pending = [];\n            checker._active = [];\n        });\n\n        it('should check existed existed external link', function () {\n            var item = ['http://yandex.ru', { href: 'http://yandex.ru', page: 'http://my.site.com' }];\n            return checker._checkExternalLink(item).then(function () {\n                checker._statistic.getExternalCount().should.equal(1);        \n            });\n        });\n\n        it('should check existed non-existed external link', function () {\n            var item = ['http://invlid-url', { href: 'http://invlid-url', page: 'http://my.site.com' }];\n            return checker._checkExternalLink(item).then(function () {\n                checker._statistic.getExternalCount().should.equal(1);\n                checker._statistic.getBrokenCount().should.equal(1);        \n            });\n        });\n    });          \n\n    describe('test mock server', function () {\n        it('should crawl pages', function (done) {\n            var checker = new Checker({\n                onDone: function (statistic) {\n                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(1);\n                    done();\n                }\n            });\n\n            checker.start('http://localhost:' + port);\n        });\n\n        it('should skip excluded page urls', function (done) {\n            var checker = new Checker({\n                excludeLinkPatterns: [/\\/not-found/],\n                onDone: function (statistic) {\n                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(0);\n                    done();\n                }\n            });\n\n            checker.start('http://localhost:' + port);\n        });\n\n        it('should check outer urls', function (done) {\n            var checker = new Checker({\n                checkExternalUrls: true,\n                onDone: function (statistic) {\n                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(1);\n                    done();\n                }\n            });\n            checker.start('http://localhost:' + port);\n        });\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe12",
+    "testId": 12,
+    "memberof": "test/src/checker.test.js",
+    "testDepth": 0,
+    "longname": "test/src/checker.test.js~describe12",
+    "access": null,
+    "description": "checker",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe13",
+    "testId": 13,
+    "memberof": "test/src/checker.test.js~describe12",
+    "testDepth": 1,
+    "longname": "test/src/checker.test.js~describe12.describe13",
+    "access": null,
+    "description": "constructor",
+    "lineNumber": 23
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it14",
+    "testId": 14,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it14",
+    "access": null,
+    "description": "should be initialized with default params if options were not set",
+    "lineNumber": 39
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it15",
+    "testId": 15,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it15",
+    "access": null,
+    "description": "should be initialized with default params if options are empty",
+    "lineNumber": 43
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it16",
+    "testId": 16,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it16",
+    "access": null,
+    "description": "should override default concurrent option",
+    "lineNumber": 47
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it17",
+    "testId": 17,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it17",
+    "access": null,
+    "description": "should override default requestHeaders option",
+    "lineNumber": 52
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it18",
+    "testId": 18,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it18",
+    "access": null,
+    "description": "should override default requestRetriesAmount option",
+    "lineNumber": 57
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it19",
+    "testId": 19,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it19",
+    "access": null,
+    "description": "should override default requestTimeout option",
+    "lineNumber": 62
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it20",
+    "testId": 20,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it20",
+    "access": null,
+    "description": "should override default acceptedSchemes rule",
+    "lineNumber": 67
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it21",
+    "testId": 21,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it21",
+    "access": null,
+    "description": "should override default checkExternalUrls option",
+    "lineNumber": 72
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it22",
+    "testId": 22,
+    "memberof": "test/src/checker.test.js~describe12.describe13",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe13.it22",
+    "access": null,
+    "description": "should override default excludeLinkPatterns rule",
+    "lineNumber": 77
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe23",
+    "testId": 23,
+    "memberof": "test/src/checker.test.js~describe12",
+    "testDepth": 1,
+    "longname": "test/src/checker.test.js~describe12.describe23",
+    "access": null,
+    "description": "start",
+    "lineNumber": 84
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it24",
+    "testId": 24,
+    "memberof": "test/src/checker.test.js~describe12.describe23",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe23.it24",
+    "access": null,
+    "description": "should throw error if url param was not set",
+    "lineNumber": 85
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it25",
+    "testId": 25,
+    "memberof": "test/src/checker.test.js~describe12.describe23",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe23.it25",
+    "access": null,
+    "description": "should throw error if url param has invalid format",
+    "lineNumber": 90
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe26",
+    "testId": 26,
+    "memberof": "test/src/checker.test.js~describe12",
+    "testDepth": 1,
+    "longname": "test/src/checker.test.js~describe12.describe26",
+    "access": null,
+    "description": "_getRequestOptions",
+    "lineNumber": 96
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it27",
+    "testId": 27,
+    "memberof": "test/src/checker.test.js~describe12.describe26",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe26.it27",
+    "access": null,
+    "description": "should return valid request options object",
+    "lineNumber": 97
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe28",
+    "testId": 28,
+    "memberof": "test/src/checker.test.js~describe12",
+    "testDepth": 1,
+    "longname": "test/src/checker.test.js~describe12.describe28",
+    "access": null,
+    "description": "_checkExternalLink",
+    "lineNumber": 107
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it29",
+    "testId": 29,
+    "memberof": "test/src/checker.test.js~describe12.describe28",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe28.it29",
+    "access": null,
+    "description": "should check existed existed external link",
+    "lineNumber": 117
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it30",
+    "testId": 30,
+    "memberof": "test/src/checker.test.js~describe12.describe28",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe28.it30",
+    "access": null,
+    "description": "should check existed non-existed external link",
+    "lineNumber": 124
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe31",
+    "testId": 31,
+    "memberof": "test/src/checker.test.js~describe12",
+    "testDepth": 1,
+    "longname": "test/src/checker.test.js~describe12.describe31",
+    "access": null,
+    "description": "test mock server",
+    "lineNumber": 133
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it32",
+    "testId": 32,
+    "memberof": "test/src/checker.test.js~describe12.describe31",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe31.it32",
+    "access": null,
+    "description": "should crawl pages",
+    "lineNumber": 134
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it33",
+    "testId": 33,
+    "memberof": "test/src/checker.test.js~describe12.describe31",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe31.it33",
+    "access": null,
+    "description": "should skip excluded page urls",
+    "lineNumber": 145
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it34",
+    "testId": 34,
+    "memberof": "test/src/checker.test.js~describe12.describe31",
+    "testDepth": 2,
+    "longname": "test/src/checker.test.js~describe12.describe31.it34",
+    "access": null,
+    "description": "should check outer urls",
+    "lineNumber": 157
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/link-analyzer.test.js",
+    "memberof": null,
+    "longname": "test/src/link-analyzer.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var Url = require('url'),\n    should = require('should'),\n    BasedOption = require('../../lib/based-option');\n    LinkAnalyzer = require('../../lib/link-analyzer');\n\ndescribe('LinkAnalyzer', function () {\n    describe('constructor', function () {\n        var la;\n\n        beforeEach(function () {\n            la = new LinkAnalyzer('http://my.site.com', { foo: 'bar' });\n        });\n\n        it('should have valid _url field value after initialization', function () {\n            should.deepEqual(la._url, Url.parse('http://my.site.com'));\n        });\n\n        it('should have valid _options field value after initialization', function () {\n            should.deepEqual(la._options, { foo: 'bar' });\n        });\n    });\n\n    describe('_skipNonAcceptableProtocols', function () {\n        var linkAnalyzer;\n\n        beforeEach(function () {\n            linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());\n        });\n\n        it ('should return true if scheme of given url does not exist in list of acceptable acceptedSchemes', function () {\n            linkAnalyzer._options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);\n            linkAnalyzer._skipNonAcceptableProtocols('mailto://my.host/url1').should.equal(true);\n        });\n\n        it ('should return false if scheme of given url exists in list of acceptable acceptedSchemes', function () {\n            linkAnalyzer._options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);\n            linkAnalyzer._skipNonAcceptableProtocols('http://my.host/url1').should.equal(false);\n        });\n    });\n\n    describe('_skipExternalUrls', function () {\n        var linkAnalyzer;\n\n        beforeEach(function () {\n            linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());\n        });\n\n        it ('should return false if checkExternalUrls option is set to true', function () {\n            linkAnalyzer._options.setOption({}, 'checkExternalUrls', true);\n            linkAnalyzer._skipExternalUrls('http://outer.host:80/url1').should.equal(false);\n        });\n\n        it ('should return true if host of given url is different then host of initial url', function () {\n            linkAnalyzer._options.setOption({}, 'checkExternalUrls', false);\n            linkAnalyzer._skipExternalUrls('http://outer.host:80/url1').should.equal(true);\n        });\n\n        it ('should return false if host of given url is the same as host of initial url', function () {\n            linkAnalyzer._options.setOption({}, 'checkExternalUrls', false);\n            linkAnalyzer._skipExternalUrls('http://my.site.com/url2').should.equal(false);\n        });\n\n    });\n\n    describe('_skipExcludedUrls', function () {\n        var linkAnalyzer;\n\n        beforeEach(function () {\n            linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());\n        });\n\n        it ('should return false in case of empty \"excludeLinkPatterns\" array', function () {\n            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', []);\n            linkAnalyzer._skipExcludedUrls('http://my.site.com/url1').should.be.equal(false);\n        });\n\n        it ('should return false if any of excluded patterns does not match given url', function () {\n            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', [/\\/foo1/i, /\\/foo2/i]);\n            linkAnalyzer._skipExcludedUrls('http://my.site.com/url1').should.be.equal(false);\n        });\n\n        it ('should return true if any excluded patterns matches on given url', function () {\n            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', [/\\/foo1/i, /\\/foo2/i]);\n            linkAnalyzer._skipExcludedUrls('http://my.site.com/foo1').should.be.equal(true);\n        });\n    });\n\n    describe('_skipOnMode', function () {\n        var linkAnalyzer;\n\n        beforeEach(function () {\n            linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());\n        });\n\n        it('should return false for mode \"page\" and direct links of target page', function () {\n           linkAnalyzer._options.setOption({}, 'mode', 'page');\n           linkAnalyzer._skipOnMode('http://my.site.com/foo1', 'http://my.site.com').should.be.equal(false);     \n        });\n\n        it('should return true for mode \"page\" and non-direct links of target page', function () {\n           linkAnalyzer._options.setOption({}, 'mode', 'page');\n           linkAnalyzer._skipOnMode('http://my.site.com/foo2', 'http://my.site.com/foo1').should.be.equal(true);     \n        });\n\n        it('should return false for mode \"section\" and sub-links of initial link', function() {\n           linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());\n           linkAnalyzer._options.setOption({}, 'mode', 'section');\n           linkAnalyzer._skipOnMode('http://my.site.com/foo1/foo2', 'http://my.site.com/foo1').should.be.equal(false);       \n        });\n\n        it('should return true for mode \"section\" and sibling of initial link', function() {\n           linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());\n           linkAnalyzer._options.setOption({}, 'mode', 'section');\n           linkAnalyzer._skipOnMode('http://my.site.com/foo21', 'http://my.site.com/foo1').should.be.equal(true);       \n        });\n\n        it('should return true for mode \"section\" and parent of initial link', function() {\n           linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());\n           linkAnalyzer._options.setOption({}, 'mode', 'section');\n           linkAnalyzer._skipOnMode('http://my.site.com', 'http://my.site.com/foo1').should.be.equal(true);       \n        });      \n    });\n\n    describe('isNeedToSkipUrl', function () {\n        var linkAnalyzer;\n\n        beforeEach(function () {\n            linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());\n            linkAnalyzer._options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);\n            linkAnalyzer._options.setOption({}, 'checkExternalUrls', false);\n            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', [/\\/foo1/i, /\\/foo2/i]);\n        });\n\n        [\n            { url: 'mailto://my.site.com/url1', result: true },\n            { url: 'http://google.com', result: true },\n            { url: 'http://my.site.com/url1', result: false },\n            { url: 'http://my.site.com/foo1', result: true },\n            { url: 'http://my.site.com/url1/foo2', result: true },\n            { url: 'http://my.site.com/foo1/foo2', result: true },\n            { url: 'https://my.site.com/url2/', result: false },\n            { url: 'mailto://my.site.com/foo2', result: true },\n        ].forEach(function (item) {\n            it ('\"isNeedToSkipUrl\" should return \"'+ item.result + '\" for url: \"' + item.url + '\"', function () {\n                linkAnalyzer.isNeedToSkipUrl(item.url).should.be.equal(item.result);\n            });\n        });\n    });\n})\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe35",
+    "testId": 35,
+    "memberof": "test/src/link-analyzer.test.js",
+    "testDepth": 0,
+    "longname": "test/src/link-analyzer.test.js~describe35",
+    "access": null,
+    "description": "LinkAnalyzer",
+    "lineNumber": 6
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe36",
+    "testId": 36,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe36",
+    "access": null,
+    "description": "constructor",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it37",
+    "testId": 37,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe36",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe36.it37",
+    "access": null,
+    "description": "should have valid _url field value after initialization",
+    "lineNumber": 14
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it38",
+    "testId": 38,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe36",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe36.it38",
+    "access": null,
+    "description": "should have valid _options field value after initialization",
+    "lineNumber": 18
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe39",
+    "testId": 39,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe39",
+    "access": null,
+    "description": "_skipNonAcceptableProtocols",
+    "lineNumber": 23
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it40",
+    "testId": 40,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe39",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe39.it40",
+    "access": null,
+    "description": "should return true if scheme of given url does not exist in list of acceptable acceptedSchemes",
+    "lineNumber": 30
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it41",
+    "testId": 41,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe39",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe39.it41",
+    "access": null,
+    "description": "should return false if scheme of given url exists in list of acceptable acceptedSchemes",
+    "lineNumber": 35
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe42",
+    "testId": 42,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe42",
+    "access": null,
+    "description": "_skipExternalUrls",
+    "lineNumber": 41
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it43",
+    "testId": 43,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe42",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe42.it43",
+    "access": null,
+    "description": "should return false if checkExternalUrls option is set to true",
+    "lineNumber": 48
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it44",
+    "testId": 44,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe42",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe42.it44",
+    "access": null,
+    "description": "should return true if host of given url is different then host of initial url",
+    "lineNumber": 53
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it45",
+    "testId": 45,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe42",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe42.it45",
+    "access": null,
+    "description": "should return false if host of given url is the same as host of initial url",
+    "lineNumber": 58
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe46",
+    "testId": 46,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe46",
+    "access": null,
+    "description": "_skipExcludedUrls",
+    "lineNumber": 65
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it47",
+    "testId": 47,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe46",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe46.it47",
+    "access": null,
+    "description": "should return false in case of empty \"excludeLinkPatterns\" array",
+    "lineNumber": 72
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it48",
+    "testId": 48,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe46",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe46.it48",
+    "access": null,
+    "description": "should return false if any of excluded patterns does not match given url",
+    "lineNumber": 77
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it49",
+    "testId": 49,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe46",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe46.it49",
+    "access": null,
+    "description": "should return true if any excluded patterns matches on given url",
+    "lineNumber": 82
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe50",
+    "testId": 50,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50",
+    "access": null,
+    "description": "_skipOnMode",
+    "lineNumber": 88
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it51",
+    "testId": 51,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe50",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50.it51",
+    "access": null,
+    "description": "should return false for mode \"page\" and direct links of target page",
+    "lineNumber": 95
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it52",
+    "testId": 52,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe50",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50.it52",
+    "access": null,
+    "description": "should return true for mode \"page\" and non-direct links of target page",
+    "lineNumber": 100
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it53",
+    "testId": 53,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe50",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50.it53",
+    "access": null,
+    "description": "should return false for mode \"section\" and sub-links of initial link",
+    "lineNumber": 105
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it54",
+    "testId": 54,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe50",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50.it54",
+    "access": null,
+    "description": "should return true for mode \"section\" and sibling of initial link",
+    "lineNumber": 111
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it55",
+    "testId": 55,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe50",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe50.it55",
+    "access": null,
+    "description": "should return true for mode \"section\" and parent of initial link",
+    "lineNumber": 117
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe56",
+    "testId": 56,
+    "memberof": "test/src/link-analyzer.test.js~describe35",
+    "testDepth": 1,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe56",
+    "access": null,
+    "description": "isNeedToSkipUrl",
+    "lineNumber": 124
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it57",
+    "testId": 57,
+    "memberof": "test/src/link-analyzer.test.js~describe35.describe56",
+    "testDepth": 2,
+    "longname": "test/src/link-analyzer.test.js~describe35.describe56.it57",
+    "access": null,
+    "lineNumber": 144
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/model/broken.test.js",
+    "memberof": null,
+    "longname": "test/src/model/broken.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var should = require('should'),\n    BrokenUrls = require('../../../lib/model/broken');\n\ndescribe('broken', function () {\n    var brokenUrls;\n\n    beforeEach(function () {\n        brokenUrls = new BrokenUrls();\n    });\n\n    describe('constructor', function () {\n       it ('should initialize empty broken urls model after initialization', function () {\n           brokenUrls._urls.should.be.instanceOf(Array).and.be.empty;\n       });\n    });\n\n    describe('add', function () {\n        it ('should add broken links model item to list of broken links', function () {\n            brokenUrls.getAll().should.have.length(0);\n            brokenUrls.add('http://my.host/url1', { page: 'http://my.host' }, 404);\n            brokenUrls.getAll().should.have.length(1);\n            should.deepEqual(brokenUrls.getAll()[0],  {\n                url: 'http://my.host/url1',\n                advanced: { page: 'http://my.host' },\n                code: 404\n            });\n        });\n    });\n\n    describe('getAll', function () {\n        it ('should return all broke link items from model', function () {\n            brokenUrls.getAll().should.have.length(0);\n            brokenUrls.add('http://my.host/url1', { page: 'http://my.host' }, 404);\n            brokenUrls.add('http://my.host/url2', { page: 'http://my.host' }, 500);\n            brokenUrls.getAll().should.have.length(2);\n        });\n    });\n\n    describe('getByCode', function () {\n        beforeEach(function () {\n            brokenUrls.add('http://my.host/url1', { page: 'http://my.host' }, 404);\n            brokenUrls.add('http://my.host/url2', { page: 'http://my.host' }, 500);\n            brokenUrls.add('http://my.host/url3', { page: 'http://my.host' }, 404);\n        });\n\n        it ('should return valid set of broken link items by given status code', function () {\n            brokenUrls.getByCode(404).should.be.instanceOf(Array).and.have.length(2);\n            brokenUrls.getByCode(500).should.be.instanceOf(Array).and.have.length(1);\n\n            should.deepEqual(brokenUrls.getByCode(404), [\n                { url: 'http://my.host/url1', advanced: { page: 'http://my.host' }, code: 404 },\n                { url: 'http://my.host/url3', advanced: { page: 'http://my.host' }, code: 404 }\n            ]);\n\n            should.deepEqual(brokenUrls.getByCode(500), [\n                { url: 'http://my.host/url2', advanced: { page: 'http://my.host' }, code: 500 }\n            ]);\n        });\n\n        it ('should return valid set of broken link items by status code 404', function () {\n            should.deepEqual(brokenUrls.get404(), brokenUrls.getByCode(404));\n        });\n\n        it ('should return valid set of broken link items by status code 500', function () {\n            should.deepEqual(brokenUrls.get500(), brokenUrls.getByCode(500));\n        });\n\n    });\n\n    describe('clear', function () {\n        it('should return instance of BrokenUrls class', function () {\n            brokenUrls.clear().should.be.instanceOf(BrokenUrls);\n        })\n\n        it ('should clear broken link items model', function () {\n            brokenUrls.add('http://my.host/url1', { page: 'http://my.host' }, 404);\n            brokenUrls.add('http://my.host/url2', { page: 'http://my.host' }, 500);\n\n            brokenUrls.getAll().should.be.instanceOf(Array).and.have.length(2);\n            brokenUrls.clear();\n            brokenUrls.getAll().should.be.empty;\n        });\n    });\n\n    describe('create', function () {\n        it ('should create BrokenUrls instance by static method', function () {\n            BrokenUrls.create().should.be.instanceOf(BrokenUrls);\n        })\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe58",
+    "testId": 58,
+    "memberof": "test/src/model/broken.test.js",
+    "testDepth": 0,
+    "longname": "test/src/model/broken.test.js~describe58",
+    "access": null,
+    "description": "broken",
+    "lineNumber": 4
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe59",
+    "testId": 59,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe59",
+    "access": null,
+    "description": "constructor",
+    "lineNumber": 11
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it60",
+    "testId": 60,
+    "memberof": "test/src/model/broken.test.js~describe58.describe59",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe59.it60",
+    "access": null,
+    "description": "should initialize empty broken urls model after initialization",
+    "lineNumber": 12
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe61",
+    "testId": 61,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe61",
+    "access": null,
+    "description": "add",
+    "lineNumber": 17
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it62",
+    "testId": 62,
+    "memberof": "test/src/model/broken.test.js~describe58.describe61",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe61.it62",
+    "access": null,
+    "description": "should add broken links model item to list of broken links",
+    "lineNumber": 18
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe63",
+    "testId": 63,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe63",
+    "access": null,
+    "description": "getAll",
+    "lineNumber": 30
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it64",
+    "testId": 64,
+    "memberof": "test/src/model/broken.test.js~describe58.describe63",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe63.it64",
+    "access": null,
+    "description": "should return all broke link items from model",
+    "lineNumber": 31
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe65",
+    "testId": 65,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe65",
+    "access": null,
+    "description": "getByCode",
+    "lineNumber": 39
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it66",
+    "testId": 66,
+    "memberof": "test/src/model/broken.test.js~describe58.describe65",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe65.it66",
+    "access": null,
+    "description": "should return valid set of broken link items by given status code",
+    "lineNumber": 46
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it67",
+    "testId": 67,
+    "memberof": "test/src/model/broken.test.js~describe58.describe65",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe65.it67",
+    "access": null,
+    "description": "should return valid set of broken link items by status code 404",
+    "lineNumber": 60
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it68",
+    "testId": 68,
+    "memberof": "test/src/model/broken.test.js~describe58.describe65",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe65.it68",
+    "access": null,
+    "description": "should return valid set of broken link items by status code 500",
+    "lineNumber": 64
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe69",
+    "testId": 69,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe69",
+    "access": null,
+    "description": "clear",
+    "lineNumber": 70
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it70",
+    "testId": 70,
+    "memberof": "test/src/model/broken.test.js~describe58.describe69",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe69.it70",
+    "access": null,
+    "description": "should return instance of BrokenUrls class",
+    "lineNumber": 71
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it71",
+    "testId": 71,
+    "memberof": "test/src/model/broken.test.js~describe58.describe69",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe69.it71",
+    "access": null,
+    "description": "should clear broken link items model",
+    "lineNumber": 75
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe72",
+    "testId": 72,
+    "memberof": "test/src/model/broken.test.js~describe58",
+    "testDepth": 1,
+    "longname": "test/src/model/broken.test.js~describe58.describe72",
+    "access": null,
+    "description": "create",
+    "lineNumber": 85
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it73",
+    "testId": 73,
+    "memberof": "test/src/model/broken.test.js~describe58.describe72",
+    "testDepth": 2,
+    "longname": "test/src/model/broken.test.js~describe58.describe72.it73",
+    "access": null,
+    "description": "should create BrokenUrls instance by static method",
+    "lineNumber": 86
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/model/document.test.js",
+    "memberof": null,
+    "longname": "test/src/model/document.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var fs = require('fs'),\n    should = require('should'),\n    Document = require('../../../lib/model/document');\n\ndescribe('document', function () {\n    var document,\n        body;\n\n    before(function () {\n        body = fs.readFileSync('./test/mock/index.html');\n    });\n\n    beforeEach(function () {\n        document = new Document('http://my.host/url1', { body: body });\n    });\n\n    describe('constructor', function () {\n        it('should set value to _res field', function () {\n            should.deepEqual(document._res, { body: body });\n        });\n\n        it('should set value to _url field', function () {\n            document._url.should.equal('http://my.host/url1');\n        });\n\n        it('should set value to _$ field', function () {\n            document._$.should.be.ok;\n        });\n    });\n\n    it('should have res getter', function () {\n        should.deepEqual(document.res, { body: body });\n    });\n\n    it('should have url getter', function () {\n        document.url.should.equal('http://my.host/url1');\n    });\n\n    it('should have $ getter', function () {\n        document.$.should.be.ok;\n    });\n\n    it('should resolve link url based on _url', function () {\n        document.resolve('/url2').should.equal('http://my.host/url2');\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe74",
+    "testId": 74,
+    "memberof": "test/src/model/document.test.js",
+    "testDepth": 0,
+    "longname": "test/src/model/document.test.js~describe74",
+    "access": null,
+    "description": "document",
+    "lineNumber": 5
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe75",
+    "testId": 75,
+    "memberof": "test/src/model/document.test.js~describe74",
+    "testDepth": 1,
+    "longname": "test/src/model/document.test.js~describe74.describe75",
+    "access": null,
+    "description": "constructor",
+    "lineNumber": 17
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it76",
+    "testId": 76,
+    "memberof": "test/src/model/document.test.js~describe74.describe75",
+    "testDepth": 2,
+    "longname": "test/src/model/document.test.js~describe74.describe75.it76",
+    "access": null,
+    "description": "should set value to _res field",
+    "lineNumber": 18
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it77",
+    "testId": 77,
+    "memberof": "test/src/model/document.test.js~describe74.describe75",
+    "testDepth": 2,
+    "longname": "test/src/model/document.test.js~describe74.describe75.it77",
+    "access": null,
+    "description": "should set value to _url field",
+    "lineNumber": 22
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it78",
+    "testId": 78,
+    "memberof": "test/src/model/document.test.js~describe74.describe75",
+    "testDepth": 2,
+    "longname": "test/src/model/document.test.js~describe74.describe75.it78",
+    "access": null,
+    "description": "should set value to _$ field",
+    "lineNumber": 26
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it79",
+    "testId": 79,
+    "memberof": "test/src/model/document.test.js~describe74",
+    "testDepth": 1,
+    "longname": "test/src/model/document.test.js~describe74.it79",
+    "access": null,
+    "description": "should have res getter",
+    "lineNumber": 31
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it80",
+    "testId": 80,
+    "memberof": "test/src/model/document.test.js~describe74",
+    "testDepth": 1,
+    "longname": "test/src/model/document.test.js~describe74.it80",
+    "access": null,
+    "description": "should have url getter",
+    "lineNumber": 35
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it81",
+    "testId": 81,
+    "memberof": "test/src/model/document.test.js~describe74",
+    "testDepth": 1,
+    "longname": "test/src/model/document.test.js~describe74.it81",
+    "access": null,
+    "description": "should have $ getter",
+    "lineNumber": 39
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it82",
+    "testId": 82,
+    "memberof": "test/src/model/document.test.js~describe74",
+    "testDepth": 1,
+    "longname": "test/src/model/document.test.js~describe74.it82",
+    "access": null,
+    "description": "should resolve link url based on _url",
+    "lineNumber": 43
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/model/statistic.test.js",
+    "memberof": null,
+    "longname": "test/src/model/statistic.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var should = require('should'),\n    Broken = require('../../../lib/model/broken'),\n    Statistic = require('../../../lib/model/statistic');\n\ndescribe('statistic', function () {\n    var statistic;\n\n    beforeEach(function () {\n        statistic = new Statistic();\n    });\n\n    describe('__constructor', function () {\n        it ('should have zero _countExternal value after initialization', function () {\n            statistic._countExternal.should.equal(0);\n        });\n\n        it ('should have zero _countInternal value after initialization', function () {\n            statistic._countInternal.should.equal(0);\n        });\n\n        it ('should have empty broken links model after initialization', function () {\n            statistic._broken.getAll().should.have.length(0);\n        });\n    });\n\n    it('should increase internal count', function() {\n        statistic.increaseInternalCount();\n        statistic.getInternalCount().should.equal(1);\n    });\n\n    it('should increase external count', function() {\n        statistic.increaseExternalCount();\n        statistic.getExternalCount().should.equal(1);\n    });\n\n    it('should return valid internal count value', function () {\n        statistic.getInternalCount().should.equal(0);\n        statistic.increaseInternalCount();\n        statistic.getInternalCount().should.equal(1);\n    });\n\n    it('should return valid external count value', function () {\n        statistic.getExternalCount().should.equal(0);\n        statistic.increaseExternalCount();\n        statistic.getExternalCount().should.equal(1);\n    });\n\n    it ('should return valid count of all processed urls', function () {\n        statistic.increaseExternalCount();\n        statistic.increaseExternalCount();\n        statistic.increaseInternalCount();\n        statistic.getAllCount().should.equal(3);\n    });\n\n    it('should return broken links model', function () {\n        statistic.getBroken().should.be.instanceOf(Broken);\n    });\n\n    it('should return valid result of getBrokenCount method', function () {\n        statistic.getBrokenCount().should.equal(0);\n    });\n\n    it('should return instance of Statistic class by create static method', function () {\n        Statistic.create().should.be.instanceOf(Statistic);\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe83",
+    "testId": 83,
+    "memberof": "test/src/model/statistic.test.js",
+    "testDepth": 0,
+    "longname": "test/src/model/statistic.test.js~describe83",
+    "access": null,
+    "description": "statistic",
+    "lineNumber": 5
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe84",
+    "testId": 84,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.describe84",
+    "access": null,
+    "description": "__constructor",
+    "lineNumber": 12
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it85",
+    "testId": 85,
+    "memberof": "test/src/model/statistic.test.js~describe83.describe84",
+    "testDepth": 2,
+    "longname": "test/src/model/statistic.test.js~describe83.describe84.it85",
+    "access": null,
+    "description": "should have zero _countExternal value after initialization",
+    "lineNumber": 13
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it86",
+    "testId": 86,
+    "memberof": "test/src/model/statistic.test.js~describe83.describe84",
+    "testDepth": 2,
+    "longname": "test/src/model/statistic.test.js~describe83.describe84.it86",
+    "access": null,
+    "description": "should have zero _countInternal value after initialization",
+    "lineNumber": 17
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it87",
+    "testId": 87,
+    "memberof": "test/src/model/statistic.test.js~describe83.describe84",
+    "testDepth": 2,
+    "longname": "test/src/model/statistic.test.js~describe83.describe84.it87",
+    "access": null,
+    "description": "should have empty broken links model after initialization",
+    "lineNumber": 21
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it88",
+    "testId": 88,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it88",
+    "access": null,
+    "description": "should increase internal count",
+    "lineNumber": 26
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it89",
+    "testId": 89,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it89",
+    "access": null,
+    "description": "should increase external count",
+    "lineNumber": 31
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it90",
+    "testId": 90,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it90",
+    "access": null,
+    "description": "should return valid internal count value",
+    "lineNumber": 36
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it91",
+    "testId": 91,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it91",
+    "access": null,
+    "description": "should return valid external count value",
+    "lineNumber": 42
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it92",
+    "testId": 92,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it92",
+    "access": null,
+    "description": "should return valid count of all processed urls",
+    "lineNumber": 48
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it93",
+    "testId": 93,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it93",
+    "access": null,
+    "description": "should return broken links model",
+    "lineNumber": 55
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it94",
+    "testId": 94,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it94",
+    "access": null,
+    "description": "should return valid result of getBrokenCount method",
+    "lineNumber": 59
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it95",
+    "testId": 95,
+    "memberof": "test/src/model/statistic.test.js~describe83",
+    "testDepth": 1,
+    "longname": "test/src/model/statistic.test.js~describe83.it95",
+    "access": null,
+    "description": "should return instance of Statistic class by create static method",
+    "lineNumber": 63
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/reporters/base.test.js",
+    "memberof": null,
+    "longname": "test/src/reporters/base.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var fs = require('fs'),\n    should = require('should'),\n    mockFs = require('mock-fs'),\n    ReporterBase = require('../../../lib/reporters/base');\n\ndescribe('Reporters', function () {\n    describe('Base', function () {\n        var reporterBase;\n\n        beforeEach(function () {\n            reporterBase = new ReporterBase();\n            mockFs({});\n        });\n\n        afterEach(function () {\n            mockFs.restore();\n        });\n\n        it('should create reports folder', function () {\n            reporterBase.createReportsFolder();\n            fs.existsSync('./reports').should.equal(true);\n        });\n\n        it('should create report folder for given config name', function () {\n            reporterBase.createReportFolder('my.site');\n            fs.existsSync('./reports/my.site').should.equal(true);\n        });\n\n        it('should save report file', function () {\n            var date = +(new Date())\n            reporterBase.saveReportFile('my.site', 'json', 'hello world').then(function () {\n                fs.existsSync('./reports/my.site/' + date + '.json').should.equal(true);\n                fs.readFileSync('./reports/my.site/' + date + '.json', 'utf-8').should.equal('hello world');\n            });\n        });\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe96",
+    "testId": 96,
+    "memberof": "test/src/reporters/base.test.js",
+    "testDepth": 0,
+    "longname": "test/src/reporters/base.test.js~describe96",
+    "access": null,
+    "description": "Reporters",
+    "lineNumber": 6
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe97",
+    "testId": 97,
+    "memberof": "test/src/reporters/base.test.js~describe96",
+    "testDepth": 1,
+    "longname": "test/src/reporters/base.test.js~describe96.describe97",
+    "access": null,
+    "description": "Base",
+    "lineNumber": 7
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it98",
+    "testId": 98,
+    "memberof": "test/src/reporters/base.test.js~describe96.describe97",
+    "testDepth": 2,
+    "longname": "test/src/reporters/base.test.js~describe96.describe97.it98",
+    "access": null,
+    "description": "should create reports folder",
+    "lineNumber": 19
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it99",
+    "testId": 99,
+    "memberof": "test/src/reporters/base.test.js~describe96.describe97",
+    "testDepth": 2,
+    "longname": "test/src/reporters/base.test.js~describe96.describe97.it99",
+    "access": null,
+    "description": "should create report folder for given config name",
+    "lineNumber": 24
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it100",
+    "testId": 100,
+    "memberof": "test/src/reporters/base.test.js~describe96.describe97",
+    "testDepth": 2,
+    "longname": "test/src/reporters/base.test.js~describe96.describe97.it100",
+    "access": null,
+    "description": "should save report file",
+    "lineNumber": 29
+  },
+  {
+    "kind": "testFile",
+    "static": true,
+    "variation": null,
+    "name": "test/src/util.test.js",
+    "memberof": null,
+    "longname": "test/src/util.test.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "var should = require('should'),\n    Util = require('../../lib/util');\n\ndescribe('Util', function () {\n    it ('should return valid path to configuration folder', function () {\n        Util.getConfigurationDirectory().should.match(/\\/configs$/);\n    });\n\n    it ('should return valid path to reports folder', function () {\n        Util.getReportsDirectory().should.match(/\\/reports$/);\n    });\n});\n"
+  },
+  {
+    "kind": "testDescribe",
+    "static": true,
+    "variation": null,
+    "name": "describe101",
+    "testId": 101,
+    "memberof": "test/src/util.test.js",
+    "testDepth": 0,
+    "longname": "test/src/util.test.js~describe101",
+    "access": null,
+    "description": "Util",
+    "lineNumber": 4
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it102",
+    "testId": 102,
+    "memberof": "test/src/util.test.js~describe101",
+    "testDepth": 1,
+    "longname": "test/src/util.test.js~describe101.it102",
+    "access": null,
+    "description": "should return valid path to configuration folder",
+    "lineNumber": 5
+  },
+  {
+    "kind": "testIt",
+    "static": true,
+    "variation": null,
+    "name": "it103",
+    "testId": 103,
+    "memberof": "test/src/util.test.js~describe101",
+    "testDepth": 1,
+    "longname": "test/src/util.test.js~describe101.it103",
+    "access": null,
+    "description": "should return valid path to reports folder",
+    "lineNumber": 9
+  }
+]

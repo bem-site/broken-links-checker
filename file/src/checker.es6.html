@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/checker.es6 | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  <a href="test.html" data-ice="testLink">Test</a>
+  <a data-ice="repoURL" href="git://github.com/bem-site/broken-links-checker.git">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div data-ice="classWrap">
+  <h2>Class</h2>
+  <ul>
+    
+  <li data-ice="classDoc"><span><a href="class/src/base.es6~Base.html">Base</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/based-option.es6~BasedOption.html">BasedOption</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/broken.es6~BrokenUrls.html">BrokenUrls</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/util.es6~Util.html">Util</a></span></li>
+</ul>
+</div>
+
+
+
+<div data-ice="functionWrap">
+  <h2><a href="function/">Function</a></h2>
+  <ul>
+    
+  <li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdconfig">cmdconfig</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdrun">cmdrun</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-cmdversion">cmdversion</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigFile">createConfigFile</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigStub">createConfigStub</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-createConfigsDir">createConfigsDir</a></span></li>
+<li data-ice="functionDoc"><span><a href="function/index.html#static-function-run">run</a></span></li>
+</ul>
+</div>
+
+
+
+
+
+
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/checker.es6</h1>
+<pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import got  from &apos;got&apos;;
+import Base  from &apos;./base&apos;;
+import BasedOptions  from &apos;./based-option&apos;;
+import Document  from &apos;./model/document&apos;;
+import Statistic  from &apos;./model/statistic&apos;;
+import LinkAnalyzer from &apos;./link-analyzer&apos;;
+
+require(&apos;http&apos;).globalAgent.maxSockets = Infinity;
+require(&apos;https&apos;).globalAgent.maxSockets = Infinity;
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = &quot;0&quot;;
+
+export default class Checker extends Base {
+    /**
+     * Constructor
+     * @param {Object}    [options]                            &#x2014; configuration object
+     * @param {String}    [options.mode]                       - mode of checking (&quot;website&quot;, &quot;section&quot; or &quot;page&quot;)
+     * @param {Number}    [options.concurrent]                 &#x2014; number of concurrent requests
+     * @param {Object}    [options.requestHeaders]             &#x2014; set custom request headers for crawler requests
+     * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first
+     * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)
+     * @param {Function}  [options.onDone]                     - set custom done handler function
+     * @param {String[]}  [options.acceptedSchemes]            &#x2014; set array of accepted request acceptedSchemes
+     * @param {Boolean}   [options.checkExternalUrls]          &#x2014; set `true` for check outer links
+     * @param {RegExp[]}  [options.excludeLinkPatterns         - array of regular expressions. Urls that matches
+     * for this regular expressions would be excluded from verification
+     * @constructor
+     */
+    constructor(options = {}) {
+        super(options, module);
+
+        this._logger.info(&apos;Initialize crawler instance&apos;);
+
+        this._options = new BasedOptions();
+
+        const def = this.constructor.DEFAULT;
+        this.options
+            .setOption(options, &apos;mode&apos;, def.mode)
+            .setOption(options, &apos;concurrent&apos;, def.concurrent)
+            .setOption(options, &apos;requestHeaders&apos;, def.requestHeaders)
+            .setOption(options, &apos;requestTimeout&apos;, def.requestTimeout)
+            .setOption(options, &apos;acceptedSchemes&apos;, def.acceptedSchemes)
+            .setOption(options, &apos;checkExternalUrls&apos;, def.checkExternalUrls)
+            .setOption(options, &apos;excludeLinkPatterns&apos;, def.excludeLinkPatterns)
+            .setOption(options, &apos;requestRetriesAmount&apos;, def.requestRetriesAmount)
+            .setOption(options, &apos;onDone&apos;, this.onDone.bind(this));
+    }
+
+    /**
+     * Getter function for options
+     * @returns {BasedOptions}
+     */
+    get options() {
+        return this._options;
+    }
+
+    /**
+     * Returns application default options
+     * @returns {Object}
+     * @constructor
+     */
+    static get DEFAULT() {
+        return {
+            mode: &apos;website&apos;,
+            concurrent: 100,
+            requestHeaders: { &apos;user-agent&apos;: &apos;node-spider&apos; },
+            requestRetriesAmount: 5,
+            requestTimeout: 5000,
+            acceptedSchemes: [&apos;http:&apos;, &apos;https:&apos;],
+            checkExternalUrls: false,
+            excludeLinkPatterns: []
+        };
+    }
+
+    /**
+     * Returns application constants model
+     * @returns {Object}
+     * @static
+     */
+    static get CONSTANTS() {
+        return {
+            URL_REGEXP: /https?\:\/\/\w+((\:\d+)?\/\S*)?/,
+            MODE: {
+                WEBSITE: &apos;website&apos;,
+                SECTION: &apos;section&apos;,
+                PAGE: &apos;page&apos;
+            }
+        };
+    }
+
+    /**
+     * Processes loaded document
+     * @param {Document}                   document - document model
+     * @param {String}                     document.url - request url
+     * @param {HttpResponse|HttpsResponse} document.res - response object
+     * @protected
+     */
+    processLoadedDocument(document) {
+        var _this = this,
+            documentUrl = document.url,
+            $ = document.$;
+
+        $(&apos;a&apos;).each(function () {
+            var href = $(this).attr(&apos;href&apos;);
+
+            if (href) {
+                let url = document.resolve(href.split(&apos;#&apos;)[ 0 ]);
+
+                if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
+                    return;
+                }
+
+                if(_this._linkAnalyzer.isExternal(url)) {
+                    _this._external.set(url, { page: documentUrl, href: href });
+                } else {
+                    _this._addToQueue(url, { page: documentUrl, href: href });
+                }
+            }
+        });
+        this._onFinishLoad(documentUrl);
+    }
+
+    /**
+     * Start to crawl pages for given url
+     * @param {String} url - initial site url for start
+     * @throws Error
+     * @public
+     */
+    start(url) {
+        if (!url) {
+            throw new Error(&apos;Url was not set&apos;);
+        }
+
+        if (!url.match(this.constructor.CONSTANTS.URL_REGEXP)) {
+            throw new Error(&apos;Urls is not valid&apos;);
+        }
+
+        this._pending = [];
+        this._active = [];
+        this._external = new Map();
+        this._processed = new Map();
+        this._linkAnalyzer = new LinkAnalyzer(url, this.options);
+        this._statistic = Statistic.create();
+
+        this._logger
+            .info(&apos;Start to analyze pages for: =&gt; %s&apos;, url)
+            .info(&apos;It can be take a long time. Please wait ...&apos;);
+        this._addToQueue(url, { page: url });
+    }
+
+    /**
+     * onDone callback function
+     * @param {Statistic} statistic model instance
+     * @protected
+     */
+    onDone(statistic) {
+        return statistic;
+    }
+
+    /**
+     * Makes request to given url
+     * @param {String} url - link url (url that should be requested)
+     * @param {Object} advanced - object with advanced data
+     * @param {Number} attempt - number of request attempt
+     */
+    _checkInternalLink(url, advanced, attempt = 0) {
+        if (attempt === 0) {
+            this._active.push(url);
+        }
+
+        got.get(url, this._getRequestOptions(), (error, data, res) =&gt; {
+            if (error) {
+                 if (!error.statusCode &amp;&amp; attempt &lt; this.options.getOption(&apos;requestRetriesAmount&apos;)) {
+                     return this._checkInternalLink(url, advanced, ++attempt);
+                 } else {
+                     this._statistic.getBroken().add(url, advanced, error.statusCode);
+                     this._logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
+                         error.statusCode, advanced.href, advanced.page);
+                 }
+                 return this._onFinishLoad(url);
+            }
+
+            this._logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
+                this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+
+
+            this._statistic.increaseInternalCount();
+            this.processLoadedDocument(new Document(url, data));
+        });
+    }
+
+    /**
+     * Checks given external link item
+     * @param {Object[]} item - external link item object
+     * @param {String} item.url - external link url
+     * @param {Object} item.advanced - external link advanced meta data object
+     * @returns {Promise}
+     * @private
+     */
+    _checkExternalLink(item) {
+        var url = item[0],
+            advanced = item[1];
+
+        return new Promise(resolve =&gt; {
+            got.head(url, this._getRequestOptions(), (error, data, res) =&gt; {
+                if (error) {
+                    this._statistic.getBroken().add(url, advanced, error.statusCode);
+                    this._logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
+                        error.statusCode, advanced.href, advanced.page);
+                }
+
+                this._logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
+                    this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+
+                this._statistic.increaseExternalCount();
+                resolve();
+            });
+        });
+    }
+
+    /**
+     * Check all collected external links
+     * @returns {Promise}
+     * @private
+     */
+    _checkExternalLinks() {
+        if (!this._external.size) {
+            return Promise.resolve();
+        }
+
+        this._logger.info(&apos;Start to verify external links ...&apos;);
+
+        var portions = _.chunk(Array.from(this._external), 100);
+        return portions.reduce((prev, portion) =&gt; {
+            return prev.then(() =&gt; {
+                return Promise.all(portion.map(this._checkExternalLink.bind(this)));
+            });
+        }, Promise.resolve());
+    }
+
+    /**
+     * Checks if loading queue is full
+     * @returns {Boolean}
+     * @private
+     */
+    _isQueueFull() {
+        return this._active.length &gt;= this.options.getOption(&apos;concurrent&apos;);
+    }
+
+    /**
+     * Adds item to check queue
+     * @param {String} url - link url
+     * @param {Object} advanced - object with advanced data
+     * @private
+     */
+    _addToQueue(url, advanced) {
+        url = url.replace(/\/$/, &apos;&apos;);
+
+        if (this._processed.has(url)) {
+            return;
+        }
+        this._processed.set(url, true);
+        this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
+            this._checkInternalLink(url, advanced);
+    }
+
+    /**
+     * Function which called after request to given url will be finished
+     * @param  {String} url which was requested
+     * @return {*}
+     * @private
+     */
+    _onFinishLoad(url) {
+        this._active.splice(this._active.indexOf(url), 1);
+
+        if (!this._isQueueFull()) {
+            var next = this._pending.shift();
+            if (next) {
+                this._checkInternalLink(next.url, next.advanced);
+            } else if (!this._active.length) {
+                return this._checkExternalLinks().then(() =&gt; {
+                    this.options.getOption(&apos;onDone&apos;)(this._statistic);
+                });
+            }
+        }
+    }
+
+    /**
+     * Returns request options hash
+     * @returns {{encoding: string, headers: *, timeout: *}}
+     * @private
+     */
+    _getRequestOptions() {
+        return {
+            encoding: &apos;utf-8&apos;,
+            headers: this.options.getOption(&apos;requestHeaders&apos;),
+            timeout: this.options.getOption(&apos;requestTimeout&apos;)
+        };
+    }
+}
+</code></pre>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
