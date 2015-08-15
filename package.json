@@ -2,15 +2,25 @@
   "name": "bs-broken-links-checker",
   "version": "0.0.1",
   "description": "Broken links checker tool fow web sites",
-  "keywords": ["broken link", "broken url", "link", "url", "broken", "checker", "cli", "website crawler", "analyze"],
+  "keywords": [
+    "broken link",
+    "broken url",
+    "link",
+    "url",
+    "broken",
+    "checker",
+    "cli",
+    "website crawler",
+    "analyze"
+  ],
   "homepage": "http://bem-site.github.io/broken-links-checker",
   "repository": {
     "type": "git",
     "url": "git://github.com/bem-site/broken-links-checker.git"
   },
   "bugs": {
-      "url" : "https://github.com/bem-site/broken-links-checker/issues",
-      "email" : "andrey.kuznetsov48@yandex.ru"
+    "url": "https://github.com/bem-site/broken-links-checker/issues",
+    "email": "andrey.kuznetsov48@yandex.ru"
   },
   "author": {
     "name": "Andrey Kuznetsov",
@@ -45,11 +55,12 @@
     "esdoc": "^0.1.4",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.0",
+    "gulp-clean": "^0.3.1",
     "gulp-esdoc": "0.0.1",
     "gulp-gh-pages": "^0.5.2",
     "gulp-jscs": "^2.0.0",
     "gulp-jshint": "^1.11.2",
-    "gulp-notify": "^2.2.0",
+    "isparta": "^3.0.3",
     "istanbul": "^0.3.x",
     "jshint-stylish": "^2.0.1",
     "mocha": "~2.2.x",
@@ -64,7 +75,7 @@
     "jsdoc": "gulp esdoc",
     "publish-doc": "gulp publish-doc",
     "compile": "gulp compile",
-    "pretest": "gulp pretest",
+    "pretest": "gulp codestyle && npm run compile",
     "prepublish": "gulp compile",
     "deps": "npm install && gulp compile",
     "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"

@@ -1,11 +1,22 @@
 var fs = require('fs'),
     gulp = require('gulp'),
+    clean = require('gulp-clean'),
     babel = require('gulp-babel'),
     jscs = require('gulp-jscs'),
     jshint = require('gulp-jshint'),
     esdoc = require('gulp-esdoc'),
     ghPages = require('gulp-gh-pages'),
     stylish = require('jshint-stylish');
+
+gulp.task('clean-jsdoc', function () {
+    return gulp.src('./jsdoc', { read: false })
+        .pipe(clean());
+});
+
+gulp.task('clean-lib', function () {
+    return gulp.src('./lib', { read: false })
+        .pipe(clean());
+});
 
 gulp.task('jshint', function() {
     return gulp.src('./src/**/*.es6')
@@ -22,7 +33,7 @@ gulp.task('jscs', function() {
 
 gulp.task('codestyle', ['jshint', 'jscs']);
 
-gulp.task('compile', function () {
+gulp.task('compile', ['clean-lib'], function () {
     return gulp.src('./src/**/*.es6')
         .pipe(babel({ optional: 'runtime' }))
         .pipe(gulp.dest('lib'));
@@ -30,7 +41,7 @@ gulp.task('compile', function () {
 
 gulp.task('pretest', ['codestyle', 'compile']);
 
-gulp.task('esdoc', function () {
+gulp.task('esdoc', ['clean-jsdoc'], function () {
     var esdocConfig = fs.readFileSync('./esdoc.json', 'utf-8');
     esdocConfig = JSON.parse(esdocConfig);
     gulp.src("./src")
