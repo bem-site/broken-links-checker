@@ -9,7 +9,7 @@ Broken links checker for website pages
 
 ![GitHub Logo](./logo.gif)
 
-[RUSSIAN DOCUMENTATION]('./README.ru.md')
+[RUSSIAN DOCUMENTATION](./README.ru.md)
 
 ## Working with help of command line interface (cli)
 
@@ -120,15 +120,15 @@ Launches website analyze process for existed broken links verification.
 
 * `-c` or `--config`: Path to [configuration file](#Configuration file structure). Required parameter.
 
-* `-u` or `--url`: Allows to override url of website (section, page) from [configuration file](#Configuration file structure).
+* `-u` or `--url`: Allows to override url of website (section, page) from [configuration file](#user-content-configuration-file-structure).
 
-* `-cc` or `--concurrent`: Allows to override `concurrent` parameter from [configuration file](#Configuration file structure).
+* `-cc` or `--concurrent`: Allows to override `concurrent` parameter from [configuration file](#user-content-configuration-file-structure).
 
-* `-rra` or `--requestRetriesAmount`: Allows to override `requestRetriesAmount` parameter from [configuration file](#Configuration file structure).
+* `-rra` or `--requestRetriesAmount`: Allows to override `requestRetriesAmount` parameter from [configuration file](#user-content-configuration-file-structure).
 
-* `-rt` or `--requestTimeout`: Allows to override `requestTimeout` from [configuration file](#Configuration file structure).
+* `-rt` or `--requestTimeout`: Allows to override `requestTimeout` from [configuration file](#user-content-configuration-file-structure).
 
-* `-ext` or `--checkExternalUrls`: Allows to override `checkExternalUrls` parameter from [configuration file](#Configuration file structure).
+* `-ext` or `--checkExternalUrls`: Allows to override `checkExternalUrls` parameter from [configuration file](#user-content-configuration-file-structure).
 
 * `-m` or `--mode`: this parameter can have one of 3 available values: 'website' (by default), 'section' and 'page'.
 
@@ -209,7 +209,7 @@ var BrokenLinksChecker = require('bs-broken-links-checker').BrokenLinksChecker,
 ```
 You should call method `start` and pass url of your website as argument, for example:
 ```
-brokenLinksChecker.start('https://ru.bem.info');
+brokenLinksChecker.start('https://my.site.com');
 ```
 `BrokenLinksChecker` class constructor takes options object as argument. More detail about available option fields.
 
@@ -269,7 +269,7 @@ Value by default: `[]`
 Callback function which will be fired on the end of analyze. This function takes instance of [Statistic](./src/model/statistic.es6) class. It has all fields and methods for working with results of
 scan.
 
-You can see usage examples [here]('./examples').
+You can see usage examples [here](./examples).
 
 ## Testing
 
