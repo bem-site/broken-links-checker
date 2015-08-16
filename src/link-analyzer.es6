@@ -89,13 +89,14 @@ export default class LinkAnalyzer {
      * @private
      */
     _skipOnMode(url, baseUrl) {
-        var mode = this._options.getOption('mode');
-        const MODES = Checker.CONSTANTS.MODE;
+        var mode = this._options.getOption('mode'),
+            baseUrlParsed = Url.parse(baseUrl);
 
+        const MODES = Checker.CONSTANTS.MODE;
         if (mode === MODES.PAGE) {
-            return Url.parse(baseUrl).path !== this._url.path;
+            return baseUrlParsed.path !== this._url.path;
         } else if (mode === MODES.SECTION) {
-            return url.indexOf(this._url.path) === -1;
+            return baseUrlParsed.path.indexOf(this._url.path) === -1;
         } else {
             return false;
         }

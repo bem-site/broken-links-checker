@@ -94,31 +94,37 @@ describe('LinkAnalyzer', function () {
 
         it('should return false for mode "page" and direct links of target page', function () {
            linkAnalyzer._options.setOption({}, 'mode', 'page');
-           linkAnalyzer._skipOnMode('http://my.site.com/foo1', 'http://my.site.com').should.be.equal(false);     
+           linkAnalyzer._skipOnMode('http://my.site.com/foo1', 'http://my.site.com').should.be.equal(false);
         });
 
         it('should return true for mode "page" and non-direct links of target page', function () {
            linkAnalyzer._options.setOption({}, 'mode', 'page');
-           linkAnalyzer._skipOnMode('http://my.site.com/foo2', 'http://my.site.com/foo1').should.be.equal(true);     
+           linkAnalyzer._skipOnMode('http://my.site.com/foo2', 'http://my.site.com/foo1').should.be.equal(true);
         });
 
         it('should return false for mode "section" and sub-links of initial link', function() {
            linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());
            linkAnalyzer._options.setOption({}, 'mode', 'section');
-           linkAnalyzer._skipOnMode('http://my.site.com/foo1/foo2', 'http://my.site.com/foo1').should.be.equal(false);       
+           linkAnalyzer._skipOnMode('http://my.site.com/foo1/foo2', 'http://my.site.com/foo1').should.be.equal(false);
         });
 
-        it('should return true for mode "section" and sibling of initial link', function() {
+        it('should return false for mode "section" and sibling of initial link', function() {
            linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());
            linkAnalyzer._options.setOption({}, 'mode', 'section');
-           linkAnalyzer._skipOnMode('http://my.site.com/foo21', 'http://my.site.com/foo1').should.be.equal(true);       
+           linkAnalyzer._skipOnMode('http://my.site.com/foo21', 'http://my.site.com/foo1').should.be.equal(false);
         });
 
-        it('should return true for mode "section" and parent of initial link', function() {
+        it('should return false for mode "section" and parent of initial link', function() {
            linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo1', new BasedOption());
            linkAnalyzer._options.setOption({}, 'mode', 'section');
-           linkAnalyzer._skipOnMode('http://my.site.com', 'http://my.site.com/foo1').should.be.equal(true);       
-        });      
+           linkAnalyzer._skipOnMode('http://my.site.com', 'http://my.site.com/foo1').should.be.equal(false);
+        });
+
+        it('should return true for mode "section" and page outside of section', function() {
+           linkAnalyzer = new LinkAnalyzer('http://my.site.com/foo2', new BasedOption());
+           linkAnalyzer._options.setOption({}, 'mode', 'section');
+           linkAnalyzer._skipOnMode('http://my.site.com/foo3', 'http://my.site.com/foo1').should.be.equal(true);
+        });
     });
 
     describe('isNeedToSkipUrl', function () {
@@ -142,7 +148,7 @@ describe('LinkAnalyzer', function () {
             { url: 'mailto://my.site.com/foo2', result: true },
         ].forEach(function (item) {
             it ('"isNeedToSkipUrl" should return "'+ item.result + '" for url: "' + item.url + '"', function () {
-                linkAnalyzer.isNeedToSkipUrl(item.url).should.be.equal(item.result);
+                linkAnalyzer.isNeedToSkipUrl(item.url, 'http://my.site.com').should.be.equal(item.result);
             });
         });
     });
