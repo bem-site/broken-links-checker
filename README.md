@@ -118,7 +118,7 @@ Launches website analyze process for existed broken links verification.
 
 ##### Parameters:
 
-* `-c` or `--config`: Path to [configuration file](#Configuration file structure). Required parameter.
+* `-c` or `--config`: Path to [configuration file](#user-content-configuration-file-structure). Required parameter.
 
 * `-u` or `--url`: Allows to override url of website (section, page) from [configuration file](#user-content-configuration-file-structure).
 
