@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -88,7 +89,7 @@ export function createConfigsDir() {
 
 /**
  * Creates stub configuration file with default params
- * @return {Object} - stub config object
+ * @return {Object} stub config object
  */
 export function createConfigStub() {
     return [
@@ -110,7 +111,7 @@ export function createConfigStub() {
 
 /**
  * Generates stub configuration file inside configuration folder
- * @param  {String} fileName - name of file
+ * @param  {String} fileName name of file
  * @return {Boolean} returns true if success, false otherwise
  */
 export function createConfigFile(fileName) {

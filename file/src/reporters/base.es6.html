@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -75,13 +76,26 @@ import moment from &apos;moment&apos;;
 import Logger from &apos;bem-site-logger&apos;;
 import Util from &apos;../util&apos;;
 
+/**
+ * @class ReporterBase
+ * @desc Base reporter class
+ */
 export default class ReporterBase {
 
+    /**
+     * constructor
+     * @param  {Object} reporter options
+     */
     constructor(options = {}) {
         options.logger = options.logger || {
             level: &apos;info&apos;
         };
         options.logger.useDate = false;
+
+        /**
+         * Logger instance
+         * @param {Logger} options.logger
+         */
         this._logger = Logger.setOptions(options.logger).createLogger(module);
     }
 
@@ -98,7 +112,7 @@ export default class ReporterBase {
 
     /**
      * Creates folder named as given configurationName inside reports folder
-     * @param  {String} configurationName - name of configuration file
+     * @param  {String} configurationName name of configuration file
      * @return void 0
      * @protected
      */
@@ -111,10 +125,10 @@ export default class ReporterBase {
 
     /**
      * Saves report to file
-     * @param {String} configurationName - name of configuration
-     * @param {String} type - report type
-     * @param {String} content - report content
-     * @param {String} date - formatted date
+     * @param {String} configurationName name of configuration
+     * @param {String} type of report
+     * @param {String} content of report
+     * @param {String} date formatted
      * @returns {Promise}
      */
     saveReportFile(configurationName, type, content, date = moment().format(&apos;DD-MM-YYYY:hh:mm:ss&apos;)) {

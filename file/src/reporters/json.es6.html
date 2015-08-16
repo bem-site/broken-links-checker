@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -71,6 +72,10 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/reporters/json.es6</h1>
 <pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">import ReporterBase from &apos;./base&apos;;
 
+/**
+ * @class ReporterJson
+ * @desc Class for creating json report
+ */
 export default class ReporterJson extends ReporterBase {
 
     createReport(configurationName, statistic) {

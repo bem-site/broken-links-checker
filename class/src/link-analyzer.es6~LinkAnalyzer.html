@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -182,13 +183,14 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html#instance-member-_url">_url</a></span></span><span data-ice="signature">: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html#instance-member-_url">_url</a></span></span><span data-ice="signature">(initial: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Parsed url object from Url.parse</p>
+</div>
       </div>
     </td>
     <td>
@@ -410,14 +412,14 @@
       <td data-ice="name" data-depth="0">initial</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>initial url</p>
+      <td data-ice="description"><p>url</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">options</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>options object</p>
+      <td data-ice="description"><p>object</p>
 </td>
     </tr>
 </tbody>
@@ -454,7 +456,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber17">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
@@ -490,25 +492,37 @@
     
     
     
-    <span data-ice="name">_url</span><span data-ice="signature">: <span>*</span></span>
+    <span data-ice="name">_url</span><span data-ice="signature">(initial: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber21">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Parsed url object from Url.parse</p>
+</div>
 
   
 
   <div data-ice="properties">
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>options object</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -537,7 +551,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber49">source</a></span></span>
     </span>
   </h3>
 
@@ -606,7 +620,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -650,7 +664,7 @@
     <table>
       <tr>
         <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
-        <td class="return-desc" data-ice="returnDescription"><p>&#x2014; result flag</p>
+        <td class="return-desc" data-ice="returnDescription"><p>result flag</p>
 </td>
       </tr>
     </table>
@@ -684,7 +698,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber80">source</a></span></span>
     </span>
   </h3>
 
@@ -708,7 +722,7 @@
       <td data-ice="name" data-depth="0">url</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>&#x2014; request url</p>
+      <td data-ice="description"><p>request</p>
 </td>
     </tr>
 </tbody>
@@ -721,7 +735,7 @@
     <table>
       <tr>
         <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
-        <td class="return-desc" data-ice="returnDescription"><p>&#x2014; result flag</p>
+        <td class="return-desc" data-ice="returnDescription"><p>result flag</p>
 </td>
       </tr>
     </table>
@@ -753,7 +767,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber64">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber70">source</a></span></span>
     </span>
   </h3>
 
@@ -761,7 +775,7 @@
   
   
   <div data-ice="description"><p>Checks if given url has the different hostname then initial
-(If &apos;checkExternalUrls&apos; rule is set to true)</p>
+(If &apos;checkExternalUrls&apos;rule is set to true)</p>
 </div>
 
   
@@ -778,7 +792,7 @@
       <td data-ice="name" data-depth="0">url</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>&#x2014; request url</p>
+      <td data-ice="description"><p>request url</p>
 </td>
     </tr>
 </tbody>
@@ -791,7 +805,7 @@
     <table>
       <tr>
         <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
-        <td class="return-desc" data-ice="returnDescription"><p>&#x2014; result flag</p>
+        <td class="return-desc" data-ice="returnDescription"><p>result flag</p>
 </td>
       </tr>
     </table>
@@ -823,7 +837,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber53">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
@@ -860,7 +874,7 @@
     <table>
       <tr>
         <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
-        <td class="return-desc" data-ice="returnDescription"><p>&#x2014; result flag</p>
+        <td class="return-desc" data-ice="returnDescription"><p>result flag</p>
 </td>
       </tr>
     </table>
@@ -892,7 +906,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber85">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/link-analyzer.es6.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 

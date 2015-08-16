@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -79,12 +80,12 @@ const logger = Logger.setOptions({ level: &apos;info&apos;, useDate: false }).cr
 
 /**
  * Runs application from cli interface
- * @param {Object}    [options]                            &#x2014; configuration object
- * @param {String}    [options.mode]                       - mode of checking (&quot;website&quot;, &quot;section&quot; or &quot;page&quot;)
- * @param {Number}    [options.concurrent]                 &#x2014; number of concurrent requests
- * @param {Number}    [options.requestRetriesAmount]       - number of attempts for request if it fails at first
- * @param {Number}    [options.requestTimeout]             - request timeout (in milliseconds)
- * @param {Boolean}   [options.checkExternalUrls]          &#x2014; set `true` for check outer links
+ * @param {Object}    [options]                            configuration object
+ * @param {String}    [options.mode]                       mode of checking (&quot;website&quot;, &quot;section&quot; or &quot;page&quot;)
+ * @param {Number}    [options.concurrent]                 number of concurrent requests
+ * @param {Number}    [options.requestRetriesAmount]       number of attempts for request if it fails at first
+ * @param {Number}    [options.requestTimeout]             request timeout (in milliseconds)
+ * @param {Boolean}   [options.checkExternalUrls]          set `true` for check outer links
  * @trows Error
  */
 export function run (options) {
@@ -115,7 +116,7 @@ export function run (options) {
                 .info(&apos;-- Broken urls percentage: [%s] %&apos;, (statistic.getBrokenCount() * 100) / statistic.getAllCount());
 
             var reporters = [
-                new ReporterJson(options), 
+                new ReporterJson(options),
                 new ReporterHtml(options)
             ];
 

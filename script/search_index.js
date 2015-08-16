@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "bs-broken-links-checker/src/model/model.es6~model",
+    "class/src/model/model.es6~Model.html",
+    "<span>Model</span> <span class=\"search-result-import-path\">bs-broken-links-checker/src/model/model.es6</span>",
+    "class"
+  ],
+  [
     "bs-broken-links-checker/src/reporters/base.es6~reporterbase",
     "class/src/reporters/base.es6~ReporterBase.html",
     "<span>ReporterBase</span> <span class=\"search-result-import-path\">bs-broken-links-checker/src/reporters/base.es6</span>",
@@ -517,6 +523,18 @@ window.esdocSearchIndex = [
   ],
   [
     "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber117",
+    "LinkAnalyzer _skipOnMode should return false for mode \"section\" and parent of initial link",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber111",
+    "LinkAnalyzer _skipOnMode should return false for mode \"section\" and sibling of initial link",
+    "test"
+  ],
+  [
+    "",
     "test-file/test/src/link-analyzer.test.js.html#lineNumber105",
     "LinkAnalyzer _skipOnMode should return false for mode \"section\" and sub-links of initial link",
     "test"
@@ -529,14 +547,8 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber117",
-    "LinkAnalyzer _skipOnMode should return true for mode \"section\" and parent of initial link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber111",
-    "LinkAnalyzer _skipOnMode should return true for mode \"section\" and sibling of initial link",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber123",
+    "LinkAnalyzer _skipOnMode should return true for mode \"section\" and page outside of section",
     "test"
   ],
   [
@@ -559,13 +571,13 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber124",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber130",
     "LinkAnalyzer isNeedToSkipUrl",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber144",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber150",
     "LinkAnalyzer isNeedToSkipUrl ",
     "test"
   ],
@@ -787,13 +799,13 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber7",
+    "test-file/test/src/checker.test.js.html#lineNumber8",
     "checker",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber107",
+    "test-file/test/src/checker.test.js.html#lineNumber108",
     "checker _checkExternalLink",
     "test"
   ],
@@ -811,91 +823,91 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber96",
+    "test-file/test/src/checker.test.js.html#lineNumber97",
     "checker _getRequestOptions",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber97",
+    "test-file/test/src/checker.test.js.html#lineNumber98",
     "checker _getRequestOptions should return valid request options object",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber23",
+    "test-file/test/src/checker.test.js.html#lineNumber24",
     "checker constructor",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber43",
+    "test-file/test/src/checker.test.js.html#lineNumber44",
     "checker constructor should be initialized with default params if options are empty",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber39",
+    "test-file/test/src/checker.test.js.html#lineNumber40",
     "checker constructor should be initialized with default params if options were not set",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber67",
+    "test-file/test/src/checker.test.js.html#lineNumber68",
     "checker constructor should override default acceptedSchemes rule",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber72",
+    "test-file/test/src/checker.test.js.html#lineNumber73",
     "checker constructor should override default checkExternalUrls option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber47",
+    "test-file/test/src/checker.test.js.html#lineNumber48",
     "checker constructor should override default concurrent option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber77",
+    "test-file/test/src/checker.test.js.html#lineNumber78",
     "checker constructor should override default excludeLinkPatterns rule",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber52",
+    "test-file/test/src/checker.test.js.html#lineNumber53",
     "checker constructor should override default requestHeaders option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber57",
+    "test-file/test/src/checker.test.js.html#lineNumber58",
     "checker constructor should override default requestRetriesAmount option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber62",
+    "test-file/test/src/checker.test.js.html#lineNumber63",
     "checker constructor should override default requestTimeout option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber84",
+    "test-file/test/src/checker.test.js.html#lineNumber85",
     "checker start",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber90",
+    "test-file/test/src/checker.test.js.html#lineNumber91",
     "checker start should throw error if url param has invalid format",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber85",
+    "test-file/test/src/checker.test.js.html#lineNumber86",
     "checker start should throw error if url param was not set",
     "test"
   ],
@@ -1038,12 +1050,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/checker.es6~checker#_active",
-    "class/src/checker.es6~Checker.html#instance-member-_active",
-    "src/checker.es6~Checker#_active",
-    "member"
-  ],
-  [
     "src/checker.es6~checker#_addtoqueue",
     "class/src/checker.es6~Checker.html#instance-method-_addToQueue",
     "src/checker.es6~Checker#_addToQueue",
@@ -1068,27 +1074,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/checker.es6~checker#_external",
-    "class/src/checker.es6~Checker.html#instance-member-_external",
-    "src/checker.es6~Checker#_external",
-    "member"
-  ],
-  [
     "src/checker.es6~checker#_getrequestoptions",
     "class/src/checker.es6~Checker.html#instance-method-_getRequestOptions",
     "src/checker.es6~Checker#_getRequestOptions",
     "method"
   ],
   [
-    "src/checker.es6~checker#_isqueuefull",
-    "class/src/checker.es6~Checker.html#instance-method-_isQueueFull",
-    "src/checker.es6~Checker#_isQueueFull",
-    "method"
-  ],
-  [
     "src/checker.es6~checker#_linkanalyzer",
     "class/src/checker.es6~Checker.html#instance-member-_linkAnalyzer",
     "src/checker.es6~Checker#_linkAnalyzer",
+    "member"
+  ],
+  [
+    "src/checker.es6~checker#_model",
+    "class/src/checker.es6~Checker.html#instance-member-_model",
+    "src/checker.es6~Checker#_model",
     "member"
   ],
   [
@@ -1104,18 +1104,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/checker.es6~checker#_pending",
-    "class/src/checker.es6~Checker.html#instance-member-_pending",
-    "src/checker.es6~Checker#_pending",
-    "member"
-  ],
-  [
-    "src/checker.es6~checker#_processed",
-    "class/src/checker.es6~Checker.html#instance-member-_processed",
-    "src/checker.es6~Checker#_processed",
-    "member"
-  ],
-  [
     "src/checker.es6~checker#_statistic",
     "class/src/checker.es6~Checker.html#instance-member-_statistic",
     "src/checker.es6~Checker#_statistic",
@@ -1126,6 +1114,42 @@ window.esdocSearchIndex = [
     "class/src/checker.es6~Checker.html#instance-constructor-constructor",
     "src/checker.es6~Checker#constructor",
     "method"
+  ],
+  [
+    "src/checker.es6~checker#initlinkanalyzer",
+    "class/src/checker.es6~Checker.html#instance-method-initLinkAnalyzer",
+    "src/checker.es6~Checker#initLinkAnalyzer",
+    "method"
+  ],
+  [
+    "src/checker.es6~checker#initmodel",
+    "class/src/checker.es6~Checker.html#instance-method-initModel",
+    "src/checker.es6~Checker#initModel",
+    "method"
+  ],
+  [
+    "src/checker.es6~checker#initstatistic",
+    "class/src/checker.es6~Checker.html#instance-method-initStatistic",
+    "src/checker.es6~Checker#initStatistic",
+    "method"
+  ],
+  [
+    "src/checker.es6~checker#linkanalyzer",
+    "class/src/checker.es6~Checker.html#instance-get-linkAnalyzer",
+    "src/checker.es6~Checker#linkAnalyzer",
+    "member"
+  ],
+  [
+    "src/checker.es6~checker#logger",
+    "class/src/checker.es6~Checker.html#instance-get-logger",
+    "src/checker.es6~Checker#logger",
+    "member"
+  ],
+  [
+    "src/checker.es6~checker#model",
+    "class/src/checker.es6~Checker.html#instance-get-model",
+    "src/checker.es6~Checker#model",
+    "member"
   ],
   [
     "src/checker.es6~checker#ondone",
@@ -1150,6 +1174,12 @@ window.esdocSearchIndex = [
     "class/src/checker.es6~Checker.html#instance-method-start",
     "src/checker.es6~Checker#start",
     "method"
+  ],
+  [
+    "src/checker.es6~checker#statistic",
+    "class/src/checker.es6~Checker.html#instance-get-statistic",
+    "src/checker.es6~Checker#statistic",
+    "member"
   ],
   [
     "src/checker.es6~checker.constants",
@@ -1360,6 +1390,114 @@ window.esdocSearchIndex = [
     "class/src/model/document.es6~Document.html#instance-get-url",
     "src/model/document.es6~Document#url",
     "member"
+  ],
+  [
+    "src/model/model.es6",
+    "file/src/model/model.es6.html",
+    "src/model/model.es6",
+    "file"
+  ],
+  [
+    "src/model/model.es6~model#_active",
+    "class/src/model/model.es6~Model.html#instance-member-_active",
+    "src/model/model.es6~Model#_active",
+    "member"
+  ],
+  [
+    "src/model/model.es6~model#_external",
+    "class/src/model/model.es6~Model.html#instance-member-_external",
+    "src/model/model.es6~Model#_external",
+    "member"
+  ],
+  [
+    "src/model/model.es6~model#_pending",
+    "class/src/model/model.es6~Model.html#instance-member-_pending",
+    "src/model/model.es6~Model#_pending",
+    "member"
+  ],
+  [
+    "src/model/model.es6~model#_processed",
+    "class/src/model/model.es6~Model.html#instance-member-_processed",
+    "src/model/model.es6~Model#_processed",
+    "member"
+  ],
+  [
+    "src/model/model.es6~model#addtoactive",
+    "class/src/model/model.es6~Model.html#instance-method-addToActive",
+    "src/model/model.es6~Model#addToActive",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#addtoexternal",
+    "class/src/model/model.es6~Model.html#instance-method-addToExternal",
+    "src/model/model.es6~Model#addToExternal",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#addtopending",
+    "class/src/model/model.es6~Model.html#instance-method-addToPending",
+    "src/model/model.es6~Model#addToPending",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#addtoprocessed",
+    "class/src/model/model.es6~Model.html#instance-method-addToProcessed",
+    "src/model/model.es6~Model#addToProcessed",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#areactive",
+    "class/src/model/model.es6~Model.html#instance-method-areActive",
+    "src/model/model.es6~Model#areActive",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#areexternal",
+    "class/src/model/model.es6~Model.html#instance-method-areExternal",
+    "src/model/model.es6~Model#areExternal",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#constructor",
+    "class/src/model/model.es6~Model.html#instance-constructor-constructor",
+    "src/model/model.es6~Model#constructor",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#external",
+    "class/src/model/model.es6~Model.html#instance-get-external",
+    "src/model/model.es6~Model#external",
+    "member"
+  ],
+  [
+    "src/model/model.es6~model#getactivelength",
+    "class/src/model/model.es6~Model.html#instance-method-getActiveLength",
+    "src/model/model.es6~Model#getActiveLength",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#getpendinglength",
+    "class/src/model/model.es6~Model.html#instance-method-getPendingLength",
+    "src/model/model.es6~Model#getPendingLength",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#isqueuefull",
+    "class/src/model/model.es6~Model.html#instance-method-isQueueFull",
+    "src/model/model.es6~Model#isQueueFull",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#removefromactive",
+    "class/src/model/model.es6~Model.html#instance-method-removeFromActive",
+    "src/model/model.es6~Model#removeFromActive",
+    "method"
+  ],
+  [
+    "src/model/model.es6~model#removefrompending",
+    "class/src/model/model.es6~Model.html#instance-method-removeFromPending",
+    "src/model/model.es6~Model#removeFromPending",
+    "method"
   ],
   [
     "src/model/statistic.es6",

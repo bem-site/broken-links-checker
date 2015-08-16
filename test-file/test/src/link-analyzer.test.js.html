@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -165,31 +166,37 @@ describe(&apos;LinkAnalyzer&apos;, function () {
 
         it(&apos;should return false for mode &quot;page&quot; and direct links of target page&apos;, function () {
            linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;page&apos;);
-           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1&apos;, &apos;http://my.site.com&apos;).should.be.equal(false);     
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1&apos;, &apos;http://my.site.com&apos;).should.be.equal(false);
         });
 
         it(&apos;should return true for mode &quot;page&quot; and non-direct links of target page&apos;, function () {
            linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;page&apos;);
-           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);     
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);
         });
 
         it(&apos;should return false for mode &quot;section&quot; and sub-links of initial link&apos;, function() {
            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
            linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
-           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(false);       
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo1/foo2&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(false);
         });
 
-        it(&apos;should return true for mode &quot;section&quot; and sibling of initial link&apos;, function() {
+        it(&apos;should return false for mode &quot;section&quot; and sibling of initial link&apos;, function() {
            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
            linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
-           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo21&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);       
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo21&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(false);
         });
 
-        it(&apos;should return true for mode &quot;section&quot; and parent of initial link&apos;, function() {
+        it(&apos;should return false for mode &quot;section&quot; and parent of initial link&apos;, function() {
            linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo1&apos;, new BasedOption());
            linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
-           linkAnalyzer._skipOnMode(&apos;http://my.site.com&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);       
-        });      
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(false);
+        });
+
+        it(&apos;should return true for mode &quot;section&quot; and page outside of section&apos;, function() {
+           linkAnalyzer = new LinkAnalyzer(&apos;http://my.site.com/foo2&apos;, new BasedOption());
+           linkAnalyzer._options.setOption({}, &apos;mode&apos;, &apos;section&apos;);
+           linkAnalyzer._skipOnMode(&apos;http://my.site.com/foo3&apos;, &apos;http://my.site.com/foo1&apos;).should.be.equal(true);
+        });
     });
 
     describe(&apos;isNeedToSkipUrl&apos;, function () {
@@ -213,7 +220,7 @@ describe(&apos;LinkAnalyzer&apos;, function () {
             { url: &apos;mailto://my.site.com/foo2&apos;, result: true },
         ].forEach(function (item) {
             it (&apos;&quot;isNeedToSkipUrl&quot; should return &quot;&apos;+ item.result + &apos;&quot; for url: &quot;&apos; + item.url + &apos;&quot;&apos;, function () {
-                linkAnalyzer.isNeedToSkipUrl(item.url).should.be.equal(item.result);
+                linkAnalyzer.isNeedToSkipUrl(item.url, &apos;http://my.site.com&apos;).should.be.equal(item.result);
             });
         });
     });

@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -73,6 +74,7 @@
 import got  from &apos;got&apos;;
 import Base  from &apos;./base&apos;;
 import BasedOptions  from &apos;./based-option&apos;;
+import Model from &apos;./model/model&apos;;
 import Document  from &apos;./model/document&apos;;
 import Statistic  from &apos;./model/statistic&apos;;
 import LinkAnalyzer from &apos;./link-analyzer&apos;;
@@ -100,8 +102,12 @@ export default class Checker extends Base {
     constructor(options = {}) {
         super(options, module);
 
-        this._logger.info(&apos;Initialize crawler instance&apos;);
+        this.logger.info(&apos;Initialize crawler instance&apos;);
 
+        /**
+         * Checker options
+         * @type {BasedOptions}
+         */
         this._options = new BasedOptions();
 
         const def = this.constructor.DEFAULT;
@@ -123,6 +129,68 @@ export default class Checker extends Base {
      */
     get options() {
         return this._options;
+    }
+
+    /**
+     * Returns logger instance
+     * @return {Logger} logger
+     */
+    get logger() {
+        return this._logger;
+    }
+
+    /**
+     * Returns model instance
+     * @return {Model} model
+     */
+    get model() {
+        return this._model;
+    }
+
+    /**
+     * Returns instance of LinkAnalyzer class
+     * @return {LinkAnalyzer} linkAnalyzer
+     */
+    get linkAnalyzer() {
+        return this._linkAnalyzer;
+    }
+
+    /**
+     * Returns instance of Statistic class
+     * @return {Statistic} statistic
+     */
+    get statistic() {
+        return this._statistic;
+    }
+
+    /**
+     * Sets model instance
+     * @param {Model} model instance
+     * @return {Checker}
+     */
+    initModel(model) {
+        this._model = model;
+        return this;
+    }
+
+    /**
+     * Sets linkAnalyzer instance
+     * @param {LinkAnalyzer} linkAnalyzer
+     * @return {Checker}
+     */
+    initLinkAnalyzer(linkAnalyzer) {
+        this._linkAnalyzer = linkAnalyzer;
+        return this;
+    }
+
+    /**
+     * Sets Statistic instance
+     * @param  {Statistic} statistic
+     * @return {Checker}
+     */
+    initStatistic(statistic) {
+        this._statistic = statistic;
+        return this;
     }
 
     /**
@@ -175,14 +243,14 @@ export default class Checker extends Base {
             var href = $(this).attr(&apos;href&apos;);
 
             if (href) {
-                let url = document.resolve(href.split(&apos;#&apos;)[ 0 ]);
+                let url = document.resolve(href.split(&apos;#&apos;)[0]);
 
-                if (_this._linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
+                if (_this.linkAnalyzer.isNeedToSkipUrl(url, documentUrl)) {
                     return;
                 }
 
-                if(_this._linkAnalyzer.isExternal(url)) {
-                    _this._external.set(url, { page: documentUrl, href: href });
+                if(_this.linkAnalyzer.isExternal(url)) {
+                    _this.model.addToExternal(url, documentUrl, href);
                 } else {
                     _this._addToQueue(url, { page: documentUrl, href: href });
                 }
@@ -206,14 +274,11 @@ export default class Checker extends Base {
             throw new Error(&apos;Urls is not valid&apos;);
         }
 
-        this._pending = [];
-        this._active = [];
-        this._external = new Map();
-        this._processed = new Map();
-        this._linkAnalyzer = new LinkAnalyzer(url, this.options);
-        this._statistic = Statistic.create();
-
-        this._logger
+        this
+            .initStatistic(new Statistic())
+            .initModel(new Model())
+            .initLinkAnalyzer(new LinkAnalyzer(url, this.options))
+            .logger
             .info(&apos;Start to analyze pages for: =&gt; %s&apos;, url)
             .info(&apos;It can be take a long time. Please wait ...&apos;);
         this._addToQueue(url, { page: url });
@@ -233,10 +298,11 @@ export default class Checker extends Base {
      * @param {String} url - link url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
+     * @private
      */
     _checkInternalLink(url, advanced, attempt = 0) {
         if (attempt === 0) {
-            this._active.push(url);
+            this.model.addToActive(url);
         }
 
         got.get(url, this._getRequestOptions(), (error, data, res) =&gt; {
@@ -244,18 +310,17 @@ export default class Checker extends Base {
                  if (!error.statusCode &amp;&amp; attempt &lt; this.options.getOption(&apos;requestRetriesAmount&apos;)) {
                      return this._checkInternalLink(url, advanced, ++attempt);
                  } else {
-                     this._statistic.getBroken().add(url, advanced, error.statusCode);
-                     this._logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
+                     this.statistic.getBroken().add(url, advanced, error.statusCode);
+                     this.logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
                          error.statusCode, advanced.href, advanced.page);
                  }
                  return this._onFinishLoad(url);
             }
 
-            this._logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
-                this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+            this.logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
+                this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-
-            this._statistic.increaseInternalCount();
+            this.statistic.increaseInternalCount();
             this.processLoadedDocument(new Document(url, data));
         });
     }
@@ -275,15 +340,15 @@ export default class Checker extends Base {
         return new Promise(resolve =&gt; {
             got.head(url, this._getRequestOptions(), (error, data, res) =&gt; {
                 if (error) {
-                    this._statistic.getBroken().add(url, advanced, error.statusCode);
-                    this._logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
+                    this.statistic.getBroken().add(url, advanced, error.statusCode);
+                    this.logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
                         error.statusCode, advanced.href, advanced.page);
                 }
 
-                this._logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
-                    this._pending.length, this._active.length, res ? res.statusCode : -1, url);
+                this.logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
+                    this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-                this._statistic.increaseExternalCount();
+                this.statistic.increaseExternalCount();
                 resolve();
             });
         });
@@ -295,27 +360,18 @@ export default class Checker extends Base {
      * @private
      */
     _checkExternalLinks() {
-        if (!this._external.size) {
+        if (!this.model.areExternal()) {
             return Promise.resolve();
         }
 
-        this._logger.info(&apos;Start to verify external links ...&apos;);
+        this.logger.info(&apos;Start to verify external links ...&apos;);
 
-        var portions = _.chunk(Array.from(this._external), 100);
+        var portions = _.chunk(Array.from(this.model.external), 100);
         return portions.reduce((prev, portion) =&gt; {
             return prev.then(() =&gt; {
                 return Promise.all(portion.map(this._checkExternalLink.bind(this)));
             });
         }, Promise.resolve());
-    }
-
-    /**
-     * Checks if loading queue is full
-     * @returns {Boolean}
-     * @private
-     */
-    _isQueueFull() {
-        return this._active.length &gt;= this.options.getOption(&apos;concurrent&apos;);
     }
 
     /**
@@ -327,12 +383,11 @@ export default class Checker extends Base {
     _addToQueue(url, advanced) {
         url = url.replace(/\/$/, &apos;&apos;);
 
-        if (this._processed.has(url)) {
-            return;
+        if (this.model.addToProcessed(url)) {
+            this.model.isQueueFull(this.options.getOption(&apos;concurrent&apos;)) ?
+                this.model.addToPending(url, advanced) :
+                this._checkInternalLink(url, advanced);
         }
-        this._processed.set(url, true);
-        this._isQueueFull() ? this._pending.push({ url: url, advanced: advanced }) :
-            this._checkInternalLink(url, advanced);
     }
 
     /**
@@ -342,15 +397,14 @@ export default class Checker extends Base {
      * @private
      */
     _onFinishLoad(url) {
-        this._active.splice(this._active.indexOf(url), 1);
-
-        if (!this._isQueueFull()) {
-            var next = this._pending.shift();
+        this.model.removeFromActive(url);
+        if (!this.model.isQueueFull(this.options.getOption(&apos;concurrent&apos;))) {
+            var next = this.model.removeFromPending();
             if (next) {
                 this._checkInternalLink(next.url, next.advanced);
-            } else if (!this._active.length) {
+            } else if (!this.model.areActive()) {
                 return this._checkExternalLinks().then(() =&gt; {
-                    this.options.getOption(&apos;onDone&apos;)(this._statistic);
+                    this.options.getOption(&apos;onDone&apos;)(this.statistic);
                 });
             }
         }

@@ -1,7 +1,7 @@
 {
-  "coverage": "71.73%",
-  "expectCount": 92,
-  "actualCount": 66,
+  "coverage": "88.49%",
+  "expectCount": 113,
+  "actualCount": 100,
   "files": {
     "src/model/document.es6": {
       "expectCount": 9,
@@ -13,35 +13,39 @@
     },
     "src/based-option.es6": {
       "expectCount": 4,
-      "actualCount": 3
+      "actualCount": 4
     },
     "src/model/broken.es6": {
       "expectCount": 10,
       "actualCount": 10
     },
     "src/checker.es6": {
-      "expectCount": 22,
-      "actualCount": 14
+      "expectCount": 25,
+      "actualCount": 21
     },
     "src/link-analyzer.es6": {
       "expectCount": 10,
-      "actualCount": 8
+      "actualCount": 9
+    },
+    "src/model/model.es6": {
+      "expectCount": 18,
+      "actualCount": 17
     },
     "src/reporters/base.es6": {
       "expectCount": 7,
-      "actualCount": 3
+      "actualCount": 6
     },
     "src/reporters/html.es6": {
       "expectCount": 2,
-      "actualCount": 0
+      "actualCount": 1
     },
     "src/reporters/json.es6": {
       "expectCount": 2,
-      "actualCount": 0
+      "actualCount": 1
     },
     "src/model/statistic.es6": {
       "expectCount": 13,
-      "actualCount": 10
+      "actualCount": 13
     },
     "src/util.es6": {
       "expectCount": 3,

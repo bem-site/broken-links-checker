@@ -37,6 +37,7 @@
 <li data-ice="classDoc"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/model/document.es6~Document.html">Document</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></li>
+<li data-ice="classDoc"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/base.es6~ReporterBase.html">ReporterBase</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/html.es6~ReporterHtml.html">ReporterHtml</a></span></li>
 <li data-ice="classDoc"><span><a href="class/src/reporters/json.es6~ReporterJson.html">ReporterJson</a></span></li>
@@ -69,13 +70,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Checker from &apos;<span><a href="file/src/checker.es6.html#lineNumber13">bs-broken-links-checker/src/checker.es6</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Checker from &apos;<span><a href="file/src/checker.es6.html#lineNumber14">bs-broken-links-checker/src/checker.es6</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/checker.es6.html#lineNumber13">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/checker.es6.html#lineNumber14">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -214,6 +215,84 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-get-linkAnalyzer">linkAnalyzer</a></span></span><span data-ice="signature">: <span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Returns instance of LinkAnalyzer class</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-get-logger">logger</a></span></span><span data-ice="signature">: <span>Logger</span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Returns logger instance</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-get-model">model</a></span></span><span data-ice="signature">: <span><a href="class/src/model/model.es6~Model.html">Model</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Returns model instance</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-get-options">options</a></span></span><span data-ice="signature">: <span>BasedOptions</span>: <span>*</span></span>
         </p>
       </div>
@@ -229,6 +308,32 @@
       
     </td>
   </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-get-statistic">statistic</a></span></span><span data-ice="signature">: <span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Returns instance of Statistic class</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
 </tbody>
 </table>
 <table class="summary" data-ice="summary">
@@ -236,56 +341,6 @@
   <tbody>
   
   <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">private</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_active">_active</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">private</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_external">_external</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
     <td>
       <span class="access" data-ice="access">private</span>
       
@@ -321,7 +376,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_options">_options</a></span></span><span data-ice="signature">: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_model">_model</a></span></span><span data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -346,38 +401,14 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_pending">_pending</a></span></span><span data-ice="signature">: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_options">_options</a></span></span><span data-ice="signature">: <span>BasedOptions</span></span>
         </p>
       </div>
       <div>
         
         
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">private</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-member-_processed">_processed</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
+        <div data-ice="description"><p>Checker options</p>
+</div>
       </div>
     </td>
     <td>
@@ -418,6 +449,84 @@
   <tbody>
   
   <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-initLinkAnalyzer">initLinkAnalyzer</a></span></span><span data-ice="signature">(linkAnalyzer: <span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Sets linkAnalyzer instance</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-initModel">initModel</a></span></span><span data-ice="signature">(model: <span><a href="class/src/model/model.es6~Model.html">Model</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Sets model instance</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-initStatistic">initStatistic</a></span></span><span data-ice="signature">(statistic: <span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Sets Statistic instance</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
     <td>
       <span class="access" data-ice="access">public</span>
       
@@ -648,32 +757,6 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-_isQueueFull">_isQueueFull</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        <div data-ice="description"><p>Checks if loading queue is full</p>
-</div>
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">private</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
            <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-_onFinishLoad">_onFinishLoad</a></span></span><span data-ice="signature">(url: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span>*</span></span>
         </p>
       </div>
@@ -708,7 +791,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber80">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber147">source</a></span></span>
     </span>
   </h3>
 
@@ -759,7 +842,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber62">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber129">source</a></span></span>
     </span>
   </h3>
 
@@ -814,7 +897,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -929,6 +1012,162 @@ for this regular expressions would be excluded from verification</p>
 <div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-linkAnalyzer">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">linkAnalyzer</span><span data-ice="signature">: <span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber82">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns instance of LinkAnalyzer class</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>linkAnalyzer</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-logger">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">logger</span><span data-ice="signature">: <span>Logger</span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber66">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns logger instance</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span>Logger</span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>logger</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-model">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">model</span><span data-ice="signature">: <span><a href="class/src/model/model.es6~Model.html">Model</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber74">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns model instance</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>model</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-options">
     <span class="access" data-ice="access">public</span>
     
@@ -939,7 +1178,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber53">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber58">source</a></span></span>
     </span>
   </h3>
 
@@ -979,88 +1218,60 @@ for this regular expressions would be excluded from verification</p>
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-statistic">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">statistic</span><span data-ice="signature">: <span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber90">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns instance of Statistic class</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>statistic</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 <h2 data-ice="title">Private Members</h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-_active">
-    <span class="access" data-ice="access">private</span>
-    
-    
-    
-    
-    <span data-ice="name">_active</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber139">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-_external">
-    <span class="access" data-ice="access">private</span>
-    
-    
-    
-    
-    <span data-ice="name">_external</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber140">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
 <div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-_linkAnalyzer">
     <span class="access" data-ice="access">private</span>
@@ -1072,7 +1283,47 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber110">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-_model">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    <span data-ice="name">_model</span><span data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
@@ -1108,98 +1359,19 @@ for this regular expressions would be excluded from verification</p>
     
     
     
-    <span data-ice="name">_options</span><span data-ice="signature">: <span>*</span></span>
+    <span data-ice="name">_options</span><span data-ice="signature">: <span>BasedOptions</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber39">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
-
-  
-
-  <div data-ice="properties">
+  <div data-ice="description"><p>Checker options</p>
 </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-_pending">
-    <span class="access" data-ice="access">private</span>
-    
-    
-    
-    
-    <span data-ice="name">_pending</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber138">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-_processed">
-    <span class="access" data-ice="access">private</span>
-    
-    
-    
-    
-    <span data-ice="name">_processed</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber141">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
 
   
 
@@ -1232,7 +1404,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
@@ -1265,6 +1437,208 @@ for this regular expressions would be excluded from verification</p>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-initLinkAnalyzer">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">initLinkAnalyzer</span><span data-ice="signature">(linkAnalyzer: <span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber109">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Sets linkAnalyzer instance</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">linkAnalyzer</td>
+      <td data-ice="type"><span><a href="class/src/link-analyzer.es6~LinkAnalyzer.html">LinkAnalyzer</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-initModel">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">initModel</span><span data-ice="signature">(model: <span><a href="class/src/model/model.es6~Model.html">Model</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber99">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Sets model instance</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">model</td>
+      <td data-ice="type"><span><a href="class/src/model/model.es6~Model.html">Model</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>instance</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-initStatistic">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">initStatistic</span><span data-ice="signature">(statistic: <span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span>): <span><a href="class/src/checker.es6~Checker.html">Checker</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber119">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Sets Statistic instance</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">statistic</td>
+      <td data-ice="type"><span><a href="class/src/model/statistic.es6~Statistic.html">Statistic</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/checker.es6~Checker.html">Checker</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-start">
     <span class="access" data-ice="access">public</span>
     
@@ -1275,7 +1649,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber129">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber196">source</a></span></span>
     </span>
   </h3>
 
@@ -1347,7 +1721,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber156">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber220">source</a></span></span>
     </span>
   </h3>
 
@@ -1415,7 +1789,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber98">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber165">source</a></span></span>
     </span>
   </h3>
 
@@ -1489,7 +1863,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber256">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber311">source</a></span></span>
     </span>
   </h3>
 
@@ -1554,7 +1928,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber200">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber264">source</a></span></span>
     </span>
   </h3>
 
@@ -1636,7 +2010,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber226">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber290">source</a></span></span>
     </span>
   </h3>
 
@@ -1687,7 +2061,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber166">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber231">source</a></span></span>
     </span>
   </h3>
 
@@ -1759,7 +2133,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber293">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber346">source</a></span></span>
     </span>
   </h3>
 
@@ -1800,57 +2174,6 @@ for this regular expressions would be excluded from verification</p>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-_isQueueFull">
-    <span class="access" data-ice="access">private</span>
-    
-    
-    
-    
-    <span data-ice="name">_isQueueFull</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber246">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>Checks if loading queue is full</p>
-</div>
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
-        
-      </tr>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-_onFinishLoad">
     <span class="access" data-ice="access">private</span>
     
@@ -1861,7 +2184,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber273">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber327">source</a></span></span>
     </span>
   </h3>
 
