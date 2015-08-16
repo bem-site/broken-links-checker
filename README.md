@@ -9,13 +9,17 @@ Broken links checker for website pages
 
 ![GitHub Logo](./logo.gif)
 
-## Работа с инструментом с помощью инструмента командной строки (cli)
+[RUSSIAN DOCUMENTATION]('./README.ru.md')
 
-Broken links checker может быть использован как самостоятельное [NodeJS](http://nodejs.org) приложение так и [npm](https://www.npmjs.com) - зависимость которая может быть подключена к вашему проекту.
+## Working with help of command line interface (cli)
 
-В первом случае, для установки потребуется склонировать репозиторий проекта, переключится на
-последний стабильный тег, установить [npm](https://www.npmjs.com) - зависимости и скомпилировать код
-для выполнения:
+Broken links checker can be used as single [NodeJS](http://nodejs.org) application and as [npm](https://www.npmjs.com) - dependency which can be plugged to your package.
+
+At first case, you should:
+
+* clone project repo to your local filesystem
+* checkout to last stable tag
+* install [npm](https://www.npmjs.com) dependencies and compile runtime code
 ```
 $ git clone https://github.com/bem-site/broken-links-checker.git
 $ cd broken-links-checker
@@ -23,81 +27,82 @@ $ git checkout vx.y.z
 $ npm run deps
 ```
 
-Во втором случае его достаточно подключить как npm-зависимость:
+At second case you should simply install project as yet another [npm](https://www.npmjs.com) - package:
 ```
 $ npm install --save bs-broken-links-checker
 ```
 
-### Использование:
+### Usage:
 
-Работа с инструментом с помощью cli состоит из 3-х шагов:
+Usage of broken-links-checker tool from cli consists of 3 steps:
 
-1. Генерация конфигурационного файла для анализа сайта с помощью команды [config](#config).
-2. Запуск анализа сайта с помощью команды [run](#run).
-3. Просмотр сгенерированного `*.html` файла отчета.
+1. Configuration file generation with help of [config](#config) command.
+2. Run site analyze process with [run](#run) command.
+3. View generated `*.html` report file.
 
-### Команды
+### Commands
 
-* [config](#config) - генерация конфигурационного файла
-* [run](#run) - запуск инструмента
-* [version](#version) - просмотр версии инструмента
+* [config](#config) - configuration file generation
+* [run](#run) - launch tool
+* [version](#version) - view tool version
 
 ### config
 
-Данная команда предназначена для создания конфигурационного файла в `.js` формате.
-Необходимость в конфигурационном файле обусловлена 2-мя причинами:
-* - громоздкостью значений части опций.
-* - удобством использования. (отсутствием необходимости перечислять все опции при каждом запуске команды [run](#run) с помощью cli).
+You can use this command to generate tool configuration file with `.js` extension.
+It is suitable to have configuration file by 2 reasons:
+* - some options value are too complex and can not be simply passed from cli.
+* - usage advantages. (You can set all you parameters in single configuration file.
 
-##### Параметры:
+##### Parameters:
 
-* `name` - имя конфигурационного файла. Для удобства в качетве значения данного параметра рекомендуется указывать имя хоста web-ресурса для которого будет производиться анализ
+* `name` - configuration file name. It is good practice to use your target website host name
+as value of this parameter.
 
-Пример использования:
+Usage example:
 
 ```
 $ node bin/blc config -n my.broken-site.com
 ```
-Ожидаемый результат вывода в консоль:
+Expected console output:
 ```
 INFO acts/config.js: Configuration file: => my.broken-site.com.js has been generated successfully
 ```
 
-**Примечание**: после выполнения данной команды сгенерированный конфигурационный файл `my.broken-site.com.js` будет помещен в директорию `./configs` внутри рабочей директории приложения.
+**Notation**: generated configuration file `my.broken-site.com.js` will be placed into `./configs` folder
+inside process working directory.
 
-#### Структура конфигурационного файла:
+#### Configuration file structure:
 
-Конфигурационый файл представляет из себя обычный [NodeJS](http://nodejs.org) модуль, экпортирующий
-объект в котором ключами являются имена опций а значениями - значения опций.
+Configuration file is simple [NodeJS](http://nodejs.org) module, which exports object where keys are
+names of options and values are option values.
 
-* `url` - адрес сайта, раздела или страницы которые необходимо просканировать на предмет "битых" ссылок.
+* `url` - url of website, website section or even single website page which should be analyzed for broken links.
 
-* `logger` - позволяет настроить режим логгирования. Возможные значения для параметра уровня логгирования
+* `logger` - allows to set log verbosity mode. Available values for log level are:
 `level`: 'verbose', 'debug', 'info', 'warn', 'error';
 
-* `concurrent` - число внутренних ссылок сайта, которые будут проверяться одновременно. Данный параметр для каждого сайта необходимо подбирать опытным путем, так как слишком низкое значение данного параметра увеличит время анализа сайта, а слишком высокое увеличит нагрузку на сервер сайта и может привести к некорректным результатам.
+* `concurrent` - number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
 
-**Примечание**: данный параметр имеет действие только для внутренних ссылок анализируемого сайта. Внешние ссылки проверяются порциями по 100 штук одновременно.
+**Notation**: this parameter is applicable only for inner links. All external links are checked by 100 items concurrently.
 
-* `requestHeaders` - данный параметр позволяет задавать произвольные заголовки для запросов к серверу анализируемого сайта.
+* `requestHeaders` - allows to set custom request headers.
 
-* `requestRetriesAmount` - максимальное число попыток получить ответ от сайта по заданному урлу.
+* `requestRetriesAmount` - max request attempts for one analyzed url before it will be resolved as broken.
 
-**Примечание**: данный параметр имеет действие только для внутренних ссылок анализируемого сайта.
-Для опроса по внешним ссылкам значение параметра `requestRetriesAmount` равно 1.
+**Notation**: this parameter is applicable only for inner links.
+For external links value of `requestRetriesAmount` parameter is equal to 1.
 
-* `requestTimeout` - максимальное время ожидания ответа от сервера во время запроса в миллисекундах.
+* `requestTimeout` - max server response waiting time per request (in milliseconds).
 
-* `acceptedSchemes` - разрешенные протоколы ссылок. Все ссылки url-ы которых содержат протоколы отличные
-от тех, которые указаны в значении данного параметра будут проигнорированы.
+* `acceptedSchemes` - permitted url schemas. All links which urls contains schemas different from
+listed here will be excluded from analyze.
 
-* `checkExternalUrls` - флаг вклчения проверки внешних ссылок. Если значением данного параметра является
-`false`, то будут проанализированы только внутренние ссылки сайта.
+* `checkExternalUrls` - enables or disables external links check. If value of this param is equal to
+`false`, then only inner links of website will be analyzed.
 
-* `excludeLinkPatterns` - с помощью регулярных выражений позволяет указать паттерны урлов, которые
-будут проигнорированы при анализе сайта. Например, если в анализе сайта не должны участвовать ссылки
-на разделы сайта `/contacts`, то страницы данного раздела можно исключить из анализа путем выставления
-значением опции `excludeLinkPatterns` следующего кода:
+* `excludeLinkPatterns` - allows to set url patterns which should be excluded from analyze. For example if
+you want to exclude all nested links of `/contacts` website section, then set as value of
+`excludeLinkPatterns` option:
 ```
 module.exports = {
     ...
@@ -109,29 +114,29 @@ module.exports = {
 
 ### run
 
-Данная команда предназначена для запуска анализа сайта на предмет "битых" ссылок.
+Launches website analyze process for existed broken links verification.
 
-##### Параметры:
+##### Parameters:
 
-* `-c` или `--config`: Путь к конфигурационному файлу который будет использован для анализа сайта. Обязательный параметр.
+* `-c` or `--config`: Path to [configuration file](#Configuration file structure). Required parameter.
 
-* `-u` или `--url`: Позволяет переопределить url сайта (раздела, страницы) для анализа, который указан в конфигурационном файле.
+* `-u` or `--url`: Allows to override url of website (section, page) from [configuration file](#Configuration file structure).
 
-* `-cc` или `--concurrent`: Позволяет переопределить параметр `concurrent` который указан в конфигурационном файле.
+* `-cc` or `--concurrent`: Allows to override `concurrent` parameter from [configuration file](#Configuration file structure).
 
-* `-rra` или `--requestRetriesAmount`: Позволяет переопределить параметр `requestRetriesAmount` который указан в конфигурационном файле.
+* `-rra` or `--requestRetriesAmount`: Allows to override `requestRetriesAmount` parameter from [configuration file](#Configuration file structure).
 
-* `-rt` или `--requestTimeout`: Позволяет переопределить параметр `requestTimeout` который указан в конфигурационном файле.
+* `-rt` or `--requestTimeout`: Allows to override `requestTimeout` from [configuration file](#Configuration file structure).
 
-* `-ext` или `--checkExternalUrls`: Позволяет переопределить параметр `checkExternalUrls` который указан в конфигурационном файле.
+* `-ext` or `--checkExternalUrls`: Allows to override `checkExternalUrls` parameter from [configuration file](#Configuration file structure).
 
-* `-m` или `--mode`: Данный параметр может принимать 3 возможных значения: 'website' (по умолчанию), 'section' и 'page'.
+* `-m` or `--mode`: this parameter can have one of 3 available values: 'website' (by default), 'section' and 'page'.
 
-**Примечание:**
+**Notation:**
 
-Иногда бывает удобно просканировать только часть сайта: определенный раздел или страницу. В этом случае использование параметра `mode` бывает очень удобно.
+Sometimes it conveniently to scan only separate section of website or even single page. Your can use  `mode` option for this.
 
-В случае если значение параметра `mode` равно 'section', то будет просканирован только раздел сайта корневой страницей которого является значение параметра `url`. Например, если сайт `my.site.com` (конфигурационный файл которого лежит в директории `./configs` под именем `my.site.com.js`) имеет следующую структуру:
+If value of `mode` option is equal to 'section' then only nested pages of `url` option value will be scanned. For example if website `my.site.com` (which configuration file is in `./configs` folder and has name `my.site.com.js`) has structure as given here:
 ```
 /
 /foo
@@ -139,140 +144,141 @@ module.exports = {
 /foo/foo2
 /bar
 ```
- то при вызове команды `run`:
+ then `run` command with given options:
  ```
  $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m section
  ```
-будут просканированы страницы: `/foo`, `/foo1`, `/foo2`, а страница '/bar' не будет участвовать а анализе.
+will cause the analyze only of pages: `/foo`, `/foo1`, `/foo2`. Page '/bar' will be omitted.
 
-В случае если значение параметра `mode` равно 'page', то результатом вызова команды `run`:
+If value of `mode` option is equal to 'page', then `run`:
 ```
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m page
 ```
-будет анализ ссылок только на странице `/foo`.
+will cause the links analyze only for `/foo` page.
 
-#### Примеры вызова команды `run`:
+#### Examples of `run` command usage:
 
-* Простой вызов с указанием пути к конфигурационному файлу
+* Simple call with configuration file param
 ```
 $ node bin/blc run -c ./configs/my.site.com.js
 ```
 
-* Анализ сайта `http://my.another.site.com` c использованием конфигурационного файла для сайта `my.site.com`.
+* Analyze for website `http://my.another.site.com` with configuration file from another website `my.site.com`.
 ```
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.another.site.com
 ```
 
-* Использование параметров запросов отличных от указаных в конфигурационном файле.
+* Overriding some of configuration file properties.
 ```
 $ node bin/blc run -c ./configs/my.site.com.js -cc 50 -rt 10000 -rra 20
 ```
 
-* Выборочный анализ страницы `/foo/bar` сайта `http://my.site.com`.
+* Selective analyze for page `/foo/bar` of website `http://my.site.com`.
 ```
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo/bar -m page
 ```
 
-#### Результат работы команды `run`:
+#### Result of `run` command execution:
 
-Результатом работы должен стать вывод в консоль итоговых данных о результатах
-анализа сайта и ссылок на файлы отчетов которые были сохранены на файловой системе.
+All total results of analyze will be printed into console output after `run` command execution. Also generated reports file paths will be placed there.
 
 ### version
 
-Данная команда предназначена для просмотра текущей используемой версии инструмента.
-Пример использования:
+This command will simply print current application version to console.
+Usage example:
 ```
 $ node bin/blc version
 ```
-Ожидаемый результат вывода в консоль (c точностью до значения версии):
+Expected console output (version can differ from value here):
 ```
 INFO cli/cmd-version.js: Application name: => bs-broken-links-checker
 INFO cli/cmd-version.js: Application version: => 0.0.1
 ```
 
-## Работа с инструментом с помощью JavaScript API
+## JavaScript API
 
-Пакет устанавливается как обычная [npm](https://www.npmjs.com) зависимость
+Package can be installed as usual [npm](https://www.npmjs.com) dependency.
 ```
 $ npm install --save bs-broken-links-checker
 ```
 
-Для инициализации инструмента необходимо создать новый экземпляр класса `BrokenLinksChecker`.
+For tool initialization you should create new instance of `BrokenLinksChecker` class.
 ```
 var BrokenLinksChecker = require('bs-broken-links-checker').BrokenLinksChecker,
     brokenLinksChecker = new BrokenLinksChecker();
 ```
-Для запуска инструмента следует вызвать метод `start` и передать ему в качестве аргумента url сайта на страницах которого необходимо проверить поломанные ссылки, например:
+You should call method `start` and pass url of your website as argument, for example:
 ```
 brokenLinksChecker.start('https://ru.bem.info');
 ```
-Конструктор класса `BrokenLinksChecker` в качестве аргумента принимает объект в котором могут находится опции для
-более детальной настройки инструмента.
+`BrokenLinksChecker` class constructor takes options object as argument. More detail about available option fields.
 
-#### Опции
+#### Options
 
 ##### concurrent
 
-Число запросов для проверки ссылок выполняемых одновременно. Увеличивая значение этого параметра
-можно уменьшить время анализа для всего сайта, но повысить нагрузку на сервер.
+Number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
 
-Значение по умолчанию: `100`.
+Value by default: `100`.
+
+**Notation**: this parameter is applicable only for inner links. All external links are checked by 100 items concurrently.
 
 ##### requestHeaders
 
-Позволяет переопределить заголовки запросов посылаемых на сервер сайта при его анализе.
+Allows to set custom request headers.
 
-Значение по умолчанию: `{ 'user-agent': 'node-spider' }`.
+Value by default: `{ 'user-agent': 'node-spider' }`.
 
 ##### requestRetriesAmount
 
-Количество повторных запросов, которые будут посланы на url сайта, первоначальный запрос
-к которому был завершен с ошибкой без определенного кода. По достижению значения параметра `requestRetriesAmount` url будет помечен ошибкой.
+Max request attempts for single analyzed url before it will be resolved as broken.
 
-Значение по умолчанию: `1`.
+**Notation**: this parameter is applicable only for inner links.
+For external links value of `requestRetriesAmount` parameter is equal to 1.
+
+Value by default: 5.
 
 ##### requestTimeout
 
-Таймаут запроса в миллисекундах.
+Request timeout in milliseconds.
 
-Значение по умолчанию: `5000`.
+Value by default: 5000.
 
 ##### acceptedSchemes
 
-Массив с допустимыми значениеми протоколов адресов проверяемых ссылок. Например, чтобы проверять
-только url-ы, вида `http://...` и `https://...`, необходимо выставить значением данной опции: `['http:', 'https:']`.
+Permitted url schemas. All links which urls contains schemas different from
+listed here will be excluded from analyze.
 
-Значение по умолчанию: `['http:', 'https:']`.
+Value by default: `['http:', 'https:']`.
 
 ##### checkExternalUrls
 
-Флаг который позволяет управлять проверкой ссылок на внешние ресурсы. По умолчанию, значение
-данного параметра равно `false`, что означает, что проверяться будут только ссылки на страницы проверяемого сайта.
+Enables or disables external links check. If value of this param is equal to
+`false`, then only inner links of website will be analyzed..
 
-Значение по умолчанию: `false`
+Value by default: `false`
 
 ##### excludeLinkPatterns
 
-Позволяет исключить определенные разделы сайта из анализа. Значением этой опции яляется массив регулярных выражений при матчинге на которые url будет включен или исключен из анализа. Например, для того чтобы исключить разделы `foo` и `bar` из процесса анализа cайта, нужно указать значением опции
-`[/\/foo/i, /\/bar/i]`.
+Allows to exclude some url patterns from processing. You can pass the array of regular expressions as value of this option. All url that matches on any of listed expressions will be excluded from processing. For example if you want to exclude pages that urls contains `foo` or `bar` you can set this option value as: `[/\/foo/i, /\/bar/i]`.
 
-Значение по умолчанию: `[]`
+Value by default: `[]`
 
 ##### onDone
 
-Функция, которая будет вызвана по завершению анализа сайта. Данная функция принимает аргументом экземпляр класса `Statistic`, в котором хранятся все результаты анализа и методы для работы с ними.
+Callback function which will be fired on the end of analyze. This function takes instance of [Statistic](./src/model/statistic.es6) class. It has all fields and methods for working with results of
+scan.
 
-Примеры использования инструмента можно посмотреть [здесь]('./examples').
+You can see usage examples [here]('./examples').
 
-## Тестирование
+## Testing
 
-Запуск тестов с вычислением покрытия кода тестами с помощью инструмента [istanbul](https://www.npmjs.com/package/istanbul):
+Launch of tests with [istanbul](https://www.npmjs.com/package/istanbul) coverage calculation:
 ```
 $ npm test
 ```
 
-Проверка синтаксиса кода с помощью:
+Code syntax check with help of:
 [jshint](https://www.npmjs.com/package/jshint),
 [jscs](https://www.npmjs.com/package/jscs)
 
@@ -280,14 +286,14 @@ $ npm test
 $ npm run codestyle
 ```
 
-Особая благодарность за помощь в разработке:
+Special thanks to:
 
-* [Ильченко Николай](http://github.com/tavriaforever)
-* [Константинова Гела](http://github.com/gela-d)
-* [Гриненко Владимир](http://github.com/tadatuta)
-* [Абрамов Андрей](https://github.com/blond)
-* [Исупов Илья](https://github.com/SwinX)
+* [Ilchenko Nikolai](http://github.com/tavriaforever)
+* [Konstantinova Gela](http://github.com/gela-d)
+* [Grinenko Vladimir](http://github.com/tadatuta)
+* [Abramov Andrey](https://github.com/blond)
+* [Isupov Ilia](https://github.com/SwinX)
 
-Разработчик: [Кузнецов Андрей](https://github.com/tormozz48)
+Developer: [Kuznetsov Andrey](https://github.com/tormozz48)
 
-Вопросы и предложения присылать по [адресу](mailto:andrey.kuznetsov48@yandex.ru) или в раздел [issues](https://github.com/bem-site/broken-links-checker/issues) репозитория данного инструмента.
+You can send your questions and proposals to [adress](mailto:andrey.kuznetsov48@yandex.ru) or create issues [here](https://github.com/bem-site/broken-links-checker/issues).
