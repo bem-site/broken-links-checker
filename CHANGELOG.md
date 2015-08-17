@@ -1,6 +1,18 @@
 Changelog
 =================
 
+0.1.1
+------
+
+### Changes
+
+* Fix html report creation error in npm dependency install mode
+* Remove materialize-css dependency
+
+### Other
+
+* Remove configs, reports, test folders from npm package
+
 0.1.0
 ------
 
