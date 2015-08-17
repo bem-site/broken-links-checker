@@ -1,3 +1,4 @@
+import path from 'path';
 import fs from 'fs';
 import _ from 'lodash';
 import moment from 'moment';
@@ -21,7 +22,7 @@ export default class ReporterHtml extends ReporterBase {
                 broken: statistic.getBroken().getAll(),
                 options: options
             },
-            htmlTemplate = fs.readFileSync('./src/assets/report.html', { encoding: 'utf-8' }),
+            htmlTemplate = fs.readFileSync(path.resolve(__dirname, '../../src/assets/report.html'), { encoding: 'utf-8' }),
             compiled = _.template(htmlTemplate);
 
         return this.saveReportFile(configurationName, 'html', compiled({ report: report }, report.date));
