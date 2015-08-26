@@ -1,6 +1,6 @@
 var Url = require('url'),
     should = require('should'),
-    BasedOption = require('../../lib/based-option');
+    BasedOption = require('../../lib/based-option'),
     LinkAnalyzer = require('../../lib/link-analyzer');
 
 describe('LinkAnalyzer', function () {

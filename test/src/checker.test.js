@@ -1,26 +1,10 @@
 var Url = require('url'),
-    vow = require('vow'),
     should = require('should'),
-    Model = require('../../lib/model/model');
+    Model = require('../../lib/model/model'),
     Statistic = require('../../lib/model/statistic'),
     Checker = require('../../lib/checker');
 
 describe('checker', function () {
-    var server, port;
-
-        before(function (done) {
-            try {
-                port = process.env.PORT || 3000,
-                server = require('../mock/server');
-                setTimeout(function () {
-                    done();
-                }, 1000);
-            } catch(error) {
-                done();
-            }
-        });
-
-
     describe('constructor', function () {
         function assertDefault(checker) {
             var options = checker.options;
@@ -127,42 +111,6 @@ describe('checker', function () {
                 checker.statistic.getExternalCount().should.equal(1);
                 checker.statistic.getBrokenCount().should.equal(1);
             });
-        });
-    });
-
-    describe('test mock server', function () {
-        it('should crawl pages', function (done) {
-            var checker = new Checker({
-                onDone: function (statistic) {
-                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(1);
-                    done();
-                }
-            });
-
-            checker.start('http://localhost:' + port);
-        });
-
-        it('should skip excluded page urls', function (done) {
-            var checker = new Checker({
-                excludeLinkPatterns: [/\/not-found/],
-                onDone: function (statistic) {
-                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(0);
-                    done();
-                }
-            });
-
-            checker.start('http://localhost:' + port);
-        });
-
-        it('should check outer urls', function (done) {
-            var checker = new Checker({
-                checkExternalUrls: true,
-                onDone: function (statistic) {
-                    statistic.getBroken().getAll().should.be.instanceOf(Array).and.have.length(1);
-                    done();
-                }
-            });
-            checker.start('http://localhost:' + port);
         });
     });
 });

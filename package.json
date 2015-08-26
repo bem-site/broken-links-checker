@@ -50,7 +50,6 @@
   },
   "devDependencies": {
     "babel": "^5.8.20",
-    "connect": "^3.4.0",
     "esdoc": "^0.1.4",
     "gulp": "^3.9.0",
     "gulp-babel": "^5.2.0",
@@ -59,15 +58,13 @@
     "gulp-gh-pages": "^0.5.2",
     "gulp-jscs": "^2.0.0",
     "gulp-jshint": "^1.11.2",
-    "isparta": "^3.0.3",
     "istanbul": "^0.3.x",
     "jshint-stylish": "^2.0.1",
     "mocha": "~2.2.x",
     "mocha-lcov-reporter": "0.0.x",
     "mock-fs": "^3.0.0",
-    "serve-static": "^1.10.0",
-    "should": "~6.x",
-    "vow": "^0.4.10"
+    "nock": "^2.10.0",
+    "should": "~6.x"
   },
   "scripts": {
     "codestyle": "gulp codestyle",

@@ -222,8 +222,8 @@ export default class Checker extends Base {
     }
 
     /**
-     * Makes request to given url
-     * @param {String} url - link url (url that should be requested)
+     * Makes request to given external url
+     * @param {String} url - external url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
      * @private
@@ -238,6 +238,7 @@ export default class Checker extends Base {
                  if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount')) {
                      return this._checkInternalLink(url, advanced, ++attempt);
                  } else {
+                     this.statistic.increaseInternalCount();
                      this.statistic.getBroken().add(url, advanced, error.statusCode);
                      this.logger.warn('Broken [%s] link: => %s on page: => %s',
                          error.statusCode, advanced.href, advanced.page);

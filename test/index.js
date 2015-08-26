@@ -9,3 +9,4 @@ require('./src/checker.test.js');
 require('./src/acts/config.test.js');
 require('./src/acts/run.test.js');
 
+require('./integration.test.js');

@@ -27,7 +27,7 @@ describe('Reporters', function () {
         });
 
         it('should save report file', function () {
-            var date = +(new Date())
+            var date = +(new Date());
             reporterBase.saveReportFile('my.site', 'json', 'hello world').then(function () {
                 fs.existsSync('./reports/my.site/' + date + '.json').should.equal(true);
                 fs.readFileSync('./reports/my.site/' + date + '.json', 'utf-8').should.equal('hello world');
