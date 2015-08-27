@@ -46,15 +46,9 @@ export function createConfigFile(fileName) {
     fileName = fileName.replace(/\//g, '') + '.js';
 
     createConfigsDir();
-    try {
-        fs.writeFileSync(path.join(Util.getConfigurationDirectory(), fileName),
+
+    fs.writeFileSync(path.join(Util.getConfigurationDirectory(), fileName),
             'module.exports = ' + JSON.stringify(createConfigStub(), null, 4), 'utf-8');
-        logger.info('Configuration file: => %s has been generated successfully', fileName);
-        return true;
-    } catch (error) {
-        logger
-            .error('Error occur while saving configuration file: %s', fileName)
-            .error(error.message);
-        return false;
-    }
+    logger.info('Configuration file: => %s has been generated successfully', fileName);
+    return true;
 }

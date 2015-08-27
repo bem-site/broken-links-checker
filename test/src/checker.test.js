@@ -89,28 +89,8 @@ describe('checker', function () {
         });
     });
 
-    describe('_checkExternalLink', function () {
-        var checker;
-
-        beforeEach(function () {
-            checker = new Checker();
-            checker.initStatistic(new Statistic());
-            checker.initModel(new Model());
-        });
-
-        it('should check existed existed external link', function () {
-            var item = ['http://yandex.ru', { href: 'http://yandex.ru', page: 'http://my.site.com' }];
-            return checker._checkExternalLink(item).then(function () {
-                checker.statistic.getExternalCount().should.equal(1);
-            });
-        });
-
-        it('should check existed non-existed external link', function () {
-            var item = ['http://invlid-url', { href: 'http://invlid-url', page: 'http://my.site.com' }];
-            return checker._checkExternalLink(item).then(function () {
-                checker.statistic.getExternalCount().should.equal(1);
-                checker.statistic.getBrokenCount().should.equal(1);
-            });
-        });
+    it('should have default onDone handler', function () {
+        var checker = new Checker();
+        checker.onDone('Hello World').should.equal('Hello World');
     });
 });

@@ -1,6 +1,7 @@
 var fs = require('fs'),
     should = require('should'),
     mockFs = require('mock-fs'),
+    moment = require('moment'),
     ReporterBase = require('../../../lib/reporters/base');
 
 describe('Reporters', function () {
@@ -27,11 +28,11 @@ describe('Reporters', function () {
         });
 
         it('should save report file', function () {
-            var date = +(new Date());
-            reporterBase.saveReportFile('my.site', 'json', 'hello world').then(function () {
-                fs.existsSync('./reports/my.site/' + date + '.json').should.equal(true);
-                fs.readFileSync('./reports/my.site/' + date + '.json', 'utf-8').should.equal('hello world');
-            });
+            var date = moment().format('DD-MM-YYYY:hh:mm:ss');
+            reporterBase.saveReportFile('my.site', 'json', 'hello world', date);
+
+            fs.existsSync('./reports/my.site/' + date + '.json').should.equal(true);
+            fs.readFileSync('./reports/my.site/' + date + '.json', 'utf-8').should.equal('hello world');
         });
     });
 });

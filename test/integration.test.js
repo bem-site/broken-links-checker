@@ -184,6 +184,17 @@ describe('BrokenLinksChecker', function () {
         });
     });
 
+    describe('custom excludeLinkPatterns option', function () {
+        it('should not check excluded urls', function () {
+            nock(SERVER_URL)
+                .get('/')
+                .reply(200, htmlBuilder.build(['/foo1', '/foo2', '/foo2/foo3']));
+            runTest({
+                excludeLinkPatterns: [/\foo2/]
+            }, 2, 2, 0, 0, function () { return done(); });
+        });
+    });
+
     describe('check external urls', function (done) {
         it('should not check external link', function () {
             nock(SERVER_URL)

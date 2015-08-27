@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import moment from 'moment';
 import Logger from 'bem-site-logger';
 import Util from '../util';
 
@@ -59,25 +58,12 @@ export default class ReporterBase {
      * @param {String} date formatted
      * @returns {Promise}
      */
-    saveReportFile(configurationName, type, content, date = moment().format('DD-MM-YYYY:hh:mm:ss')) {
+    saveReportFile(configurationName, type, content, date) {
         this.createReportFolder(configurationName);
         var fileName = `${date}.${type}`,
             filePath = path.join(Util.getReportsDirectory(), configurationName, fileName);
 
-        return new Promise((resolve, reject) => {
-            fs.writeFile(filePath, content, { encoding: 'utf-8' }, error => {
-                if (error) {
-                    this._logger.error('Error occur while saving file: %s', filePath);
-                    reject(error);
-                } else {
-                    this._logger.info('Report saved: %s', filePath);
-                    resolve();
-                }
-            });
-        });
-    }
-
-    createReport() {
-        // TODO override in child class
+        fs.writeFileSync(filePath, content, { encoding: 'utf-8' });
+        this._logger.info('Report saved: %s', filePath);
     }
 }

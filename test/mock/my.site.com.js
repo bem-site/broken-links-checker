@@ -7,11 +7,11 @@ module.exports = {
     "requestHeaders": {
         "user-agent": "node-spider"
     },
-    "requestRetriesAmount": 5,
-    "requestTimeout": 5000,
+    "requestRetriesAmount": 2,
+    "requestTimeout": 200,
     "acceptedSchemes": [
         "http:"
     ],
     "checkExternalUrls": false,
     "excludeLinkPatterns": []
-}
+};
