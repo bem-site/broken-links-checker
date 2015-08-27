@@ -259,27 +259,38 @@ export default class Checker extends Base {
      * @param {Object[]} item - external link item object
      * @param {String} item.url - external link url
      * @param {Object} item.advanced - external link advanced meta data object
+     * @param {Number} attempt - number of request attempt
      * @returns {Promise}
      * @private
      */
-    _checkExternalLink(item) {
+    _checkExternalLink(item, attempt = 0) {
         var url = item[0],
             advanced = item[1];
 
-        return new Promise(resolve => {
-            got.head(url, this._getRequestOptions(), (error, data, res) => {
-                if (error) {
-                    this.statistic.getBroken().add(url, advanced, error.statusCode);
-                    this.logger.warn('Broken [%s] link: => %s on page: => %s',
-                        error.statusCode, advanced.href, advanced.page);
-                }
+        function ping() {
+            return new Promise(resolve => {
+                got.head(url, this._getRequestOptions(), (error, data, res) => {
+                    if (error) {
+                        if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount') - 1) {
+                            return resolve(false);
+                        } else {
+                            this.statistic.getBroken().add(url, advanced, error.statusCode);
+                            this.logger.warn('Broken [%s] link: => %s on page: => %s',
+                                error.statusCode, advanced.href, advanced.page);
+                        }
+                    }
 
-                this.logger.debug('[%s] [%s] Receive [%s] for url: => %s',
-                    this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
+                    this.logger.debug('[%s] [%s] Receive [%s] for url: => %s',
+                        this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-                this.statistic.increaseExternalCount();
-                resolve();
+                    this.statistic.increaseExternalCount();
+                    resolve(true);
+                });
             });
+        }
+
+        return ping.apply(this).then(result => {
+            return result || this._checkExternalLink(item, ++attempt);
         });
     }
 

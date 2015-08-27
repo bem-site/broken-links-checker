@@ -2,7 +2,7 @@ var EOL = require('os').EOL,
     should = require('should'),
     nock = require('nock'),
     BrokenLinksChecker = require('../index').BrokenLinksChecker,
-    SERVER_URL = 'http://localhost:3000',
+    SERVER_URL = 'http://localhost:3000/',
     htmlBuilder = (function () {
         var prefix = [
             '<!DOCTYPE html>',
@@ -29,6 +29,10 @@ var EOL = require('os').EOL,
     })();
 
 describe('BrokenLinksChecker', function () {
+    afterEach(function () {
+        nock.cleanAll();
+    });
+
     it('should simply check given url', function (done) {
         nock(SERVER_URL)
             .get('/')
@@ -113,10 +117,8 @@ describe('BrokenLinksChecker', function () {
         it('should mark url as broken if timeout was occur for all attempts', function (done) {
             nock(SERVER_URL)
                 .get('/')
-                .socketDelay(300)
-                .reply(200, 'Hello World');
+                .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' });
             runTest({
-                requestTimeout: 200,
                 requestRetriesAmount: 2
             }, 1, 1, 0, 1, function () { return done(); });
         });
@@ -124,16 +126,13 @@ describe('BrokenLinksChecker', function () {
         it('should mark url as valid if it was checked from second attempt', function (done) {
             nock(SERVER_URL)
                 .get('/')
-                .socketDelay(300)
                 .times(1)
-                .reply(200, 'Hello World')
+                .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' })
                 .get('/')
-                .socketDelay(100)
                 .reply(200, 'Hello World');
             runTest({
-                requestTimeout: 200,
                 requestRetriesAmount: 2
-            }, 1, 1, 0, 1, function () { return done(); });
+            }, 1, 1, 0, 0, function () { return done(); });
         });
     });
 
@@ -215,6 +214,39 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://broken-link']));
             runTest({ checkExternalUrls: true, requestTimeout: 200 }, 2, 1, 1, 1, function () { return done(); });
+        });
+
+        it('should mark url as broken if timeout was occur for all attempts', function (done) {
+            nock(SERVER_URL)
+                .get('/')
+                .reply(200, htmlBuilder.build(['http://my.external.source']));
+
+            nock('http://my.external.source')
+                .get('/')
+                .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' });
+
+            runTest({
+                requestRetriesAmount: 2,
+                checkExternalUrls: true
+            }, 2, 1, 1, 1, function () { return done(); });
+        });
+
+        it('should mark url as valid if it was checked from second attempt', function (done) {
+            nock(SERVER_URL)
+                .get('/')
+                .reply(200, htmlBuilder.build(['http://my.external.source']));
+
+            nock('http://my.external.source')
+                .head('/')
+                .times(1)
+                .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' })
+                .head('/')
+                .reply(200, 'Hello World');
+
+            runTest({
+                requestRetriesAmount: 2,
+                checkExternalUrls: true
+            }, 2, 1, 1, 0, function () { return done(); });
         });
     });
 });
