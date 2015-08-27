@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import RoutePattern from 'route-pattern';
 import Url from 'url';
 import Checker from './checker';
 
@@ -79,7 +81,11 @@ export default class LinkAnalyzer {
      */
     _skipExcludedUrls(url) {
         return this._options.getOption('excludeLinkPatterns').some(pattern => {
-            return !!url.match(pattern);
+            if(_.isRegExp(pattern)) {
+                return !!url.match(pattern);
+            } else {
+                return RoutePattern.fromString(pattern).matches(url);
+            }
         });
     }
 

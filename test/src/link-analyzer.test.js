@@ -65,23 +65,47 @@ describe('LinkAnalyzer', function () {
     describe('_skipExcludedUrls', function () {
         var linkAnalyzer;
 
+        function assert(url, expected, options) {
+            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', options);
+            linkAnalyzer._skipExcludedUrls(url).should.be.equal(expected);
+        }
+
+        function assertStringPattern(url, pattern, expected) {
+            it ('should match ' + url + ' to ' + pattern, function () {
+                assert(url, expected, [pattern]);
+            });
+        }
+
         beforeEach(function () {
             linkAnalyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
         });
 
         it ('should return false in case of empty "excludeLinkPatterns" array', function () {
-            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', []);
-            linkAnalyzer._skipExcludedUrls('http://my.site.com/url1').should.be.equal(false);
+            assert('http://my.site.com/url1', false, []);
         });
 
-        it ('should return false if any of excluded patterns does not match given url', function () {
-            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
-            linkAnalyzer._skipExcludedUrls('http://my.site.com/url1').should.be.equal(false);
+        describe('regular expressions', function () {
+            it ('should return false if any of excluded patterns does not match given url', function () {
+                assert('http://my.site.com/url1', false, [/\/foo1/i, /\/foo2/i]);
+            });
+
+            it ('should return true if any excluded patterns matches on given url', function () {
+                assert('http://my.site.com/foo1', true, [/\/foo1/i, /\/foo2/i]);
+            });
         });
 
-        it ('should return true if any excluded patterns matches on given url', function () {
-            linkAnalyzer._options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
-            linkAnalyzer._skipExcludedUrls('http://my.site.com/foo1').should.be.equal(true);
+        describe('string patterns', function () {
+            assertStringPattern('http://my.site.com/foo/bar', 'http://my.site.com/foo/bar', true);
+            assertStringPattern('http://my.site.com/foo/bar', 'http://my.site.com/foo/*', true);
+            assertStringPattern('http://my.site.com/foo/bar', 'http://my.site.com/*/bar', true);
+            assertStringPattern('http://my.site.com/foo/bar', 'http://my.site.com/*', true);
+            assertStringPattern('http://my.site.com/foo/bar', '*/foo/bar', true);
+
+            assertStringPattern('http://my.site.com/foo/bar#anchor', 'http://my.site.com/foo/bar#anchor', true);
+            assertStringPattern('http://my.site.com/foo/bar#anchor', 'http://my.site.com/foo/*#anchor', true);
+            assertStringPattern('http://my.site.com/foo/bar#anchor', 'http://my.site.com/*/bar#anchor', true);
+
+            assertStringPattern('http://my.site.com/foo/bar', '/foo/bar', false);
         });
     });
 
