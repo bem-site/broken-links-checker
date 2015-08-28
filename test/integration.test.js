@@ -37,14 +37,20 @@ describe('BrokenLinksChecker', function () {
         nock(SERVER_URL)
             .get('/')
             .reply(200, 'Hello World');
-        runTest({}, 1, 1, 0, 0, function () { return done(); });
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+        runTest({}, expected, function () { return done(); });
     });
 
     it('should simply check broken url (404)', function (done) {
         nock(SERVER_URL)
             .get('/')
             .reply(404);
-        runTest({ requestTimeout: 200 }, 1, 1, 0, 1, function (statistic) {
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 1 };
+
+        runTest({ requestTimeout: 200 }, expected, function (statistic) {
             statistic.getBroken().get404().should.have.length(1);
             done();
         });
@@ -54,7 +60,10 @@ describe('BrokenLinksChecker', function () {
         nock(SERVER_URL)
             .get('/')
             .reply(500);
-        runTest({ requestTimeout: 200 }, 1, 1, 0, 1, function (statistic) {
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 1 };
+
+        runTest({ requestTimeout: 200 }, expected, function (statistic) {
             statistic.getBroken().get500().should.have.length(1);
             done();
         });
@@ -64,21 +73,30 @@ describe('BrokenLinksChecker', function () {
         nock(SERVER_URL)
             .get('/')
             .reply(200, htmlBuilder.build([null]));
-        runTest({ checkExternalUrls: false }, 1, 1, 0, 0, function () { return done(); });
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+        runTest({ checkExternalUrls: false }, expected, function () { return done(); });
     });
 
     it('should not check same url twice (absolute url)', function (done) {
         nock(SERVER_URL)
             .get('/')
             .reply(200, htmlBuilder.build([SERVER_URL]));
-        runTest({ checkExternalUrls: false }, 1, 1, 0, 0, function () { return done(); });
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+        runTest({ checkExternalUrls: false }, expected, function () { return done(); });
     });
 
     it('should not check same url twice (relative url)', function (done) {
         nock(SERVER_URL)
             .get('/')
             .reply(200, htmlBuilder.build(['/']));
-        runTest({ checkExternalUrls: false }, 1, 1, 0, 0, function () { return done(); });
+
+        var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+        runTest({ checkExternalUrls: false }, expected, function () { return done(); });
     });
 
     it('should use pending queue for small concurrency', function (done) {
@@ -92,7 +110,10 @@ describe('BrokenLinksChecker', function () {
         }
 
         mock.get('/').reply(200, htmlBuilder.build(urls));
-        runTest({ concurrency: 1 }, 101, 101, 0, 0, function () { return done(); });
+
+        var expected = { all: 101, internal: 101, external: 0, broken: 0 };
+
+        runTest({ concurrency: 1 }, expected, function () { return done(); });
     });
 
     describe('custom timeout option value', function() {
@@ -101,7 +122,10 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .socketDelay(300)
                 .reply(200, 'Hello World');
-            runTest({ requestTimeout: 100 }, 1, 1, 0, 1, function () { return done(); });
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 1 };
+
+            runTest({ requestTimeout: 100 }, expected, function () { return done(); });
         });
 
         it('should mark url as valid if timeout is greater then server response time', function (done) {
@@ -109,7 +133,10 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .socketDelay(200)
                 .reply(200, 'Hello World');
-            runTest({ requestTimeout: 300 }, 1, 1, 0, 0, function () { return done(); });
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+            runTest({ requestTimeout: 300 }, expected, function () { return done(); });
         });
     });
 
@@ -118,9 +145,10 @@ describe('BrokenLinksChecker', function () {
             nock(SERVER_URL)
                 .get('/')
                 .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' });
-            runTest({
-                requestRetriesAmount: 2
-            }, 1, 1, 0, 1, function () { return done(); });
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 1 };
+
+            runTest({ requestRetriesAmount: 2 }, expected, function () { return done(); });
         });
 
         it('should mark url as valid if it was checked from second attempt', function (done) {
@@ -130,9 +158,10 @@ describe('BrokenLinksChecker', function () {
                 .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' })
                 .get('/')
                 .reply(200, 'Hello World');
-            runTest({
-                requestRetriesAmount: 2
-            }, 1, 1, 0, 0, function () { return done(); });
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+            runTest({ requestRetriesAmount: 2 }, expected, function () { return done(); });
         });
     });
 
@@ -141,20 +170,26 @@ describe('BrokenLinksChecker', function () {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://github.com']));
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
             runTest({
                 acceptedSchemes: ['http:'],
                 checkExternalUrls: true
-            }, 1, 1, 0, 0, function () { return done(); });
+            }, expected, function () { return done(); });
         });
 
         it('should check urls with schemes from array of acceptedSchemes', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://github.com']));
+
+            var expected = { all: 2, internal: 1, external: 1, broken: 0 };
+
             runTest({
                 acceptedSchemes: ['http:', 'https:'],
                 checkExternalUrls: true
-            }, 2, 1, 1, 0, function () { return done(); });
+            }, expected, function () { return done(); });
         });
     });
 
@@ -165,9 +200,12 @@ describe('BrokenLinksChecker', function () {
                 })
                 .get('/')
                 .reply(200, htmlBuilder.build([]));
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 1 };
+
             runTest({
                 requestHeaders: { 'bad-header': 'bad-header' }
-            }, 1, 1, 0, 1, function () { return done(); });
+            }, expected, function () { return done(); });
         });
 
         it('should check url in case of accessible request headers', function (done) {
@@ -176,10 +214,13 @@ describe('BrokenLinksChecker', function () {
                 })
                 .get('/')
                 .reply(200, htmlBuilder.build([]));
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
             runTest({
                 requestTimeout: 200,
                 requestHeaders: { 'user-agent': 'custom-user-agent' }
-            }, 1, 1, 0, 0, function () { return done(); });
+            }, expected, function () { return done(); });
         });
     });
 
@@ -188,9 +229,12 @@ describe('BrokenLinksChecker', function () {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['/foo1', '/foo2', '/foo2/foo3']));
+
+            var expected = { all: 2, internal: 2, external: 0, broken: 0 };
+
             runTest({
                 excludeLinkPatterns: [/\foo2/]
-            }, 2, 2, 0, 0, function () { return done(); });
+            }, expected, function () { return done(); });
         });
     });
 
@@ -199,21 +243,30 @@ describe('BrokenLinksChecker', function () {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://yandex.ru']));
-            runTest({ checkExternalUrls: false }, 1, 1, 0, 0, function () { return done(); });
+
+            var expected = { all: 1, internal: 1, external: 0, broken: 0 };
+
+            runTest({ checkExternalUrls: false }, expected, function () { return done(); });
         });
 
         it('should check external link', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://yandex.ru']));
-            runTest({ checkExternalUrls: true }, 2, 1, 1, 0, function () { return done(); });
+
+            var expected = { all: 2, internal: 1, external: 1, broken: 0 };
+
+            runTest({ checkExternalUrls: true }, expected, function () { return done(); });
         });
 
         it('should check and mark broken external link', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://broken-link']));
-            runTest({ checkExternalUrls: true, requestTimeout: 200 }, 2, 1, 1, 1, function () { return done(); });
+
+            var expected = { all: 2, internal: 1, external: 1, broken: 1 };
+
+            runTest({ checkExternalUrls: true, requestTimeout: 200 }, expected, function () { return done(); });
         });
 
         it('should mark url as broken if timeout was occur for all attempts', function (done) {
@@ -225,10 +278,12 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' });
 
+            var expected = { all: 2, internal: 1, external: 1, broken: 1 };
+
             runTest({
                 requestRetriesAmount: 2,
                 checkExternalUrls: true
-            }, 2, 1, 1, 1, function () { return done(); });
+            }, expected, function () { return done(); });
         });
 
         it('should mark url as valid if it was checked from second attempt', function (done) {
@@ -243,21 +298,23 @@ describe('BrokenLinksChecker', function () {
                 .head('/')
                 .reply(200, 'Hello World');
 
+            var expected = { all: 2, internal: 1, external: 1, broken: 0 };
+
             runTest({
                 requestRetriesAmount: 2,
                 checkExternalUrls: true
-            }, 2, 1, 1, 0, function () { return done(); });
+            }, expected, function () { return done(); });
         });
     });
 });
 
-function runTest(options, all, internal, external, broken, done) {
+function runTest(options, expected, done) {
     options = options || {};
     options.onDone = function (statistic) {
-        statistic.getAllCount().should.equal(all);
-        statistic.getInternalCount().should.equal(internal);
-        statistic.getExternalCount().should.equal(external);
-        statistic.getBrokenCount().should.equal(broken);
+        statistic.getAllCount().should.equal(expected.all);
+        statistic.getInternalCount().should.equal(expected.internal);
+        statistic.getExternalCount().should.equal(expected.external);
+        statistic.getBrokenCount().should.equal(expected.broken);
         done.length ? done(statistic) : done();
     };
     (new BrokenLinksChecker(options)).start(SERVER_URL);

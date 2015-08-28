@@ -256,7 +256,7 @@ export default class Checker extends Base {
 
     /**
      * Checks given external link item
-     * @param {Object[]} item - external link item object
+     * @param {Object} item - external link item object
      * @param {String} item.url - external link url
      * @param {Object} item.advanced - external link advanced meta data object
      * @param {Number} attempt - number of request attempt
@@ -264,8 +264,8 @@ export default class Checker extends Base {
      * @private
      */
     _checkExternalLink(item, attempt = 0) {
-        var url = item[0],
-            advanced = item[1];
+        var url = item.url,
+            advanced = item.advanced;
 
         function ping() {
             return new Promise(resolve => {
@@ -306,12 +306,17 @@ export default class Checker extends Base {
 
         this.logger.info('Start to verify external links ...');
 
-        var portions = _.chunk(Array.from(this.model.external), 100);
-        return portions.reduce((prev, portion) => {
-            return prev.then(() => {
-                return Promise.all(portion.map(this._checkExternalLink.bind(this)));
-            });
-        }, Promise.resolve());
+        return _(Array.from(this.model.external))
+            .map(item => {
+                return { url: item[0], advanced: item[1] };
+            })
+            .chunk(100)
+            .value()
+            .reduce((prev, portion) => {
+                return prev.then(() => {
+                    return Promise.all(portion.map(this._checkExternalLink.bind(this)));
+                });
+            }, Promise.resolve());
     }
 
     /**
