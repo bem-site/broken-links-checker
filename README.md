@@ -89,9 +89,6 @@ names of options and values are option values.
 
 * `requestRetriesAmount` - max request attempts for one analyzed url before it will be resolved as broken.
 
-**Notation**: this parameter is applicable only for inner links.
-For external links value of `requestRetriesAmount` parameter is equal to 1.
-
 * `requestTimeout` - max server response waiting time per request (in milliseconds).
 
 * `acceptedSchemes` - permitted url schemas. All links which urls contains schemas different from
@@ -232,9 +229,6 @@ Value by default: `{ 'user-agent': 'node-spider' }`.
 ##### requestRetriesAmount
 
 Max request attempts for single analyzed url before it will be resolved as broken.
-
-**Notation**: this parameter is applicable only for inner links.
-For external links value of `requestRetriesAmount` parameter is equal to 1.
 
 Value by default: 5.
 
