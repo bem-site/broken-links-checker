@@ -27,7 +27,7 @@ describe('LinkAnalyzer', function () {
         describe('protocols criteria', function () {
             beforeEach(function () {
                 analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
-                analyzer.options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);
+                analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
                 analyzer.options.setOption({}, 'excludeLinkPatterns', []);
             });
 
@@ -85,47 +85,47 @@ describe('LinkAnalyzer', function () {
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo1', 'http://my.site.com').should.equal(true);
             });
 
-            it('should skip url if it equal to one of string values ', function () {
+            it('should skip url if it equal to one of blacklisted urls', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/foo/bar']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(true);
             });
 
-            it('should skip url if it matches to one of string values (wildcard #1)', function () {
+            it('should skip url if it matches to "http://my.site.com/foo/*"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/foo/*']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(true);
             });
 
-            it('should skip url if it matches to one of string values (wildcard #2)', function () {
+            it('should skip url if it matches to "http://my.site.com/*/bar"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/*/bar']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(true);
             });
 
-            it('should skip url if it matches to one of string values (wildcard #3)', function () {
+            it('should skip url if it matches to "http://my.site.com/*"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/*']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(true);
             });
 
-            it('should skip url if it matches to one of string values (wildcard #4)', function () {
+            it('should skip url if it matches to "*/foo/bar"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['*/foo/bar']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(true);
             });
 
-            it ('should skip url with anchor if it equal to one of string values', function () {
+            it ('should skip url with anchor if it equal to one of to one of blacklisted urls', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/foo/bar#a']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar#a', 'http://my.site.com').should.equal(true);
             });
 
-            it ('should skip url with anchor if it matches to one of string values (wildcard #1)', function () {
+            it ('should skip url with anchor if it matches to "http://my.site.com/foo/*#a"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/foo/*#a']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar#a', 'http://my.site.com').should.equal(true);
             });
 
-            it ('should skip url with anchor if it matches to one of string values (wildcard #2)', function () {
+            it ('should skip url with anchor if it matches to "http://my.site.com/*/bar#a"', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['http://my.site.com/*/bar#a']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar#a', 'http://my.site.com').should.equal(true);
             });
 
-            it ('should pass url if it does not matches on any of string values', function () {
+            it ('should pass url if it does not matches on any blacklisted urls', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', ['/foo/bar']);
                 analyzer.isNeedToSkipUrl('http://my.site.com/foo/bar', 'http://my.site.com').should.equal(false);
             });
