@@ -97,8 +97,7 @@ export default class LinkAnalyzer {
      */
     _skipExcludedUrls(url) {
         return this._options.getOption('excludeLinkPatterns').some(pattern => {
-            return _.isRegExp(pattern) ?
-                !!url.match(pattern) : RoutePattern.fromString(pattern).matches(url);
+            return _.isRegExp(pattern) ? pattern.test(url) : RoutePattern.fromString(pattern).matches(url);
         });
     }
 
