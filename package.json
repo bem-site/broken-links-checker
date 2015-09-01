@@ -64,6 +64,7 @@
     "mocha-lcov-reporter": "0.0.x",
     "mock-fs": "^3.0.0",
     "nock": "^2.10.0",
+    "route-pattern": "0.0.6",
     "should": "~6.x"
   },
   "scripts": {

@@ -81,7 +81,10 @@ names of options and values are option values.
 * `logger` - allows to set log verbosity mode. Available values for log level are:
 `level`: 'verbose', 'debug', 'info', 'warn', 'error';
 
-* `concurrent` - number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
+* `concurrent` - number of inner website links which would be analyzed concurrently.
+The optimal value of this param should be found empirically.
+If this value is too low then total time of website analyze will increase.
+If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
 
 **Notation**: this parameter is applicable only for inner links. All external links are checked by 100 items concurrently.
 
@@ -109,6 +112,22 @@ module.exports = {
 }
 ```
 
+You can pass regular expression or string patterns (including wildcards) as values of this param.
+
+More examples:
+```
+module.exports = {
+    ...
+    excludeLinkPatterns: [
+        /\/contacts/,
+        http://google.com,
+        http://my.site.com/foo/*,
+        */foo/bar
+    ]
+}
+```
+
+
 ### run
 
 Launches website analyze process for existed broken links verification.
@@ -133,7 +152,8 @@ Launches website analyze process for existed broken links verification.
 
 Sometimes it conveniently to scan only separate section of website or even single page. Your can use  `mode` option for this.
 
-If value of `mode` option is equal to 'section' then only nested pages of `url` option value will be scanned. For example if website `my.site.com` (which configuration file is in `./configs` folder and has name `my.site.com.js`) has structure as given here:
+If value of `mode` option is equal to 'section' then only nested pages of `url` option value will be scanned.
+For example if website `my.site.com` (which configuration file is in `./configs` folder and has name `my.site.com.js`) has structure as given here:
 ```
 /
 /foo
@@ -214,7 +234,9 @@ brokenLinksChecker.start('https://my.site.com');
 
 ##### concurrent
 
-Number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
+Number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically.
+If this value is too low then total time of website analyze will increase.
+If this value is too high then workload your website server will increase and cause some network errors and result corruptions.
 
 Value by default: `100`.
 
@@ -254,9 +276,25 @@ Value by default: `false`
 
 ##### excludeLinkPatterns
 
-Allows to exclude some url patterns from processing. You can pass the array of regular expressions as value of this option. All url that matches on any of listed expressions will be excluded from processing. For example if you want to exclude pages that urls contains `foo` or `bar` you can set this option value as: `[/\/foo/i, /\/bar/i]`.
+Allows to exclude some url patterns from processing. You can pass the array of regular expressions or
+string patterns (including wildcards) as value of this option.
+All url that matches on any of listed expressions will be excluded from processing.
+For example if you want to exclude pages that urls contains `foo` or `bar` you can set this option value as: `[/\/foo/i, /\/bar/i]`.
 
 Value by default: `[]`
+
+More examples:
+```
+module.exports = {
+    ...
+    excludeLinkPatterns: [
+        /\/contacts/,
+        http://google.com,
+        http://my.site.com/foo/*,
+        */foo/bar
+    ]
+}
+```
 
 ##### onDone
 

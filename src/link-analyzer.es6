@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import RoutePattern from 'route-pattern';
 import Url from 'url';
 import Checker from './checker';
 
@@ -20,6 +22,22 @@ export default class LinkAnalyzer {
          */
         this._url = Url.parse(initial);
         this._options = options;
+    }
+
+    /**
+     * Returns options model
+     * @returns {BasedOption}
+     */
+    get options() {
+        return this._options;
+    }
+
+    /**
+     * Returns initial url as parsed url string via Url module
+     * @returns {Object}
+     */
+    get url() {
+        return this._url;
     }
 
     /**
@@ -79,7 +97,7 @@ export default class LinkAnalyzer {
      */
     _skipExcludedUrls(url) {
         return this._options.getOption('excludeLinkPatterns').some(pattern => {
-            return !!url.match(pattern);
+            return _.isRegExp(pattern) ? pattern.test(url) : RoutePattern.fromString(pattern).matches(url);
         });
     }
 
