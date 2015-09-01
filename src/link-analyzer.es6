@@ -25,6 +25,22 @@ export default class LinkAnalyzer {
     }
 
     /**
+     * Returns options model
+     * @returns {BasedOption}
+     */
+    get options() {
+        return this._options;
+    }
+
+    /**
+     * Returns initial url as parsed url string via Url module
+     * @returns {Object}
+     */
+    get url() {
+        return this._url;
+    }
+
+    /**
      * Returns true if anyone of skip conditions returns true
      * @param {String} url url of link
      * @param {String} baseUrl url of page where link is
