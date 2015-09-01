@@ -24,13 +24,13 @@ describe('LinkAnalyzer', function () {
     describe('isNeedToSkipUrl', function () {
         var analyzer;
 
-        describe('protocols criteria', function () {
-            beforeEach(function () {
-                analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
-                analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
-                analyzer.options.setOption({}, 'excludeLinkPatterns', []);
-            });
+        beforeEach(function () {
+            analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
+            analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
+            analyzer.options.setOption({}, 'excludeLinkPatterns', []);
+        });
 
+        describe('protocols criteria', function () {
             it('should skip url with non-accepted schema', function () {
                 analyzer.isNeedToSkipUrl('mailto://my.site.com/url1', 'http://my.site.com').should.equal(true);
             });
@@ -41,12 +41,6 @@ describe('LinkAnalyzer', function () {
         });
 
         describe('external criteria', function () {
-            beforeEach(function () {
-                analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
-                analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
-                analyzer.options.setOption({}, 'excludeLinkPatterns', []);
-            });
-
             it('should pass external url if "checkExternalUrls" is set to true', function () {
                 analyzer.options.setOption({}, 'checkExternalUrls', true);
                 analyzer.isNeedToSkipUrl('http://outer.host/url1', 'http://my.site.com').should.equal(false);
@@ -69,12 +63,6 @@ describe('LinkAnalyzer', function () {
         });
 
         describe('excluded urls criteria', function () {
-            beforeEach(function () {
-                analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
-                analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
-                analyzer.options.setOption({}, 'excludeLinkPatterns', []);
-            });
-
             it('should pass url if it does not matches any regular expression', function () {
                 analyzer.options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
                 analyzer.isNeedToSkipUrl('http://my.site.com/url1', 'http://my.site.com').should.equal(false);
@@ -134,17 +122,14 @@ describe('LinkAnalyzer', function () {
         describe('mode criteria', function () {
             describe('mode "page"', function () {
                 beforeEach(function () {
-                    analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
-                    analyzer.options.setOption({}, 'acceptedSchemes', ['http:']);
-                    analyzer.options.setOption({}, 'excludeLinkPatterns', []);
                     analyzer.options.setOption({}, 'mode', 'page');
                 });
 
-                it('should pass url if url of page where it is equals to root page (for mode "page")', function () {
+                it('should pass url if url of page where it is equals to root page', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com/foo1', 'http://my.site.com').should.equal(false);
                 });
 
-                it('should skip url if url of page where it does not equal to root page (for mode "page")', function () {
+                it('should skip url if url of page where it does not equal to root page', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com/foo2', 'http://my.site.com/foo1').should.equal(true);
                 });
             });
@@ -157,19 +142,19 @@ describe('LinkAnalyzer', function () {
                     analyzer.options.setOption({}, 'mode', 'section');
                 });
 
-                it ('should pass url it is child against to root page (for mode section)', function () {
+                it ('should pass url it is child against to root page', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com/foo1/foo2', 'http://my.site.com/foo1').should.equal(false);
                 });
 
-                it ('should pass url it is sibling to root page (for mode section)', function () {
+                it ('should pass url it is sibling to root page', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com/foo2', 'http://my.site.com/foo1').should.equal(false);
                 });
 
-                it ('should pass url it is parent to root page (for mode section)', function () {
+                it ('should pass url it is parent to root page', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com', 'http://my.site.com/foo1').should.equal(false);
                 });
 
-                it ('should skip url it from another section of website (for mode section)', function () {
+                it ('should skip url it from another section of website', function () {
                     analyzer.isNeedToSkipUrl('http://my.site.com/foo3', 'http://my.site.com/foo2').should.equal(true);
                 });
             });
@@ -177,7 +162,6 @@ describe('LinkAnalyzer', function () {
 
         describe('complex', function () {
             beforeEach(function () {
-                analyzer = new LinkAnalyzer('http://my.site.com', new BasedOption());
                 analyzer.options.setOption({}, 'acceptedSchemes', ['http:', 'https:']);
                 analyzer.options.setOption({}, 'excludeLinkPatterns', [/\/foo1/i, /\/foo2/i]);
             });
