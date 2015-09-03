@@ -273,7 +273,7 @@ export default class Checker extends Base {
                     if (error) {
                         if (!error.statusCode && attempt < this.options.getOption('requestRetriesAmount') - 1) {
                             return resolve(false);
-                        } else {
+                        } else if (error.statusCode) {
                             this.statistic.getBroken().add(url, advanced, error.statusCode);
                             this.logger.warn('Broken [%s] link: => %s on page: => %s',
                                 error.statusCode, advanced.href, advanced.page);
