@@ -25,6 +25,6 @@ export default class ReporterHtml extends ReporterBase {
             htmlTemplate = fs.readFileSync(path.resolve(__dirname, '../../src/assets/report.html'), { encoding: 'utf-8' }),
             compiled = _.template(htmlTemplate);
 
-        return this.saveReportFile(configurationName, 'html', compiled({ report: report }, report.date));
+        return this.saveReportFile(configurationName, 'html', compiled({ report: report }), report.date);
     }
 }
