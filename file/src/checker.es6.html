@@ -70,7 +70,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/checker.es6</h1>
-<pre class="source-code line-number"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import got  from &apos;got&apos;;
 import Base  from &apos;./base&apos;;
 import BasedOptions  from &apos;./based-option&apos;;
@@ -294,8 +294,8 @@ export default class Checker extends Base {
     }
 
     /**
-     * Makes request to given url
-     * @param {String} url - link url (url that should be requested)
+     * Makes request to given external url
+     * @param {String} url - external url (url that should be requested)
      * @param {Object} advanced - object with advanced data
      * @param {Number} attempt - number of request attempt
      * @private
@@ -310,6 +310,7 @@ export default class Checker extends Base {
                  if (!error.statusCode &amp;&amp; attempt &lt; this.options.getOption(&apos;requestRetriesAmount&apos;)) {
                      return this._checkInternalLink(url, advanced, ++attempt);
                  } else {
+                     this.statistic.increaseInternalCount();
                      this.statistic.getBroken().add(url, advanced, error.statusCode);
                      this.logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
                          error.statusCode, advanced.href, advanced.page);
@@ -327,30 +328,41 @@ export default class Checker extends Base {
 
     /**
      * Checks given external link item
-     * @param {Object[]} item - external link item object
+     * @param {Object} item - external link item object
      * @param {String} item.url - external link url
      * @param {Object} item.advanced - external link advanced meta data object
+     * @param {Number} attempt - number of request attempt
      * @returns {Promise}
      * @private
      */
-    _checkExternalLink(item) {
-        var url = item[0],
-            advanced = item[1];
+    _checkExternalLink(item, attempt = 0) {
+        var url = item.url,
+            advanced = item.advanced;
 
-        return new Promise(resolve =&gt; {
-            got.head(url, this._getRequestOptions(), (error, data, res) =&gt; {
-                if (error) {
-                    this.statistic.getBroken().add(url, advanced, error.statusCode);
-                    this.logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
-                        error.statusCode, advanced.href, advanced.page);
-                }
+        function ping() {
+            return new Promise(resolve =&gt; {
+                got.head(url, this._getRequestOptions(), (error, data, res) =&gt; {
+                    if (error) {
+                        if (!error.statusCode &amp;&amp; attempt &lt; this.options.getOption(&apos;requestRetriesAmount&apos;) - 1) {
+                            return resolve(false);
+                        } else if (error.statusCode) {
+                            this.statistic.getBroken().add(url, advanced, error.statusCode);
+                            this.logger.warn(&apos;Broken [%s] link: =&gt; %s on page: =&gt; %s&apos;,
+                                error.statusCode, advanced.href, advanced.page);
+                        }
+                    }
 
-                this.logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
-                    this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
+                    this.logger.debug(&apos;[%s] [%s] Receive [%s] for url: =&gt; %s&apos;,
+                        this.model.getPendingLength(), this.model.getActiveLength(), res ? res.statusCode : -1, url);
 
-                this.statistic.increaseExternalCount();
-                resolve();
+                    this.statistic.increaseExternalCount();
+                    resolve(true);
+                });
             });
+        }
+
+        return ping.apply(this).then(result =&gt; {
+            return result || this._checkExternalLink(item, ++attempt);
         });
     }
 
@@ -366,12 +378,17 @@ export default class Checker extends Base {
 
         this.logger.info(&apos;Start to verify external links ...&apos;);
 
-        var portions = _.chunk(Array.from(this.model.external), 100);
-        return portions.reduce((prev, portion) =&gt; {
-            return prev.then(() =&gt; {
-                return Promise.all(portion.map(this._checkExternalLink.bind(this)));
-            });
-        }, Promise.resolve());
+        return _(Array.from(this.model.external))
+            .map(item =&gt; {
+                return { url: item[0], advanced: item[1] };
+            })
+            .chunk(100)
+            .value()
+            .reduce((prev, portion) =&gt; {
+                return prev.then(() =&gt; {
+                    return Promise.all(portion.map(this._checkExternalLink.bind(this)));
+                });
+            }, Promise.resolve());
     }
 
     /**
@@ -427,7 +444,7 @@ export default class Checker extends Base {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.2)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

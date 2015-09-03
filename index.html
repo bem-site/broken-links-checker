@@ -69,7 +69,7 @@
 
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index"><!-- # broken-links-checker -->
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><!-- # broken-links-checker -->
 <p>Broken links checker for website pages</p>
 <p><a href="http://www.npmjs.org/package/bs-broken-links-checker"><img src="http://img.shields.io/npm/v/bs-broken-links-checker.svg?style=flat" alt="NPM version"></a>
 <a href="https://coveralls.io/r/bem-site/broken-links-checker?branch=master"><img src="https://img.shields.io/coveralls/bem-site/broken-links-checker/master.svg" alt="Coveralls branch"></a>
@@ -84,14 +84,14 @@
 <ul>
 <li>clone project repo to your local filesystem</li>
 <li>checkout to last stable tag</li>
-<li>install <a href="https://www.npmjs.com">npm</a> dependencies and compile runtime code<pre><code><pre class="source-code"><code class="prettyprint">$ git clone https://github.com/bem-site/broken-links-checker.git
+<li>install <a href="https://www.npmjs.com">npm</a> dependencies and compile runtime code<pre><code><code class="source-code prettyprint">$ git clone https://github.com/bem-site/broken-links-checker.git
 $ cd broken-links-checker
 $ git checkout vx.y.z
-$ npm run deps</code></pre>
+$ npm run deps</code>
 </code></pre></li>
 </ul>
 <p>At second case you should simply install project as yet another <a href="https://www.npmjs.com">npm</a> - package:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ npm install --save bs-broken-links-checker</code></pre>
+<pre><code><code class="source-code prettyprint">$ npm install --save bs-broken-links-checker</code>
 </code></pre><h3 id="usage-">Usage:</h3>
 <p>Usage of broken-links-checker tool from cli consists of 3 steps:</p>
 <ol>
@@ -124,9 +124,9 @@ It is suitable to have configuration file by 2 reasons:</p>
 as value of this parameter.</li>
 </ul>
 <p>Usage example:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc config -n my.broken-site.com</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc config -n my.broken-site.com</code>
 </code></pre><p>Expected console output:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">INFO acts/config.js: Configuration file: =&gt; my.broken-site.com.js has been generated successfully</code></pre>
+<pre><code><code class="source-code prettyprint">INFO acts/config.js: Configuration file: =&gt; my.broken-site.com.js has been generated successfully</code>
 </code></pre><p><strong>Notation</strong>: generated configuration file <code>my.broken-site.com.js</code> will be placed into <code>./configs</code> folder
 inside process working directory.</p>
 <h4 id="configuration-file-structure-">Configuration file structure:</h4>
@@ -138,7 +138,10 @@ names of options and values are option values.</p>
 <li><p><code>logger</code> - allows to set log verbosity mode. Available values for log level are:
 <code>level</code>: &apos;verbose&apos;, &apos;debug&apos;, &apos;info&apos;, &apos;warn&apos;, &apos;error&apos;;</p>
 </li>
-<li><p><code>concurrent</code> - number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.</p>
+<li><p><code>concurrent</code> - number of inner website links which would be analyzed concurrently.
+The optimal value of this param should be found empirically.
+If this value is too low then total time of website analyze will increase.
+If this value is too high then workload your website server will increase and cause some network errors and result corruptions.</p>
 </li>
 </ul>
 <p><strong>Notation</strong>: this parameter is applicable only for inner links. All external links are checked by 100 items concurrently.</p>
@@ -147,10 +150,6 @@ names of options and values are option values.</p>
 </li>
 <li><p><code>requestRetriesAmount</code> - max request attempts for one analyzed url before it will be resolved as broken.</p>
 </li>
-</ul>
-<p><strong>Notation</strong>: this parameter is applicable only for inner links.
-For external links value of <code>requestRetriesAmount</code> parameter is equal to 1.</p>
-<ul>
 <li><p><code>requestTimeout</code> - max server response waiting time per request (in milliseconds).</p>
 </li>
 <li><p><code>acceptedSchemes</code> - permitted url schemas. All links which urls contains schemas different from
@@ -162,15 +161,26 @@ listed here will be excluded from analyze.</p>
 <li><p><code>excludeLinkPatterns</code> - allows to set url patterns which should be excluded from analyze. For example if
 you want to exclude all nested links of <code>/contacts</code> website section, then set as value of
 <code>excludeLinkPatterns</code> option:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">module.exports = {
+<pre><code><code class="source-code prettyprint">module.exports = {
   ...
   &quot;excludeLinkPatterns&quot;: [
       /\/contacts/
   ]
-}</code></pre>
+}</code>
 </code></pre></li>
 </ul>
-<h3 id="run">run</h3>
+<p>You can pass regular expression or string patterns (including wildcards) as values of this param.</p>
+<p>More examples:</p>
+<pre><code><code class="source-code prettyprint">module.exports = {
+    ...
+    excludeLinkPatterns: [
+        /\/contacts/,
+        http://google.com,
+        http://my.site.com/foo/*,
+        */foo/bar
+    ]
+}</code>
+</code></pre><h3 id="run">run</h3>
 <p>Launches website analyze process for existed broken links verification.</p>
 <h5 id="parameters-">Parameters:</h5>
 <ul>
@@ -191,31 +201,32 @@ you want to exclude all nested links of <code>/contacts</code> website section, 
 </ul>
 <p><strong>Notation:</strong></p>
 <p>Sometimes it conveniently to scan only separate section of website or even single page. Your can use  <code>mode</code> option for this.</p>
-<p>If value of <code>mode</code> option is equal to &apos;section&apos; then only nested pages of <code>url</code> option value will be scanned. For example if website <code>my.site.com</code> (which configuration file is in <code>./configs</code> folder and has name <code>my.site.com.js</code>) has structure as given here:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">/
+<p>If value of <code>mode</code> option is equal to &apos;section&apos; then only nested pages of <code>url</code> option value will be scanned.
+For example if website <code>my.site.com</code> (which configuration file is in <code>./configs</code> folder and has name <code>my.site.com.js</code>) has structure as given here:</p>
+<pre><code><code class="source-code prettyprint">/
 /foo
 /foo/foo1
 /foo/foo2
-/bar</code></pre>
+/bar</code>
 </code></pre><p> then <code>run</code> command with given options:</p>
-<pre><code><pre class="source-code"><code class="prettyprint"> $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m section</code></pre>
+<pre><code><code class="source-code prettyprint"> $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m section</code>
 </code></pre><p>will cause the analyze only of pages: <code>/foo</code>, <code>/foo1</code>, <code>/foo2</code>. Page &apos;/bar&apos; will be omitted.</p>
 <p>If value of <code>mode</code> option is equal to &apos;page&apos;, then <code>run</code>:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m page</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m page</code>
 </code></pre><p>will cause the links analyze only for <code>/foo</code> page.</p>
 <h4 id="examples-of-run-command-usage-">Examples of <code>run</code> command usage:</h4>
 <ul>
 <li><p>Simple call with configuration file param</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc run -c ./configs/my.site.com.js</code>
 </code></pre></li>
 <li><p>Analyze for website <code>http://my.another.site.com</code> with configuration file from another website <code>my.site.com</code>.</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.another.site.com</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.another.site.com</code>
 </code></pre></li>
 <li><p>Overriding some of configuration file properties.</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -cc 50 -rt 10000 -rra 20</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -cc 50 -rt 10000 -rra 20</code>
 </code></pre></li>
 <li><p>Selective analyze for page <code>/foo/bar</code> of website <code>http://my.site.com</code>.</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo/bar -m page</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo/bar -m page</code>
 </code></pre></li>
 </ul>
 <h4 id="result-of-run-command-execution-">Result of <code>run</code> command execution:</h4>
@@ -223,22 +234,24 @@ you want to exclude all nested links of <code>/contacts</code> website section, 
 <h3 id="version">version</h3>
 <p>This command will simply print current application version to console.
 Usage example:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ node bin/blc version</code></pre>
+<pre><code><code class="source-code prettyprint">$ node bin/blc version</code>
 </code></pre><p>Expected console output (version can differ from value here):</p>
-<pre><code><pre class="source-code"><code class="prettyprint">INFO cli/cmd-version.js: Application name: =&gt; bs-broken-links-checker
-INFO cli/cmd-version.js: Application version: =&gt; 0.0.1</code></pre>
+<pre><code><code class="source-code prettyprint">INFO cli/cmd-version.js: Application name: =&gt; bs-broken-links-checker
+INFO cli/cmd-version.js: Application version: =&gt; 0.0.1</code>
 </code></pre><h2 id="javascript-api">JavaScript API</h2>
 <p>Package can be installed as usual <a href="https://www.npmjs.com">npm</a> dependency.</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ npm install --save bs-broken-links-checker</code></pre>
+<pre><code><code class="source-code prettyprint">$ npm install --save bs-broken-links-checker</code>
 </code></pre><p>For tool initialization you should create new instance of <code>BrokenLinksChecker</code> class.</p>
-<pre><code><pre class="source-code"><code class="prettyprint">var BrokenLinksChecker = require(&apos;bs-broken-links-checker&apos;).BrokenLinksChecker,
-    brokenLinksChecker = new BrokenLinksChecker();</code></pre>
+<pre><code><code class="source-code prettyprint">var BrokenLinksChecker = require(&apos;bs-broken-links-checker&apos;).BrokenLinksChecker,
+    brokenLinksChecker = new BrokenLinksChecker();</code>
 </code></pre><p>You should call method <code>start</code> and pass url of your website as argument, for example:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">brokenLinksChecker.start(&apos;https://my.site.com&apos;);</code></pre>
+<pre><code><code class="source-code prettyprint">brokenLinksChecker.start(&apos;https://my.site.com&apos;);</code>
 </code></pre><p><code>BrokenLinksChecker</code> class constructor takes options object as argument. More detail about available option fields.</p>
 <h4 id="options">Options</h4>
 <h5 id="concurrent">concurrent</h5>
-<p>Number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically. If this value is too low then total time of website analyze will increase. If this value is too high then workload your website server will increase and cause some network errors and result corruptions.</p>
+<p>Number of inner website links which would be analyzed concurrently. The optimal value of this param should be found empirically.
+If this value is too low then total time of website analyze will increase.
+If this value is too high then workload your website server will increase and cause some network errors and result corruptions.</p>
 <p>Value by default: <code>100</code>.</p>
 <p><strong>Notation</strong>: this parameter is applicable only for inner links. All external links are checked by 100 items concurrently.</p>
 <h5 id="requestheaders">requestHeaders</h5>
@@ -246,8 +259,6 @@ INFO cli/cmd-version.js: Application version: =&gt; 0.0.1</code></pre>
 <p>Value by default: <code>{ &apos;user-agent&apos;: &apos;node-spider&apos; }</code>.</p>
 <h5 id="requestretriesamount">requestRetriesAmount</h5>
 <p>Max request attempts for single analyzed url before it will be resolved as broken.</p>
-<p><strong>Notation</strong>: this parameter is applicable only for inner links.
-For external links value of <code>requestRetriesAmount</code> parameter is equal to 1.</p>
 <p>Value by default: 5.</p>
 <h5 id="requesttimeout">requestTimeout</h5>
 <p>Request timeout in milliseconds.</p>
@@ -261,19 +272,32 @@ listed here will be excluded from analyze.</p>
 <code>false</code>, then only inner links of website will be analyzed..</p>
 <p>Value by default: <code>false</code></p>
 <h5 id="excludelinkpatterns">excludeLinkPatterns</h5>
-<p>Allows to exclude some url patterns from processing. You can pass the array of regular expressions as value of this option. All url that matches on any of listed expressions will be excluded from processing. For example if you want to exclude pages that urls contains <code>foo</code> or <code>bar</code> you can set this option value as: <code>[/\/foo/i, /\/bar/i]</code>.</p>
+<p>Allows to exclude some url patterns from processing. You can pass the array of regular expressions or
+string patterns (including wildcards) as value of this option.
+All url that matches on any of listed expressions will be excluded from processing.
+For example if you want to exclude pages that urls contains <code>foo</code> or <code>bar</code> you can set this option value as: <code>[/\/foo/i, /\/bar/i]</code>.</p>
 <p>Value by default: <code>[]</code></p>
-<h5 id="ondone">onDone</h5>
+<p>More examples:</p>
+<pre><code><code class="source-code prettyprint">module.exports = {
+    ...
+    excludeLinkPatterns: [
+        /\/contacts/,
+        http://google.com,
+        http://my.site.com/foo/*,
+        */foo/bar
+    ]
+}</code>
+</code></pre><h5 id="ondone">onDone</h5>
 <p>Callback function which will be fired on the end of analyze. This function takes instance of <a href="./src/model/statistic.es6">Statistic</a> class. It has all fields and methods for working with results of
 scan.</p>
 <p>You can see usage examples <a href="./examples">here</a>.</p>
 <h2 id="testing">Testing</h2>
 <p>Launch of tests with <a href="https://www.npmjs.com/package/istanbul">istanbul</a> coverage calculation:</p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ npm test</code></pre>
+<pre><code><code class="source-code prettyprint">$ npm test</code>
 </code></pre><p>Code syntax check with help of:
 <a href="https://www.npmjs.com/package/jshint">jshint</a>,
 <a href="https://www.npmjs.com/package/jscs">jscs</a></p>
-<pre><code><pre class="source-code"><code class="prettyprint">$ npm run codestyle</code></pre>
+<pre><code><code class="source-code prettyprint">$ npm run codestyle</code>
 </code></pre><p>Special thanks to:</p>
 <ul>
 <li><a href="http://github.com/tavriaforever">Ilchenko Nikolai</a></li>
@@ -288,7 +312,7 @@ scan.</p>
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.2)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

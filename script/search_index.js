@@ -114,6 +114,174 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber31",
+    "BrokenLinksChecker",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber241",
+    "BrokenLinksChecker check external urls",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber262",
+    "BrokenLinksChecker check external urls should check and mark broken external link",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber252",
+    "BrokenLinksChecker check external urls should check external link",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber293",
+    "BrokenLinksChecker check external urls should mark url as valid if it was checked from second attempt",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber242",
+    "BrokenLinksChecker check external urls should not check external link",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber276",
+    "BrokenLinksChecker check external urls should not mark url as broken if timeout was occur for all attempts",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber168",
+    "BrokenLinksChecker custom acceptedSchemes option value",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber182",
+    "BrokenLinksChecker custom acceptedSchemes option value should check urls with schemes from array of acceptedSchemes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber169",
+    "BrokenLinksChecker custom acceptedSchemes option value should not check urls with another schemes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber227",
+    "BrokenLinksChecker custom excludeLinkPatterns option",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber228",
+    "BrokenLinksChecker custom excludeLinkPatterns option should not check excluded urls",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber196",
+    "BrokenLinksChecker custom requestHeaders option value",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber211",
+    "BrokenLinksChecker custom requestHeaders option value should check url in case of accessible request headers",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber197",
+    "BrokenLinksChecker custom requestHeaders option value should mark url as broken in case of not accessible request headers",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber143",
+    "BrokenLinksChecker custom requestRetriesAmount option value",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber144",
+    "BrokenLinksChecker custom requestRetriesAmount option value should mark url as broken if timeout was occur for all attempts",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber154",
+    "BrokenLinksChecker custom requestRetriesAmount option value should mark url as valid if it was checked from second attempt",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber119",
+    "BrokenLinksChecker custom timeout option value",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber120",
+    "BrokenLinksChecker custom timeout option value should mark url as broken if timeout was occur",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber131",
+    "BrokenLinksChecker custom timeout option value should mark url as valid if timeout is greater then server response time",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber82",
+    "BrokenLinksChecker should not check same url twice (absolute url)",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber92",
+    "BrokenLinksChecker should not check same url twice (relative url)",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber46",
+    "BrokenLinksChecker should simply check broken url (404)",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber59",
+    "BrokenLinksChecker should simply check broken url (500)",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber36",
+    "BrokenLinksChecker should simply check given url",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber72",
+    "BrokenLinksChecker should skip links without href attributes",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/integration.test.js.html#lineNumber102",
+    "BrokenLinksChecker should use pending queue for small concurrency",
+    "test"
+  ],
+  [
     "builtinexternal/ecmascriptexternal.js~array",
     "external/index.html",
     "BuiltinExternal/ECMAScriptExternal.js~Array",
@@ -439,175 +607,277 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber6",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber7",
     "LinkAnalyzer",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber65",
-    "LinkAnalyzer _skipExcludedUrls",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber77",
-    "LinkAnalyzer _skipExcludedUrls should return false if any of excluded patterns does not match given url",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber72",
-    "LinkAnalyzer _skipExcludedUrls should return false in case of empty \"excludeLinkPatterns\" array",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber82",
-    "LinkAnalyzer _skipExcludedUrls should return true if any excluded patterns matches on given url",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber41",
-    "LinkAnalyzer _skipExternalUrls",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber48",
-    "LinkAnalyzer _skipExternalUrls should return false if checkExternalUrls option is set to true",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber58",
-    "LinkAnalyzer _skipExternalUrls should return false if host of given url is the same as host of initial url",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber53",
-    "LinkAnalyzer _skipExternalUrls should return true if host of given url is different then host of initial url",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber23",
-    "LinkAnalyzer _skipNonAcceptableProtocols",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber35",
-    "LinkAnalyzer _skipNonAcceptableProtocols should return false if scheme of given url exists in list of acceptable acceptedSchemes",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber30",
-    "LinkAnalyzer _skipNonAcceptableProtocols should return true if scheme of given url does not exist in list of acceptable acceptedSchemes",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber88",
-    "LinkAnalyzer _skipOnMode",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber95",
-    "LinkAnalyzer _skipOnMode should return false for mode \"page\" and direct links of target page",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber117",
-    "LinkAnalyzer _skipOnMode should return false for mode \"section\" and parent of initial link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber111",
-    "LinkAnalyzer _skipOnMode should return false for mode \"section\" and sibling of initial link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber105",
-    "LinkAnalyzer _skipOnMode should return false for mode \"section\" and sub-links of initial link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber100",
-    "LinkAnalyzer _skipOnMode should return true for mode \"page\" and non-direct links of target page",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber123",
-    "LinkAnalyzer _skipOnMode should return true for mode \"section\" and page outside of section",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber7",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber8",
     "LinkAnalyzer constructor",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber18",
-    "LinkAnalyzer constructor should have valid _options field value after initialization",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber19",
+    "LinkAnalyzer constructor should have valid options field value after initialization",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber14",
-    "LinkAnalyzer constructor should have valid _url field value after initialization",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber15",
+    "LinkAnalyzer constructor should have valid url field value after initialization",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber130",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber24",
     "LinkAnalyzer isNeedToSkipUrl",
     "test"
   ],
   [
     "",
-    "test-file/test/src/link-analyzer.test.js.html#lineNumber150",
-    "LinkAnalyzer isNeedToSkipUrl ",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber163",
+    "LinkAnalyzer isNeedToSkipUrl complex",
     "test"
   ],
   [
     "",
-    "test-file/test/src/reporters/base.test.js.html#lineNumber6",
-    "Reporters",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber177",
+    "LinkAnalyzer isNeedToSkipUrl complex should pass \"http://my.site.com/url1\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber185",
+    "LinkAnalyzer isNeedToSkipUrl complex should pass \"https://my.site.com/url1\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber173",
+    "LinkAnalyzer isNeedToSkipUrl complex should skip \"http://google.com\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber181",
+    "LinkAnalyzer isNeedToSkipUrl complex should skip \"http://my.site.com/foo1\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber189",
+    "LinkAnalyzer isNeedToSkipUrl complex should skip \"mailto://my.site.com/foo2\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber169",
+    "LinkAnalyzer isNeedToSkipUrl complex should skip \"mailto://my.site.com/url1\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber65",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber66",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should pass url if it does not matches any regular expression",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber116",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should pass url if it does not matches on any blacklisted urls",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber71",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it does matches at least one of regular expressions",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber76",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it equal to one of blacklisted urls",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber96",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it matches to \"*/foo/bar\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber91",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it matches to \"http://my.site.com/*\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber86",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it matches to \"http://my.site.com/*/bar\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber81",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url if it matches to \"http://my.site.com/foo/*\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber101",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url with anchor if it equal to one of to one of blacklisted urls",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber111",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url with anchor if it matches to \"http://my.site.com/*/bar#a\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber106",
+    "LinkAnalyzer isNeedToSkipUrl excluded urls criteria should skip url with anchor if it matches to \"http://my.site.com/foo/*#a\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber43",
+    "LinkAnalyzer isNeedToSkipUrl external criteria",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber44",
+    "LinkAnalyzer isNeedToSkipUrl external criteria should pass external url if \"checkExternalUrls\" is set to true",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber59",
+    "LinkAnalyzer isNeedToSkipUrl external criteria should pass internal url if \"checkExternalUrls\" is set to false",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber54",
+    "LinkAnalyzer isNeedToSkipUrl external criteria should pass internal url if \"checkExternalUrls\" is set to true",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber49",
+    "LinkAnalyzer isNeedToSkipUrl external criteria should skip external url if \"checkExternalUrls\" is set to false",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber122",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber123",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"page\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber128",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"page\" should pass url if url of page where it is equals to root page",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber132",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"page\" should skip url if url of page where it does not equal to root page",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber137",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"section\"",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber145",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"section\" should pass url it is child against to root page",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber153",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"section\" should pass url it is parent to root page",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber149",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"section\" should pass url it is sibling to root page",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber157",
+    "LinkAnalyzer isNeedToSkipUrl mode criteria mode \"section\" should skip url it from another section of website",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber33",
+    "LinkAnalyzer isNeedToSkipUrl protocols criteria",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber38",
+    "LinkAnalyzer isNeedToSkipUrl protocols criteria should pass url with accepted schema",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/link-analyzer.test.js.html#lineNumber34",
+    "LinkAnalyzer isNeedToSkipUrl protocols criteria should skip url with non-accepted schema",
     "test"
   ],
   [
     "",
     "test-file/test/src/reporters/base.test.js.html#lineNumber7",
+    "Reporters",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/reporters/base.test.js.html#lineNumber8",
     "Reporters Base",
     "test"
   ],
   [
     "",
-    "test-file/test/src/reporters/base.test.js.html#lineNumber24",
+    "test-file/test/src/reporters/base.test.js.html#lineNumber25",
     "Reporters Base should create report folder for given config name",
     "test"
   ],
   [
     "",
-    "test-file/test/src/reporters/base.test.js.html#lineNumber19",
+    "test-file/test/src/reporters/base.test.js.html#lineNumber20",
     "Reporters Base should create reports folder",
     "test"
   ],
   [
     "",
-    "test-file/test/src/reporters/base.test.js.html#lineNumber29",
+    "test-file/test/src/reporters/base.test.js.html#lineNumber30",
     "Reporters Base should save report file",
     "test"
   ],
@@ -620,12 +890,18 @@ window.esdocSearchIndex = [
   [
     "",
     "test-file/test/src/util.test.js.html#lineNumber5",
+    "Util should can be initialized",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/util.test.js.html#lineNumber10",
     "Util should return valid path to configuration folder",
     "test"
   ],
   [
     "",
-    "test-file/test/src/util.test.js.html#lineNumber9",
+    "test-file/test/src/util.test.js.html#lineNumber14",
     "Util should return valid path to reports folder",
     "test"
   ],
@@ -655,19 +931,37 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/acts/run.test.js.html#lineNumber7",
+    "test-file/test/src/acts/run.test.js.html#lineNumber8",
     "acts/run",
     "test"
   ],
   [
     "",
-    "test-file/test/src/acts/run.test.js.html#lineNumber20",
+    "test-file/test/src/acts/run.test.js.html#lineNumber30",
+    "acts/run execute run action",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/acts/run.test.js.html#lineNumber41",
+    "acts/run execute run action with custom params",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/acts/run.test.js.html#lineNumber37",
+    "acts/run execute run action with default params",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/acts/run.test.js.html#lineNumber26",
     "acts/run should throw error if config file is missed",
     "test"
   ],
   [
     "",
-    "test-file/test/src/acts/run.test.js.html#lineNumber16",
+    "test-file/test/src/acts/run.test.js.html#lineNumber22",
     "acts/run should throw error if config param was not set",
     "test"
   ],
@@ -799,140 +1093,104 @@ window.esdocSearchIndex = [
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber8",
+    "test-file/test/src/checker.test.js.html#lineNumber7",
     "checker",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber108",
-    "checker _checkExternalLink",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber117",
-    "checker _checkExternalLink should check existed existed external link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber124",
-    "checker _checkExternalLink should check existed non-existed external link",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber97",
+    "test-file/test/src/checker.test.js.html#lineNumber81",
     "checker _getRequestOptions",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber98",
+    "test-file/test/src/checker.test.js.html#lineNumber82",
     "checker _getRequestOptions should return valid request options object",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber24",
+    "test-file/test/src/checker.test.js.html#lineNumber8",
     "checker constructor",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber44",
+    "test-file/test/src/checker.test.js.html#lineNumber28",
     "checker constructor should be initialized with default params if options are empty",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber40",
+    "test-file/test/src/checker.test.js.html#lineNumber24",
     "checker constructor should be initialized with default params if options were not set",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber68",
+    "test-file/test/src/checker.test.js.html#lineNumber52",
     "checker constructor should override default acceptedSchemes rule",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber73",
+    "test-file/test/src/checker.test.js.html#lineNumber57",
     "checker constructor should override default checkExternalUrls option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber48",
+    "test-file/test/src/checker.test.js.html#lineNumber32",
     "checker constructor should override default concurrent option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber78",
+    "test-file/test/src/checker.test.js.html#lineNumber62",
     "checker constructor should override default excludeLinkPatterns rule",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber53",
+    "test-file/test/src/checker.test.js.html#lineNumber37",
     "checker constructor should override default requestHeaders option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber58",
+    "test-file/test/src/checker.test.js.html#lineNumber42",
     "checker constructor should override default requestRetriesAmount option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber63",
+    "test-file/test/src/checker.test.js.html#lineNumber47",
     "checker constructor should override default requestTimeout option",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber85",
+    "test-file/test/src/checker.test.js.html#lineNumber92",
+    "checker should have default onDone handler",
+    "test"
+  ],
+  [
+    "",
+    "test-file/test/src/checker.test.js.html#lineNumber69",
     "checker start",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber91",
+    "test-file/test/src/checker.test.js.html#lineNumber75",
     "checker start should throw error if url param has invalid format",
     "test"
   ],
   [
     "",
-    "test-file/test/src/checker.test.js.html#lineNumber86",
+    "test-file/test/src/checker.test.js.html#lineNumber70",
     "checker start should throw error if url param was not set",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber133",
-    "checker test mock server",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber157",
-    "checker test mock server should check outer urls",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber134",
-    "checker test mock server should crawl pages",
-    "test"
-  ],
-  [
-    "",
-    "test-file/test/src/checker.test.js.html#lineNumber145",
-    "checker test mock server should skip excluded page urls",
     "test"
   ],
   [
@@ -1278,6 +1536,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/link-analyzer.es6~linkanalyzer#options",
+    "class/src/link-analyzer.es6~LinkAnalyzer.html#instance-get-options",
+    "src/link-analyzer.es6~LinkAnalyzer#options",
+    "member"
+  ],
+  [
+    "src/link-analyzer.es6~linkanalyzer#url",
+    "class/src/link-analyzer.es6~LinkAnalyzer.html#instance-get-url",
+    "src/link-analyzer.es6~LinkAnalyzer#url",
+    "member"
+  ],
+  [
     "src/model/broken.es6",
     "file/src/model/broken.es6.html",
     "src/model/broken.es6",
@@ -1596,12 +1866,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/reporters/base.es6~reporterbase#createreport",
-    "class/src/reporters/base.es6~ReporterBase.html#instance-method-createReport",
-    "src/reporters/base.es6~ReporterBase#createReport",
-    "method"
-  ],
-  [
     "src/reporters/base.es6~reporterbase#createreportfolder",
     "class/src/reporters/base.es6~ReporterBase.html#instance-method-createReportFolder",
     "src/reporters/base.es6~ReporterBase#createReportFolder",
@@ -1738,6 +2002,12 @@ window.esdocSearchIndex = [
     "test-file/test/src/model/statistic.test.js.html#lineNumber59",
     "statistic should return valid result of getBrokenCount method",
     "test"
+  ],
+  [
+    "test/integration.test.js",
+    "test-file/test/integration.test.js.html",
+    "test/integration.test.js",
+    "testFile"
   ],
   [
     "test/src/acts/config.test.js",

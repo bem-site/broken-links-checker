@@ -1,0 +1,82 @@
+{
+  "name": "bs-broken-links-checker",
+  "version": "0.2.0",
+  "description": "Broken links checker tool fow web sites",
+  "keywords": [
+    "broken link",
+    "broken url",
+    "link",
+    "url",
+    "broken",
+    "checker",
+    "cli",
+    "website crawler",
+    "analyze"
+  ],
+  "homepage": "http://bem-site.github.io/broken-links-checker",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bem-site/broken-links-checker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bem-site/broken-links-checker/issues",
+    "email": "andrey.kuznetsov48@yandex.ru"
+  },
+  "author": {
+    "name": "Andrey Kuznetsov",
+    "email": "andrey.kuznetsov48@yandex.ru",
+    "url": "http://github.com/tormozz48"
+  },
+  "maintainers": [
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ru> (http://github.com/tormozz48)"
+  ],
+  "contributors": [
+    "Andrey Kuznetsov <andrey.kuznetsov48@yandex.ru> (http://github.com/tormozz48)"
+  ],
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "bin": {
+    "blc": "./bin/blc"
+  },
+  "dependencies": {
+    "babel-runtime": "^5.8.20",
+    "bem-site-logger": "^0.0.x",
+    "cheerio": "^0.19.x",
+    "coa": "^1.0.1",
+    "got": "^4.1.1",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "route-pattern": "0.0.6"
+  },
+  "devDependencies": {
+    "babel": "^5.8.20",
+    "esdoc": "^0.1.4",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.2.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-esdoc": "0.0.1",
+    "gulp-gh-pages": "^0.5.2",
+    "gulp-jscs": "^2.0.0",
+    "gulp-jshint": "^1.11.2",
+    "istanbul": "^0.3.x",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "~2.2.x",
+    "mocha-lcov-reporter": "0.0.x",
+    "mock-fs": "^3.0.0",
+    "nock": "^2.10.0",
+    "should": "~6.x"
+  },
+  "scripts": {
+    "codestyle": "gulp codestyle",
+    "jsdoc": "gulp esdoc",
+    "publish-doc": "gulp publish-doc",
+    "compile": "gulp compile",
+    "pretest": "gulp codestyle && npm run compile",
+    "prepublish": "gulp compile",
+    "deps": "npm install && gulp compile",
+    "test": "NODE_ENV=testing ./node_modules/.bin/istanbul cover _mocha"
+  },
+  "readmeFilename": "README.md",
+  "license": "MPL-2.0"
+}

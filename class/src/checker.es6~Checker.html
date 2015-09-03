@@ -653,7 +653,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-_checkExternalLink">_checkExternalLink</a></span></span><span data-ice="signature">(item: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
+           <span data-ice="name"><span><a href="class/src/checker.es6~Checker.html#instance-method-_checkExternalLink">_checkExternalLink</a></span></span><span data-ice="signature">(item: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, attempt: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
         </p>
       </div>
       <div>
@@ -711,7 +711,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Makes request to given url</p>
+        <div data-ice="description"><p>Makes request to given external url</p>
 </div>
       </div>
     </td>
@@ -1863,7 +1863,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber311">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber328">source</a></span></span>
     </span>
   </h3>
 
@@ -1924,11 +1924,11 @@ for this regular expressions would be excluded from verification</p>
     
     
     
-    <span data-ice="name">_checkExternalLink</span><span data-ice="signature">(item: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
+    <span data-ice="name">_checkExternalLink</span><span data-ice="signature">(item: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, attempt: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber264">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber266">source</a></span></span>
     </span>
   </h3>
 
@@ -1950,7 +1950,7 @@ for this regular expressions would be excluded from verification</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">item</td>
-      <td data-ice="type"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>external link item object</p>
 </td>
@@ -1967,6 +1967,13 @@ for this regular expressions would be excluded from verification</p>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>external link advanced meta data object</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">attempt</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>number of request attempt</p>
 </td>
     </tr>
 </tbody>
@@ -2010,7 +2017,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber290">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber302">source</a></span></span>
     </span>
   </h3>
 
@@ -2068,7 +2075,7 @@ for this regular expressions would be excluded from verification</p>
   
   
   
-  <div data-ice="description"><p>Makes request to given url</p>
+  <div data-ice="description"><p>Makes request to given external url</p>
 </div>
 
   
@@ -2085,7 +2092,7 @@ for this regular expressions would be excluded from verification</p>
       <td data-ice="name" data-depth="0">url</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>link url (url that should be requested)</p>
+      <td data-ice="description"><p>external url (url that should be requested)</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
@@ -2133,7 +2140,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber346">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber363">source</a></span></span>
     </span>
   </h3>
 
@@ -2184,7 +2191,7 @@ for this regular expressions would be excluded from verification</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber327">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/checker.es6.html#lineNumber344">source</a></span></span>
     </span>
   </h3>
 
@@ -2245,7 +2252,7 @@ for this regular expressions would be excluded from verification</p>
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.2.2)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

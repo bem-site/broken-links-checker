@@ -1,7 +1,7 @@
 {
-  "coverage": "88.49%",
-  "expectCount": 113,
-  "actualCount": 100,
+  "coverage": "89.47%",
+  "expectCount": 114,
+  "actualCount": 102,
   "files": {
     "src/model/document.es6": {
       "expectCount": 9,
@@ -24,15 +24,15 @@
       "actualCount": 21
     },
     "src/link-analyzer.es6": {
-      "expectCount": 10,
-      "actualCount": 9
+      "expectCount": 12,
+      "actualCount": 11
     },
     "src/model/model.es6": {
       "expectCount": 18,
       "actualCount": 17
     },
     "src/reporters/base.es6": {
-      "expectCount": 7,
+      "expectCount": 6,
       "actualCount": 6
     },
     "src/reporters/html.es6": {
