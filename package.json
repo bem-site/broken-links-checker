@@ -46,7 +46,8 @@
     "coa": "^1.0.1",
     "got": "^4.1.1",
     "lodash": "^3.10.1",
-    "moment": "^2.10.6"
+    "moment": "^2.10.6",
+    "route-pattern": "0.0.6"
   },
   "devDependencies": {
     "babel": "^5.8.20",
@@ -64,7 +65,6 @@
     "mocha-lcov-reporter": "0.0.x",
     "mock-fs": "^3.0.0",
     "nock": "^2.10.0",
-    "route-pattern": "0.0.6",
     "should": "~6.x"
   },
   "scripts": {
