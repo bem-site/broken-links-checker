@@ -264,12 +264,16 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://broken-link']));
 
+            nock('https://broken-link')
+                .head('/')
+                .reply(500);
+
             var expected = { all: 2, internal: 1, external: 1, broken: 1 };
 
-            runTest({ checkExternalUrls: true, requestTimeout: 200 }, expected, function () { return done(); });
+            runTest({ checkExternalUrls: true }, expected, function () { return done(); });
         });
 
-        it('should mark url as broken if timeout was occur for all attempts', function (done) {
+        it('should not mark url as broken if timeout was occur for all attempts', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['http://my.external.source']));
@@ -278,7 +282,7 @@ describe('BrokenLinksChecker', function () {
                 .get('/')
                 .replyWithError({ 'message': 'timeout', code: 'ETIMEDOUT' });
 
-            var expected = { all: 2, internal: 1, external: 1, broken: 1 };
+            var expected = { all: 2, internal: 1, external: 1, broken: 0 };
 
             runTest({
                 requestRetriesAmount: 2,
