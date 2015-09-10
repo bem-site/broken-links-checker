@@ -29,6 +29,20 @@ export default class Statistic {
          * @type {Number}
          */
         this._countInternal = 0;
+
+        /**
+         * Start time of crawler processing (in milliseconds)
+         * @type {number}
+         * @private
+         */
+        this._startTime = +(new Date());
+
+        /**
+         * End time of crawler processing (in milliseconds)
+         * @type {number}
+         * @private
+         */
+        this._endTime = +(new Date());
     }
 
     /**
@@ -58,6 +72,21 @@ export default class Statistic {
     increaseExternalCount() {
         this._countExternal++;
         return this;
+    }
+
+    /**
+     * Mark statistic as finished
+     */
+    finish() {
+        this._endTime = +(new Date());
+    }
+
+    /**
+     * Returns time of link scanning (in milliseconds)
+     * @returns {number}
+     */
+    getTime() {
+        return this._endTime - this._startTime;
     }
 
     /**

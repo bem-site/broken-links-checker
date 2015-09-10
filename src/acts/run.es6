@@ -36,6 +36,7 @@ export function run (options) {
         logger.info('finish to analyze pages');
 
         logger
+            .info('-- Time: [%s] seconds', statistic.getTime()/1000)
             .info('-- Internal urls: [%s]', statistic.getInternalCount())
             .info('-- External urls: [%s]', statistic.getExternalCount())
             .info('-- Broken urls: [%s]', statistic.getBrokenCount())

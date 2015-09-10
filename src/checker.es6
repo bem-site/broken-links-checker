@@ -349,6 +349,7 @@ export default class Checker extends Base {
                 this._checkInternalLink(next.url, next.advanced);
             } else if (!this.model.areActive()) {
                 return this._checkExternalLinks().then(() => {
+                    this.statistic.finish();
                     this.options.getOption('onDone')(this.statistic);
                 });
             }
