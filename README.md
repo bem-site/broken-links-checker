@@ -20,7 +20,7 @@ At first case, you should:
 * clone project repo to your local filesystem
 * checkout to last stable tag
 * install [npm](https://www.npmjs.com) dependencies and compile runtime code
-```
+```shell
 $ git clone https://github.com/bem-site/broken-links-checker.git
 $ cd broken-links-checker
 $ git checkout vx.y.z
@@ -28,7 +28,7 @@ $ npm run deps
 ```
 
 At second case you should simply install project as yet another [npm](https://www.npmjs.com) - package:
-```
+```shell
 $ npm install --save bs-broken-links-checker
 ```
 
@@ -60,11 +60,11 @@ as value of this parameter.
 
 Usage example:
 
-```
+```shell
 $ node bin/blc config -n my.broken-site.com
 ```
 Expected console output:
-```
+```shell
 INFO acts/config.js: Configuration file: => my.broken-site.com.js has been generated successfully
 ```
 
@@ -103,7 +103,7 @@ listed here will be excluded from analyze.
 * `excludeLinkPatterns` - allows to set url patterns which should be excluded from analyze. For example if
 you want to exclude all nested links of `/contacts` website section, then set as value of
 `excludeLinkPatterns` option:
-```
+```js
 module.exports = {
     ...
     "excludeLinkPatterns": [
@@ -115,7 +115,7 @@ module.exports = {
 You can pass regular expression or string patterns (including wildcards) as values of this param.
 
 More examples:
-```
+```js
 module.exports = {
     ...
     excludeLinkPatterns: [
@@ -154,7 +154,7 @@ Sometimes it conveniently to scan only separate section of website or even singl
 
 If value of `mode` option is equal to 'section' then only nested pages of `url` option value will be scanned.
 For example if website `my.site.com` (which configuration file is in `./configs` folder and has name `my.site.com.js`) has structure as given here:
-```
+```shell
 /
 /foo
 /foo/foo1
@@ -162,13 +162,13 @@ For example if website `my.site.com` (which configuration file is in `./configs`
 /bar
 ```
  then `run` command with given options:
- ```
+ ```shell
  $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m section
  ```
 will cause the analyze only of pages: `/foo`, `/foo1`, `/foo2`. Page '/bar' will be omitted.
 
 If value of `mode` option is equal to 'page', then `run`:
-```
+```shell
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo -m page
 ```
 will cause the links analyze only for `/foo` page.
@@ -181,17 +181,17 @@ $ node bin/blc run -c ./configs/my.site.com.js
 ```
 
 * Analyze for website `http://my.another.site.com` with configuration file from another website `my.site.com`.
-```
+```shell
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.another.site.com
 ```
 
 * Overriding some of configuration file properties.
-```
+```shell
 $ node bin/blc run -c ./configs/my.site.com.js -cc 50 -rt 10000 -rra 20
 ```
 
 * Selective analyze for page `/foo/bar` of website `http://my.site.com`.
-```
+```shell
 $ node bin/blc run -c ./configs/my.site.com.js -u http://my.site.com/foo/bar -m page
 ```
 
@@ -203,11 +203,11 @@ All total results of analyze will be printed into console output after `run` com
 
 This command will simply print current application version to console.
 Usage example:
-```
+```shell
 $ node bin/blc version
 ```
 Expected console output (version can differ from value here):
-```
+```shell
 INFO cli/cmd-version.js: Application name: => bs-broken-links-checker
 INFO cli/cmd-version.js: Application version: => 0.0.1
 ```
@@ -215,17 +215,17 @@ INFO cli/cmd-version.js: Application version: => 0.0.1
 ## JavaScript API
 
 Package can be installed as usual [npm](https://www.npmjs.com) dependency.
-```
+```shell
 $ npm install --save bs-broken-links-checker
 ```
 
 For tool initialization you should create new instance of `BrokenLinksChecker` class.
-```
+```js
 var BrokenLinksChecker = require('bs-broken-links-checker').BrokenLinksChecker,
     brokenLinksChecker = new BrokenLinksChecker();
 ```
 You should call method `start` and pass url of your website as argument, for example:
-```
+```js
 brokenLinksChecker.start('https://my.site.com');
 ```
 `BrokenLinksChecker` class constructor takes options object as argument. More detail about available option fields.
@@ -284,7 +284,7 @@ For example if you want to exclude pages that urls contains `foo` or `bar` you c
 Value by default: `[]`
 
 More examples:
-```
+```js
 module.exports = {
     ...
     excludeLinkPatterns: [
@@ -306,7 +306,7 @@ You can see usage examples [here](./examples).
 ## Testing
 
 Launch of tests with [istanbul](https://www.npmjs.com/package/istanbul) coverage calculation:
-```
+```shell
 $ npm test
 ```
 
@@ -314,7 +314,7 @@ Code syntax check with help of:
 [jshint](https://www.npmjs.com/package/jshint),
 [jscs](https://www.npmjs.com/package/jscs)
 
-```
+```shell
 $ npm run codestyle
 ```
 
