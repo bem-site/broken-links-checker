@@ -34,11 +34,11 @@ describe('acts/run', function () {
                 .reply(200, 'Hello World');
         });
 
-        it('with default params', function (done) {
+        it.skip('with default params', function (done) {
             runTest({ config: './configs/my.site.com.js' }, done);
         });
 
-        it('with custom params', function (done) {
+        it.skip('with custom params', function (done) {
             runTest({
                 config: './configs/my.site.com.js',
                 concurrent: 1,

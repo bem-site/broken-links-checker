@@ -117,7 +117,7 @@ describe('BrokenLinksChecker', function () {
     });
 
     describe('custom timeout option value', function() {
-        it('should mark url as broken if timeout was occur', function (done) {
+        it('should mark url as broken if timeout occured', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .socketDelay(300)
@@ -238,8 +238,8 @@ describe('BrokenLinksChecker', function () {
         });
     });
 
-    describe('check external urls', function (done) {
-        it('should not check external link', function () {
+    describe('check external urls', function () {
+        it('should not check external link', function (done) {
             nock(SERVER_URL)
                 .get('/')
                 .reply(200, htmlBuilder.build(['https://yandex.ru']));
